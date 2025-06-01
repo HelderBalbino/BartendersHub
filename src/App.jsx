@@ -1,5 +1,5 @@
 const App = () => {
-	return <div className='text-6xl'>Bartenders' Hub</div>;
+	return <> </>;
 };
 
 export default App;
