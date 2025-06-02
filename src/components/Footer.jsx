@@ -3,7 +3,7 @@ const Footer = () => {
 		<footer className='bg-gray-800 text-white py-4'>
 			<div className='container mx-auto text-center'>
 				<p className='text-sm'>
-					&copy; {new Date().getFullYear()} My Website. All rights
+					&copy; {new Date().getFullYear()} My app All rights
 					reserved.
 				</p>
 				<p className='text-xs mt-2'>
