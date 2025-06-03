@@ -2,9 +2,9 @@ import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
 	return (
-		<div>
+		<nav className='bg-black'>
 			<img className='h-28 w-auto' src={logo} alt='' />
-		</div>
+		</nav>
 	);
 };
 

@@ -5,7 +5,7 @@ const App = () => {
 	return (
 		<>
 			<Navbar />
-			<Footer />
+			{/* <Footer /> */}
 		</>
 	);
 };
