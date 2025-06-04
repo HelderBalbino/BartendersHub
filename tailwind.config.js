@@ -9,6 +9,12 @@ export default {
 			gridTemplateColumns: {
 				'70-30': '70% 28%',
 			},
+			colors: {
+				gold: '#FFD701',
+			},
+			borderColor: {
+				gold: '#FFD700',
+			},
 		},
 	},
 	plugins: [],
