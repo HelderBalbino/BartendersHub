@@ -23,8 +23,10 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: 'var(--font-sans)',
-				serif: 'var(--font-serif)',
+				sans: ['Roboto', 'sans-serif'],
+			},
+			gridTemplateColumns: {
+				'70/30': '70% 28%',
 			},
 		},
 	},
