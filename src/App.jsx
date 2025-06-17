@@ -7,8 +7,7 @@ const App = () => {
 		<>
 			<Navbar />
 			<Hero />
-
-			{/* <Footer /> */}
+			<Footer />
 		</>
 	);
 };
