@@ -54,7 +54,7 @@ const Hero = () => {
 
 				{/* Main headline */}
 				<h1 className='text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight'>
-					<span className='block mb-1 sm:mb-2'>Bartenders</span>
+					<span className='block mb-1 sm:mb-2'>Bartenders'</span>
 					<span className='bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent'>
 						Hub
 					</span>
