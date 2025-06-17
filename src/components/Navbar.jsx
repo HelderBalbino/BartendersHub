@@ -15,7 +15,6 @@ const Navbar = () => {
 								src={logo}
 								alt='Logo'
 							/>
-							<span></span>
 						</a>
 					</div>
 				</div>
