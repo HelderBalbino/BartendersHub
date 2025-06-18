@@ -130,7 +130,7 @@ const Hero = () => {
 					{/* Enhanced main headline with luxury typography */}
 					<h1 className='text-5xl sm:text-6xl lg:text-8xl xl:text-9xl font-extralight text-white mb-8 leading-none tracking-[0.2em] uppercase'>
 						<span className='block mb-3 text-shadow-lg'>
-							Bartenders
+							Bartenders'
 						</span>
 						<span className='text-yellow-400 font-thin tracking-[0.3em] filter drop-shadow-md'>
 							Hub
