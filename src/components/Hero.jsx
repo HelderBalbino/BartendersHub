@@ -242,56 +242,6 @@ const Hero = () => {
 							</p>
 						</div>
 					</div>
-
-					{/* Feature grid - static premium elements */}
-					<div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto'>
-						{[
-							{
-								icon: '�',
-								title: 'Award Winning',
-								desc: 'Recognition from top industry experts',
-							},
-							{
-								icon: '📚',
-								title: 'Comprehensive Guide',
-								desc: 'Complete cocktail knowledge base',
-							},
-							{
-								icon: '🌍',
-								title: 'Global Network',
-								desc: 'Connect with bartenders worldwide',
-							},
-						].map((feature, index) => (
-							<div
-								key={index}
-								className='group relative bg-black/30 border border-yellow-400/25 p-8 transition-all duration-700 hover:border-yellow-400/70 hover:bg-black/50 hover:shadow-2xl hover:-translate-y-2'
-							>
-								{/* Enhanced Art Deco corners */}
-								<div className='absolute top-0 left-0 w-5 h-5 border-l-2 border-t-2 border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-								<div className='absolute top-0 right-0 w-5 h-5 border-r-2 border-t-2 border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-								<div className='absolute bottom-0 left-0 w-5 h-5 border-l-2 border-b-2 border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-								<div className='absolute bottom-0 right-0 w-5 h-5 border-r-2 border-b-2 border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-
-								{/* Inner frame */}
-								<div className='absolute top-2 left-2 w-3 h-3 border-l border-t border-yellow-400/20 group-hover:border-yellow-400/60 transition-colors duration-700'></div>
-								<div className='absolute top-2 right-2 w-3 h-3 border-r border-t border-yellow-400/20 group-hover:border-yellow-400/60 transition-colors duration-700'></div>
-								<div className='absolute bottom-2 left-2 w-3 h-3 border-l border-b border-yellow-400/20 group-hover:border-yellow-400/60 transition-colors duration-700'></div>
-								<div className='absolute bottom-2 right-2 w-3 h-3 border-r border-b border-yellow-400/20 group-hover:border-yellow-400/60 transition-colors duration-700'></div>
-
-								<div className='text-center relative z-10'>
-									<div className='text-4xl mb-6 group-hover:scale-110 transition-transform duration-500 filter drop-shadow-lg'>
-										{feature.icon}
-									</div>
-									<h3 className='text-yellow-400 font-light mb-4 text-lg tracking-[0.1em] uppercase'>
-										{feature.title}
-									</h3>
-									<p className='text-gray-400 text-sm font-light leading-relaxed'>
-										{feature.desc}
-									</p>
-								</div>
-							</div>
-						))}
-					</div>
 				</div>
 
 				{/* Enhanced bottom decorative element */}
