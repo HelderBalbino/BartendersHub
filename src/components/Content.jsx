@@ -5,6 +5,24 @@ const Content = () => {
 	const [activeCategory, setActiveCategory] = useState('signature');
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+	const [cardsPerView, setCardsPerView] = useState(1);
+
+	// Handle responsive cards per view
+	useEffect(() => {
+		const handleResize = () => {
+			if (window.innerWidth >= 1024) {
+				setCardsPerView(3); // lg and above
+			} else if (window.innerWidth >= 768) {
+				setCardsPerView(2); // md
+			} else {
+				setCardsPerView(1); // sm and below
+			}
+		};
+
+		handleResize(); // Set initial value
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
 
 	// Sample cocktail data organized by categories
 	const cocktailData = useMemo(
@@ -139,7 +157,6 @@ const Content = () => {
 	];
 
 	const currentCocktails = cocktailData[activeCategory];
-	const cardsPerView = 3;
 	const maxSlides = Math.max(0, currentCocktails.length - cardsPerView);
 
 	// Auto-play functionality
@@ -174,63 +191,63 @@ const Content = () => {
 	};
 
 	return (
-		<section className='bg-gradient-to-br from-black via-gray-900 to-black py-16 lg:py-24 relative overflow-hidden'>
-			{/* Art Deco Background Pattern */}
+		<section className='bg-gradient-to-br from-black via-gray-900 to-black py-12 sm:py-16 lg:py-24 relative overflow-hidden'>
+			{/* Art Deco Background Pattern - Mobile Optimized */}
 			<div className='absolute inset-0 opacity-5'>
 				<div className='absolute top-0 left-0 w-full h-full bg-gradient-to-br from-yellow-400/10 to-transparent'></div>
-				<div className='absolute top-20 left-20 w-32 h-32 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute bottom-20 right-20 w-24 h-24 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-1/2 left-10 w-16 h-16 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-1/3 right-10 w-20 h-20 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-8 sm:top-20 left-8 sm:left-20 w-20 sm:w-32 h-20 sm:h-32 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute bottom-8 sm:bottom-20 right-8 sm:right-20 w-16 sm:w-24 h-16 sm:h-24 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-1/2 left-4 sm:left-10 w-12 sm:w-16 h-12 sm:h-16 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-1/3 right-4 sm:right-10 w-14 sm:w-20 h-14 sm:h-20 border border-yellow-400/20 rotate-45'></div>
 			</div>
 
-			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
-				{/* Section Header */}
-				<div className='text-center mb-16'>
-					{/* Golden decorative line */}
-					<div className='w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-6'></div>
+			<div className='max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10'>
+				{/* Section Header - Mobile Optimized */}
+				<div className='text-center mb-12 sm:mb-16'>
+					{/* Golden decorative line - Mobile responsive */}
+					<div className='w-16 sm:w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-4 sm:mb-6'></div>
 
-					<h2 className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-4 tracking-widest uppercase'>
+					<h2 className='text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white mb-3 sm:mb-4 tracking-widest uppercase px-2'>
 						Cocktail{' '}
 						<span className='text-yellow-400'>Collection</span>
 					</h2>
 
-					<p className='text-gray-400 text-lg max-w-2xl mx-auto font-light italic'>
+					<p className='text-gray-400 text-sm sm:text-lg max-w-2xl mx-auto font-light italic px-4'>
 						"Discover the finest cocktails crafted with precision
 						and passion"
 					</p>
 
-					{/* Bottom decorative line */}
-					<div className='w-16 h-0.5 bg-yellow-400 mx-auto mt-6'></div>
+					{/* Bottom decorative line - Mobile responsive */}
+					<div className='w-12 sm:w-16 h-0.5 bg-yellow-400 mx-auto mt-4 sm:mt-6'></div>
 				</div>
 
-				{/* Category Navigation */}
-				<div className='flex flex-wrap justify-center gap-4 mb-12'>
+				{/* Category Navigation - Mobile Optimized */}
+				<div className='flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 px-2'>
 					{categories.map((category) => (
 						<button
 							key={category.id}
 							onClick={() => handleCategoryChange(category.id)}
-							className={`group relative px-8 py-4 border transition-all duration-500 ${
+							className={`group relative px-4 sm:px-6 md:px-8 py-3 sm:py-4 border transition-all duration-500 w-full sm:w-auto ${
 								activeCategory === category.id
 									? 'border-yellow-400 bg-yellow-400 text-black'
 									: 'border-yellow-400/30 text-gray-400 hover:border-yellow-400/60 hover:text-white'
 							}`}
 						>
-							{/* Art Deco corners */}
-							<div className='absolute top-0 left-0 w-3 h-3 border-l border-t border-yellow-400'></div>
-							<div className='absolute top-0 right-0 w-3 h-3 border-r border-t border-yellow-400'></div>
-							<div className='absolute bottom-0 left-0 w-3 h-3 border-l border-b border-yellow-400'></div>
-							<div className='absolute bottom-0 right-0 w-3 h-3 border-r border-b border-yellow-400'></div>
+							{/* Art Deco corners - Mobile responsive */}
+							<div className='absolute top-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l border-t border-yellow-400'></div>
+							<div className='absolute top-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r border-t border-yellow-400'></div>
+							<div className='absolute bottom-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l border-b border-yellow-400'></div>
+							<div className='absolute bottom-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r border-b border-yellow-400'></div>
 
-							<div className='flex items-center gap-3'>
-								<span className='text-2xl'>
+							<div className='flex items-center justify-center sm:justify-start gap-2 sm:gap-3'>
+								<span className='text-xl sm:text-2xl'>
 									{category.icon}
 								</span>
-								<div className='text-left'>
-									<div className='font-light tracking-wide uppercase text-sm'>
+								<div className='text-center sm:text-left'>
+									<div className='font-light tracking-wide uppercase text-xs sm:text-sm'>
 										{category.label}
 									</div>
-									<div className='text-xs opacity-70 mt-1'>
+									<div className='text-xs opacity-70 mt-1 hidden sm:block'>
 										{category.description}
 									</div>
 								</div>
@@ -239,15 +256,15 @@ const Content = () => {
 					))}
 				</div>
 
-				{/* Carousel Container */}
+				{/* Carousel Container - Mobile Optimized */}
 				<div className='relative'>
-					{/* Navigation Buttons */}
+					{/* Navigation Buttons - Mobile responsive */}
 					<button
 						onClick={handlePrevSlide}
-						className='absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-black/70 border border-yellow-400/50 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group'
+						className='absolute left-0 sm:left-0 top-1/2 transform -translate-y-1/2 z-20 w-10 sm:w-12 h-10 sm:h-12 bg-black/70 border border-yellow-400/50 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group'
 						disabled={currentSlide === 0 && maxSlides === 0}
 					>
-						<div className='absolute top-0 left-0 w-2 h-2 border-l border-t border-yellow-400'></div>
+						<div className='absolute top-0 left-0 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-yellow-400'></div>
 						<div className='absolute top-0 right-0 w-2 h-2 border-r border-t border-yellow-400'></div>
 						<div className='absolute bottom-0 left-0 w-2 h-2 border-l border-b border-yellow-400'></div>
 						<div className='absolute bottom-0 right-0 w-2 h-2 border-r border-b border-yellow-400'></div>
@@ -266,10 +283,10 @@ const Content = () => {
 						<span className='text-xl'>›</span>
 					</button>
 
-					{/* Carousel Track */}
-					<div className='overflow-hidden mx-16'>
+					{/* Carousel Track - Mobile Optimized */}
+					<div className='overflow-hidden mx-4 sm:mx-8 md:mx-12 lg:mx-16'>
 						<div
-							className='flex transition-transform duration-700 ease-in-out gap-8'
+							className='flex transition-transform duration-700 ease-in-out gap-2 sm:gap-4 md:gap-6 lg:gap-8'
 							style={{
 								transform: `translateX(-${
 									currentSlide * (100 / cardsPerView)
@@ -282,10 +299,14 @@ const Content = () => {
 									className='flex-shrink-0'
 									style={{ width: `${100 / cardsPerView}%` }}
 								>
-									<div className='px-2'>
+									<div className='px-1 sm:px-2'>
 										<CocktailCard
 											cocktail={cocktail}
-											size='medium'
+											size={
+												cardsPerView === 1
+													? 'large'
+													: 'medium'
+											}
 											onCardClick={(cocktail) =>
 												console.log(
 													'Clicked:',

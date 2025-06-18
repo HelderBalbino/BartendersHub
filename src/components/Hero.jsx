@@ -54,23 +54,22 @@ const Hero = () => {
 		}, 3000);
 		return () => clearInterval(interval);
 	}, [premiumFeatures.length]);
-
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden'>
-			{/* Enhanced Art Deco Background Pattern */}
+			{/* Enhanced Art Deco Background Pattern - Mobile Optimized */}
 			<div className='absolute inset-0 opacity-8'>
 				{/* Golden gradient overlay */}
 				<div className='absolute top-0 left-0 w-full h-full bg-gradient-to-br from-yellow-400/15 via-transparent to-yellow-400/5'></div>
 
-				{/* Geometric Art Deco elements - more sophisticated layout */}
-				<div className='absolute top-16 left-16 w-48 h-48 border border-yellow-400/25 rotate-45'></div>
-				<div className='absolute bottom-16 right-16 w-40 h-40 border border-yellow-400/25 rotate-45'></div>
-				<div className='absolute top-1/2 left-8 w-32 h-32 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-1/4 right-8 w-36 h-36 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute bottom-1/4 left-1/4 w-28 h-28 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-3/4 right-1/3 w-24 h-24 border border-yellow-400/20 rotate-45'></div>
+				{/* Geometric Art Deco elements - Responsive sizing */}
+				<div className='absolute top-8 left-4 sm:top-16 sm:left-16 w-32 sm:w-48 h-32 sm:h-48 border border-yellow-400/25 rotate-45'></div>
+				<div className='absolute bottom-8 right-4 sm:bottom-16 sm:right-16 w-24 sm:w-40 h-24 sm:h-40 border border-yellow-400/25 rotate-45'></div>
+				<div className='absolute top-1/2 left-2 sm:left-8 w-20 sm:w-32 h-20 sm:h-32 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-1/4 right-2 sm:right-8 w-24 sm:w-36 h-24 sm:h-36 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute bottom-1/4 left-1/4 w-16 sm:w-28 h-16 sm:h-28 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-3/4 right-1/3 w-12 sm:w-24 h-12 sm:h-24 border border-yellow-400/20 rotate-45'></div>
 
-				{/* Sophisticated radiating lines pattern */}
+				{/* Sophisticated radiating lines pattern - Mobile responsive */}
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
 					<div className='w-screen h-0.5 bg-gradient-to-r from-transparent via-yellow-400/15 to-transparent rotate-15'></div>
 					<div className='w-screen h-0.5 bg-gradient-to-r from-transparent via-yellow-400/15 to-transparent rotate-30'></div>
@@ -80,45 +79,45 @@ const Hero = () => {
 					<div className='w-screen h-0.5 bg-gradient-to-r from-transparent via-yellow-400/15 to-transparent -rotate-45'></div>
 				</div>
 
-				{/* Additional decorative elements */}
-				<div className='absolute top-20 left-1/2 transform -translate-x-1/2 w-64 h-0.5 bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent'></div>
-				<div className='absolute bottom-20 left-1/2 transform -translate-x-1/2 w-64 h-0.5 bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent'></div>
+				{/* Additional decorative elements - Mobile responsive */}
+				<div className='absolute top-12 sm:top-20 left-1/2 transform -translate-x-1/2 w-32 sm:w-64 h-0.5 bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent'></div>
+				<div className='absolute bottom-12 sm:bottom-20 left-1/2 transform -translate-x-1/2 w-32 sm:w-64 h-0.5 bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent'></div>
 			</div>
 
-			{/* Main content - redesigned with enhanced Art Deco styling */}
+			{/* Main content - Mobile-First Responsive Design */}
 			<div
-				className={`relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto transition-all duration-1500 ${
+				className={`relative z-10 text-center px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto transition-all duration-1500 ${
 					isVisible
 						? 'opacity-100 translate-y-0'
 						: 'opacity-0 translate-y-10'
 				}`}
 			>
-				{/* Enhanced top decorative section */}
-				<div className='mb-12'>
-					<div className='w-40 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-4'></div>
-					<div className='flex items-center justify-center gap-4 mb-4'>
-						<div className='w-3 h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
-						<div className='text-yellow-400 text-xs uppercase tracking-[0.3em] font-light'>
+				{/* Enhanced top decorative section - Mobile optimized */}
+				<div className='mb-8 sm:mb-12'>
+					<div className='w-24 sm:w-40 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-3 sm:mb-4'></div>
+					<div className='flex items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4'>
+						<div className='w-2 sm:w-3 h-2 sm:h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
+						<div className='text-yellow-400 text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] font-light px-2'>
 							Premium Mixology Experience
 						</div>
-						<div className='w-3 h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
+						<div className='w-2 sm:w-3 h-2 sm:h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
 					</div>
-					<div className='w-24 h-0.5 bg-yellow-400 mx-auto'></div>
+					<div className='w-16 sm:w-24 h-0.5 bg-yellow-400 mx-auto'></div>
 				</div>
 
-				{/* Enhanced main frame with sophisticated styling */}
-				<div className='relative border-2 border-yellow-400/40 p-6 sm:p-10 lg:p-16 mb-16 bg-black/20 backdrop-blur-sm'>
-					{/* Enhanced Art Deco corner decorations */}
-					<div className='absolute -top-1 -left-1 w-12 h-12 border-l-4 border-t-4 border-yellow-400'></div>
-					<div className='absolute -top-1 -right-1 w-12 h-12 border-r-4 border-t-4 border-yellow-400'></div>
-					<div className='absolute -bottom-1 -left-1 w-12 h-12 border-l-4 border-b-4 border-yellow-400'></div>
-					<div className='absolute -bottom-1 -right-1 w-12 h-12 border-r-4 border-b-4 border-yellow-400'></div>
+				{/* Enhanced main frame with mobile-first styling */}
+				<div className='relative border border-yellow-400/40 sm:border-2 p-4 sm:p-6 md:p-10 lg:p-16 mb-12 sm:mb-16 bg-black/20 backdrop-blur-sm'>
+					{/* Enhanced Art Deco corner decorations - Mobile responsive */}
+					<div className='absolute -top-0.5 sm:-top-1 -left-0.5 sm:-left-1 w-8 sm:w-12 h-8 sm:h-12 border-l-2 sm:border-l-4 border-t-2 sm:border-t-4 border-yellow-400'></div>
+					<div className='absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 w-8 sm:w-12 h-8 sm:h-12 border-r-2 sm:border-r-4 border-t-2 sm:border-t-4 border-yellow-400'></div>
+					<div className='absolute -bottom-0.5 sm:-bottom-1 -left-0.5 sm:-left-1 w-8 sm:w-12 h-8 sm:h-12 border-l-2 sm:border-l-4 border-b-2 sm:border-b-4 border-yellow-400'></div>
+					<div className='absolute -bottom-0.5 sm:-bottom-1 -right-0.5 sm:-right-1 w-8 sm:w-12 h-8 sm:h-12 border-r-2 sm:border-r-4 border-b-2 sm:border-b-4 border-yellow-400'></div>
 
-					{/* Inner decorative frame */}
-					<div className='absolute top-4 left-4 w-6 h-6 border-l-2 border-t-2 border-yellow-400/60'></div>
-					<div className='absolute top-4 right-4 w-6 h-6 border-r-2 border-t-2 border-yellow-400/60'></div>
-					<div className='absolute bottom-4 left-4 w-6 h-6 border-l-2 border-b-2 border-yellow-400/60'></div>
-					<div className='absolute bottom-4 right-4 w-6 h-6 border-r-2 border-b-2 border-yellow-400/60'></div>
+					{/* Inner decorative frame - Mobile responsive */}
+					<div className='absolute top-2 sm:top-4 left-2 sm:left-4 w-4 sm:w-6 h-4 sm:h-6 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400/60'></div>
+					<div className='absolute top-2 sm:top-4 right-2 sm:right-4 w-4 sm:w-6 h-4 sm:h-6 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400/60'></div>
+					<div className='absolute bottom-2 sm:bottom-4 left-2 sm:left-4 w-4 sm:w-6 h-4 sm:h-6 border-l border-b sm:border-l-2 sm:border-b-2 border-yellow-400/60'></div>
+					<div className='absolute bottom-2 sm:bottom-4 right-2 sm:right-4 w-4 sm:w-6 h-4 sm:h-6 border-r border-b sm:border-r-2 sm:border-b-2 border-yellow-400/60'></div>
 
 					{/* Sophisticated cocktail emblem */}
 					<div className='mb-8 relative'>
@@ -176,45 +175,45 @@ const Hero = () => {
 					</div>
 				</div>
 
-				{/* Enhanced Art Deco styled CTA Buttons */}
-				<div className='flex flex-col sm:flex-row gap-8 justify-center items-center mb-20'>
-					<button className='group relative w-full sm:w-auto bg-yellow-400 text-black font-light py-5 px-12 border-2 border-yellow-400 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.2em] uppercase text-sm shadow-2xl'>
-						{/* Enhanced Art Deco corners */}
-						<div className='absolute -top-1 -left-1 w-4 h-4 border-l-2 border-t-2 border-yellow-400'></div>
-						<div className='absolute -top-1 -right-1 w-4 h-4 border-r-2 border-t-2 border-yellow-400'></div>
-						<div className='absolute -bottom-1 -left-1 w-4 h-4 border-l-2 border-b-2 border-yellow-400'></div>
-						<div className='absolute -bottom-1 -right-1 w-4 h-4 border-r-2 border-b-2 border-yellow-400'></div>
+				{/* Enhanced Art Deco styled CTA Buttons - Mobile Optimized */}
+				<div className='flex flex-col gap-4 sm:gap-6 md:gap-8 justify-center items-center mb-16 sm:mb-20 px-4'>
+					<button className='group relative w-full max-w-sm sm:max-w-md bg-yellow-400 text-black font-light py-4 sm:py-5 px-8 sm:px-12 border border-yellow-400 sm:border-2 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.15em] sm:tracking-[0.2em] uppercase text-sm shadow-2xl'>
+						{/* Enhanced Art Deco corners - Mobile responsive */}
+						<div className='absolute -top-0.5 sm:-top-1 -left-0.5 sm:-left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400'></div>
+						<div className='absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400'></div>
+						<div className='absolute -bottom-0.5 sm:-bottom-1 -left-0.5 sm:-left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-yellow-400'></div>
+						<div className='absolute -bottom-0.5 sm:-bottom-1 -right-0.5 sm:-right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-yellow-400'></div>
 
-						{/* Inner decorative elements */}
-						<div className='absolute top-1 left-1 w-2 h-2 border-l border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute top-1 right-1 w-2 h-2 border-r border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute bottom-1 left-1 w-2 h-2 border-l border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute bottom-1 right-1 w-2 h-2 border-r border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+						{/* Inner decorative elements - Mobile responsive */}
+						<div className='absolute top-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute top-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute bottom-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
 
-						<span className='relative z-10 flex items-center gap-3'>
+						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
 							<span>Explore Collection</span>
-							<span className='text-lg group-hover:translate-x-1 transition-transform duration-300'>
+							<span className='text-base sm:text-lg group-hover:translate-x-1 transition-transform duration-300'>
 								→
 							</span>
 						</span>
 					</button>
 
-					<button className='group relative w-full sm:w-auto bg-transparent text-yellow-400 font-light py-5 px-12 border-2 border-yellow-400/60 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.2em] uppercase text-sm'>
-						{/* Enhanced Art Deco corners */}
-						<div className='absolute -top-1 -left-1 w-4 h-4 border-l-2 border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute -top-1 -right-1 w-4 h-4 border-r-2 border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute -bottom-1 -left-1 w-4 h-4 border-l-2 border-b-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute -bottom-1 -right-1 w-4 h-4 border-r-2 border-b-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
+					<button className='group relative w-full max-w-sm sm:max-w-md bg-transparent text-yellow-400 font-light py-4 sm:py-5 px-8 sm:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.15em] sm:tracking-[0.2em] uppercase text-sm'>
+						{/* Enhanced Art Deco corners - Mobile responsive */}
+						<div className='absolute -top-0.5 sm:-top-1 -left-0.5 sm:-left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute -bottom-0.5 sm:-bottom-1 -left-0.5 sm:-left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute -bottom-0.5 sm:-bottom-1 -right-0.5 sm:-right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
 
-						{/* Inner decorative elements */}
-						<div className='absolute top-1 left-1 w-2 h-2 border-l border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute top-1 right-1 w-2 h-2 border-r border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute bottom-1 left-1 w-2 h-2 border-l border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute bottom-1 right-1 w-2 h-2 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						{/* Inner decorative elements - Mobile responsive */}
+						<div className='absolute top-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute top-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute bottom-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
 
-						<span className='relative z-10 flex items-center gap-3'>
+						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
 							<span>Join the Elite</span>
-							<span className='text-lg group-hover:scale-110 transition-transform duration-300'>
+							<span className='text-base sm:text-lg group-hover:scale-110 transition-transform duration-300'>
 								⭐
 							</span>
 						</span>

@@ -41,32 +41,32 @@ const CocktailCard = ({
 	const getSizeClasses = () => {
 		switch (size) {
 			case 'small':
-				return 'w-72';
+				return 'w-full max-w-64 sm:w-72';
 			case 'large':
-				return 'w-96';
+				return 'w-full max-w-80 sm:w-96';
 			default:
-				return 'w-80';
+				return 'w-full max-w-72 sm:w-80';
 		}
 	};
 
 	return (
 		<div
-			className={`${getSizeClasses()} mx-auto bg-black border border-yellow-400 relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-yellow-400/30 cursor-pointer group ${className}`}
+			className={`${getSizeClasses()} mx-auto bg-black border border-yellow-400 relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-yellow-400/30 cursor-pointer group touch-manipulation ${className}`}
 			onClick={() => onCardClick && onCardClick(cocktailData)}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			{/* Art Deco Corner Decorations */}
-			<div className='absolute top-0 left-0 w-6 h-6 border-l-2 border-t-2 border-yellow-400'></div>
-			<div className='absolute top-0 right-0 w-6 h-6 border-r-2 border-t-2 border-yellow-400'></div>
-			<div className='absolute bottom-0 left-0 w-6 h-6 border-l-2 border-b-2 border-yellow-400'></div>
-			<div className='absolute bottom-0 right-0 w-6 h-6 border-r-2 border-b-2 border-yellow-400'></div>
+			{/* Art Deco Corner Decorations - Mobile Responsive */}
+			<div className='absolute top-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-l-2 border-t-2 border-yellow-400'></div>
+			<div className='absolute top-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-r-2 border-t-2 border-yellow-400'></div>
+			<div className='absolute bottom-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-l-2 border-b-2 border-yellow-400'></div>
+			<div className='absolute bottom-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-r-2 border-b-2 border-yellow-400'></div>
 
-			{/* Golden Line Accent */}
-			<div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent'></div>
+			{/* Golden Line Accent - Mobile Responsive */}
+			<div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-16 sm:w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent'></div>
 
-			{/* Image Section */}
-			<div className='relative h-56 overflow-hidden'>
+			{/* Image Section - Mobile Optimized */}
+			<div className='relative h-48 sm:h-56 overflow-hidden'>
 				{!imageError ? (
 					<img
 						src={cocktailData.image}
@@ -94,12 +94,14 @@ const CocktailCard = ({
 				{/* Elegant Overlay */}
 				<div className='absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent'></div>
 
-				{/* Rating Badge */}
-				<div className='absolute top-4 right-4'>
-					<div className='bg-black/70 backdrop-blur-sm border border-yellow-400/50 px-3 py-1'>
+				{/* Rating Badge - Mobile Responsive */}
+				<div className='absolute top-3 right-3 sm:top-4 sm:right-4'>
+					<div className='bg-black/70 backdrop-blur-sm border border-yellow-400/50 px-2 py-1 sm:px-3'>
 						<div className='flex items-center gap-1'>
-							<span className='text-yellow-400 text-sm'>★</span>
-							<span className='text-white text-sm font-light'>
+							<span className='text-yellow-400 text-xs sm:text-sm'>
+								★
+							</span>
+							<span className='text-white text-xs sm:text-sm font-light'>
 								{cocktailData.rating}
 							</span>
 						</div>
@@ -107,46 +109,46 @@ const CocktailCard = ({
 				</div>
 			</div>
 
-			{/* Content Section */}
-			<div className='p-6 bg-black relative'>
-				{/* Decorative Line */}
-				<div className='w-12 h-0.5 bg-yellow-400 mb-4 mx-auto'></div>
+			{/* Content Section - Mobile Optimized */}
+			<div className='p-4 sm:p-6 bg-black relative'>
+				{/* Decorative Line - Mobile Responsive */}
+				<div className='w-8 sm:w-12 h-0.5 bg-yellow-400 mb-3 sm:mb-4 mx-auto'></div>
 
-				{/* Title */}
-				<h3 className='text-center text-white text-xl font-light tracking-widest mb-2 uppercase'>
+				{/* Title - Mobile Typography */}
+				<h3 className='text-center text-white text-lg sm:text-xl font-light tracking-widest mb-2 uppercase'>
 					{cocktailData.name}
 				</h3>
 
-				{/* Difficulty Diamonds */}
-				<div className='text-center mb-4'>
-					<span className='text-yellow-400 text-lg tracking-wider'>
+				{/* Difficulty Diamonds - Mobile Responsive */}
+				<div className='text-center mb-3 sm:mb-4'>
+					<span className='text-yellow-400 text-base sm:text-lg tracking-wider'>
 						{getDifficultyIcon(cocktailData.difficulty)}
 					</span>
 				</div>
 
-				{/* Description */}
-				<p className='text-gray-400 text-center text-sm font-light leading-relaxed mb-6 italic'>
+				{/* Description - Mobile Typography */}
+				<p className='text-gray-400 text-center text-xs sm:text-sm font-light leading-relaxed mb-4 sm:mb-6 italic px-1'>
 					"{cocktailData.description}"
 				</p>
 
-				{/* Bottom Info */}
-				<div className='flex justify-between items-center pt-4 border-t border-yellow-400/30'>
+				{/* Bottom Info - Mobile Layout */}
+				<div className='flex justify-between items-center pt-3 sm:pt-4 border-t border-yellow-400/30'>
 					<div className='text-center'>
 						<div className='text-yellow-400 text-xs uppercase tracking-wide'>
 							Time
 						</div>
-						<div className='text-white text-sm font-light'>
+						<div className='text-white text-xs sm:text-sm font-light'>
 							{cocktailData.prepTime}
 						</div>
 					</div>
 
-					<div className='w-px h-8 bg-yellow-400/30'></div>
+					<div className='w-px h-6 sm:h-8 bg-yellow-400/30'></div>
 
 					<div className='text-center'>
 						<div className='text-yellow-400 text-xs uppercase tracking-wide'>
 							Level
 						</div>
-						<div className='text-white text-sm font-light'>
+						<div className='text-white text-xs sm:text-sm font-light'>
 							{cocktailData.difficulty}
 						</div>
 					</div>

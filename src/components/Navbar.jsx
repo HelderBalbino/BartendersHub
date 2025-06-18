@@ -34,43 +34,43 @@ const Navbar = () => {
 					: 'bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm'
 			}`}
 		>
-			{/* Art Deco Background Pattern */}
+			{/* Art Deco Background Pattern - Mobile Optimized */}
 			<div className='absolute inset-0 opacity-5'>
 				<div className='absolute top-0 left-0 w-full h-full bg-gradient-to-r from-yellow-400/10 to-transparent'></div>
-				<div className='absolute top-2 left-8 w-4 h-4 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-2 right-8 w-4 h-4 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute bottom-2 left-1/4 w-3 h-3 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute bottom-2 right-1/4 w-3 h-3 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-1 left-4 md:top-2 md:left-8 w-3 h-3 md:w-4 md:h-4 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-1 right-4 md:top-2 md:right-8 w-3 h-3 md:w-4 md:h-4 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute bottom-1 left-1/4 md:bottom-2 w-2 h-2 md:w-3 md:h-3 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute bottom-1 right-1/4 md:bottom-2 w-2 h-2 md:w-3 md:h-3 border border-yellow-400/20 rotate-45'></div>
 			</div>
 
-			<div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10'>
-				<div className='flex h-20 items-center justify-between'>
-					{/* Enhanced Logo Section */}
+			<div className='mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 relative z-10'>
+				<div className='flex h-16 md:h-20 items-center justify-between'>
+					{/* Enhanced Logo Section - Mobile Optimized */}
 					<div className='flex items-center group'>
 						<a
 							className='flex flex-shrink-0 items-center relative'
 							href='/'
 						>
-							{/* Art Deco frame around logo */}
-							<div className='absolute -inset-2 border border-yellow-400/30 group-hover:border-yellow-400/60 transition-all duration-500'>
-								<div className='absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-yellow-400'></div>
-								<div className='absolute top-0 right-0 w-3 h-3 border-r-2 border-t-2 border-yellow-400'></div>
-								<div className='absolute bottom-0 left-0 w-3 h-3 border-l-2 border-b-2 border-yellow-400'></div>
-								<div className='absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-yellow-400'></div>
+							{/* Art Deco frame around logo - Mobile Responsive */}
+							<div className='absolute -inset-1.5 md:-inset-2 border border-yellow-400/30 group-hover:border-yellow-400/60 transition-all duration-500'>
+								<div className='absolute top-0 left-0 w-2 h-2 md:w-3 md:h-3 border-l-2 border-t-2 border-yellow-400'></div>
+								<div className='absolute top-0 right-0 w-2 h-2 md:w-3 md:h-3 border-r-2 border-t-2 border-yellow-400'></div>
+								<div className='absolute bottom-0 left-0 w-2 h-2 md:w-3 md:h-3 border-l-2 border-b-2 border-yellow-400'></div>
+								<div className='absolute bottom-0 right-0 w-2 h-2 md:w-3 md:h-3 border-r-2 border-b-2 border-yellow-400'></div>
 							</div>
 
 							<img
-								className='block h-14 w-auto transition-all duration-500 group-hover:scale-105 filter group-hover:drop-shadow-lg'
+								className='block h-10 md:h-14 w-auto transition-all duration-500 group-hover:scale-105 filter group-hover:drop-shadow-lg'
 								src={logo}
 								alt='BartendersHub Logo'
 							/>
 
-							{/* Brand text */}
-							<div className='ml-4 hidden sm:block'>
-								<span className='text-white font-light text-xl tracking-[0.15em] uppercase'>
+							{/* Brand text - Hidden on very small screens */}
+							<div className='ml-2 md:ml-4 hidden xs:hidden sm:block'>
+								<span className='text-white font-light text-base md:text-xl tracking-[0.15em] uppercase'>
 									Bartenders
 								</span>
-								<span className='text-yellow-400 font-extralight text-xl tracking-[0.2em] uppercase ml-2'>
+								<span className='text-yellow-400 font-extralight text-base md:text-xl tracking-[0.2em] uppercase ml-1 md:ml-2'>
 									Hub
 								</span>
 							</div>
@@ -126,23 +126,23 @@ const Navbar = () => {
 						</div>
 					</div>
 
-					{/* Enhanced Mobile menu button */}
+					{/* Enhanced Mobile menu button - Touch Optimized */}
 					<div className='lg:hidden'>
 						<button
 							onClick={toggleMenu}
-							className='group relative text-gray-300 p-3 border border-yellow-400/30 transition-all duration-500 hover:text-yellow-400 hover:border-yellow-400/60 hover:bg-yellow-400/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/50'
+							className='group relative text-gray-300 p-2.5 md:p-3 border border-yellow-400/30 transition-all duration-500 hover:text-yellow-400 hover:border-yellow-400/60 hover:bg-yellow-400/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 touch-manipulation'
 							aria-label='Toggle menu'
 						>
-							{/* Art Deco corners */}
-							<div className='absolute top-0 left-0 w-2 h-2 border-l border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-							<div className='absolute top-0 right-0 w-2 h-2 border-r border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-							<div className='absolute bottom-0 left-0 w-2 h-2 border-l border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-							<div className='absolute bottom-0 right-0 w-2 h-2 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
+							{/* Art Deco corners - Mobile Responsive */}
+							<div className='absolute top-0 left-0 w-1.5 h-1.5 md:w-2 md:h-2 border-l border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
+							<div className='absolute top-0 right-0 w-1.5 h-1.5 md:w-2 md:h-2 border-r border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
+							<div className='absolute bottom-0 left-0 w-1.5 h-1.5 md:w-2 md:h-2 border-l border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
+							<div className='absolute bottom-0 right-0 w-1.5 h-1.5 md:w-2 md:h-2 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
 
 							<div className='relative z-10'>
 								{isOpen ? (
 									<svg
-										className='h-6 w-6 transform rotate-90 transition-transform duration-500'
+										className='h-5 w-5 md:h-6 md:w-6 transform rotate-90 transition-transform duration-500'
 										fill='none'
 										viewBox='0 0 24 24'
 										stroke='currentColor'
@@ -156,7 +156,7 @@ const Navbar = () => {
 									</svg>
 								) : (
 									<svg
-										className='h-6 w-6 transition-transform duration-500'
+										className='h-5 w-5 md:h-6 md:w-6 transition-transform duration-500'
 										fill='none'
 										viewBox='0 0 24 24'
 										stroke='currentColor'
@@ -174,37 +174,37 @@ const Navbar = () => {
 					</div>
 				</div>
 
-				{/* Enhanced Mobile Navigation Menu */}
+				{/* Enhanced Mobile Navigation Menu - Touch Optimized */}
 				<div
 					className={`lg:hidden transition-all duration-700 ease-in-out overflow-hidden ${
 						isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
 					}`}
 				>
-					{/* Art Deco separator */}
-					<div className='px-4 py-2'>
+					{/* Art Deco separator - Mobile Responsive */}
+					<div className='px-3 py-2'>
 						<div className='flex items-center justify-center'>
-							<div className='w-16 h-0.5 bg-gradient-to-r from-transparent to-yellow-400'></div>
-							<div className='w-2 h-2 border border-yellow-400 rotate-45 mx-4'></div>
-							<div className='w-16 h-0.5 bg-gradient-to-l from-transparent to-yellow-400'></div>
+							<div className='w-12 md:w-16 h-0.5 bg-gradient-to-r from-transparent to-yellow-400'></div>
+							<div className='w-1.5 h-1.5 md:w-2 md:h-2 border border-yellow-400 rotate-45 mx-3 md:mx-4'></div>
+							<div className='w-12 md:w-16 h-0.5 bg-gradient-to-l from-transparent to-yellow-400'></div>
 						</div>
 					</div>
 
-					<div className='px-4 pt-2 pb-6 space-y-2 bg-black/80 backdrop-blur-md border-t border-yellow-400/20'>
+					<div className='px-3 pt-2 pb-6 space-y-2 bg-black/80 backdrop-blur-md border-t border-yellow-400/20'>
 						{navLinks.map((link) => (
 							<a
 								key={link.name}
 								href={link.href}
 								onClick={() => setIsOpen(false)}
-								className='group relative block text-gray-300 font-light text-base px-6 py-4 border border-yellow-400/20 transition-all duration-500 hover:border-yellow-400/60 hover:text-white hover:bg-yellow-400/10 hover:translate-x-2 tracking-[0.1em] uppercase'
+								className='group relative block text-gray-300 font-light text-sm md:text-base px-4 md:px-6 py-3 md:py-4 border border-yellow-400/20 transition-all duration-500 hover:border-yellow-400/60 hover:text-white hover:bg-yellow-400/10 hover:translate-x-2 tracking-[0.1em] uppercase touch-manipulation'
 							>
-								{/* Art Deco corners for mobile links */}
-								<div className='absolute top-0 left-0 w-2 h-2 border-l border-t border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
-								<div className='absolute top-0 right-0 w-2 h-2 border-r border-t border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
-								<div className='absolute bottom-0 left-0 w-2 h-2 border-l border-b border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
-								<div className='absolute bottom-0 right-0 w-2 h-2 border-r border-b border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
+								{/* Art Deco corners for mobile links - Mobile Responsive */}
+								<div className='absolute top-0 left-0 w-1.5 h-1.5 md:w-2 md:h-2 border-l border-t border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
+								<div className='absolute top-0 right-0 w-1.5 h-1.5 md:w-2 md:h-2 border-r border-t border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
+								<div className='absolute bottom-0 left-0 w-1.5 h-1.5 md:w-2 md:h-2 border-l border-b border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
+								<div className='absolute bottom-0 right-0 w-1.5 h-1.5 md:w-2 md:h-2 border-r border-b border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-500'></div>
 
-								<span className='relative z-10 flex items-center gap-3'>
-									<span className='text-xl group-hover:scale-110 transition-transform duration-300'>
+								<span className='relative z-10 flex items-center gap-2 md:gap-3'>
+									<span className='text-lg md:text-xl group-hover:scale-110 transition-transform duration-300'>
 										{link.icon}
 									</span>
 									<span>{link.name}</span>
@@ -212,38 +212,38 @@ const Navbar = () => {
 							</a>
 						))}
 
-						{/* Mobile CTA Button */}
-						<div className='pt-4'>
+						{/* Mobile CTA Button - Touch Optimized */}
+						<div className='pt-3 md:pt-4'>
 							<a
 								href='#join'
 								onClick={() => setIsOpen(false)}
-								className='group relative block bg-yellow-400 text-black font-light text-center px-6 py-4 border-2 border-yellow-400 transition-all duration-500 hover:bg-black hover:text-yellow-400 tracking-[0.1em] uppercase text-base'
+								className='group relative block bg-yellow-400 text-black font-light text-center px-4 md:px-6 py-3 md:py-4 border-2 border-yellow-400 transition-all duration-500 hover:bg-black hover:text-yellow-400 tracking-[0.1em] uppercase text-sm md:text-base touch-manipulation'
 							>
-								{/* Enhanced Art Deco corners */}
-								<div className='absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-yellow-400'></div>
-								<div className='absolute -top-1 -right-1 w-3 h-3 border-r-2 border-t-2 border-yellow-400'></div>
-								<div className='absolute -bottom-1 -left-1 w-3 h-3 border-l-2 border-b-2 border-yellow-400'></div>
-								<div className='absolute -bottom-1 -right-1 w-3 h-3 border-r-2 border-b-2 border-yellow-400'></div>
+								{/* Enhanced Art Deco corners - Mobile Responsive */}
+								<div className='absolute -top-0.5 -left-0.5 md:-top-1 md:-left-1 w-2 h-2 md:w-3 md:h-3 border-l-2 border-t-2 border-yellow-400'></div>
+								<div className='absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 w-2 h-2 md:w-3 md:h-3 border-r-2 border-t-2 border-yellow-400'></div>
+								<div className='absolute -bottom-0.5 -left-0.5 md:-bottom-1 md:-left-1 w-2 h-2 md:w-3 md:h-3 border-l-2 border-b-2 border-yellow-400'></div>
+								<div className='absolute -bottom-0.5 -right-0.5 md:-bottom-1 md:-right-1 w-2 h-2 md:w-3 md:h-3 border-r-2 border-b-2 border-yellow-400'></div>
 
-								<span className='relative z-10 flex items-center justify-center gap-3'>
-									<span className='text-xl group-hover:rotate-12 transition-transform duration-300'>
+								<span className='relative z-10 flex items-center justify-center gap-2 md:gap-3'>
+									<span className='text-base md:text-xl group-hover:rotate-12 transition-transform duration-300'>
 										⭐
 									</span>
-									<span>Join Elite Community</span>
+									<span>Join Elite</span>
 								</span>
 							</a>
 						</div>
 
-						{/* Mobile bottom decorative element */}
-						<div className='pt-4'>
+						{/* Mobile bottom decorative element - Mobile Responsive */}
+						<div className='pt-3 md:pt-4'>
 							<div className='flex items-center justify-center'>
-								<div className='w-12 h-0.5 bg-yellow-400/50'></div>
-								<div className='w-1 h-1 bg-yellow-400 rounded-full mx-3'></div>
-								<div className='text-yellow-400/70 text-xs uppercase tracking-[0.2em] font-light mx-3'>
+								<div className='w-8 md:w-12 h-0.5 bg-yellow-400/50'></div>
+								<div className='w-0.5 h-0.5 md:w-1 md:h-1 bg-yellow-400 rounded-full mx-2 md:mx-3'></div>
+								<div className='text-yellow-400/70 text-xs uppercase tracking-[0.2em] font-light mx-2 md:mx-3'>
 									Premium Experience
 								</div>
-								<div className='w-1 h-1 bg-yellow-400 rounded-full mx-3'></div>
-								<div className='w-12 h-0.5 bg-yellow-400/50'></div>
+								<div className='w-0.5 h-0.5 md:w-1 md:h-1 bg-yellow-400 rounded-full mx-2 md:mx-3'></div>
+								<div className='w-8 md:w-12 h-0.5 bg-yellow-400/50'></div>
 							</div>
 						</div>
 					</div>

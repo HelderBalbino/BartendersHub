@@ -1,3 +1,66 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Mobile-First Global Optimizations */
+@layer base {
+	/* Smooth scrolling for all devices */
+	html {
+		scroll-behavior: smooth;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* Optimize touch targets for mobile */
+	button,
+	a {
+		touch-action: manipulation;
+	}
+
+	/* Prevent horizontal scroll on mobile */
+	body {
+		overflow-x: hidden;
+	}
+
+	/* Optimize font rendering on mobile */
+	* {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
+
+@layer utilities {
+	/* Custom mobile-optimized shadow for Art Deco elements */
+	.text-shadow-lg {
+		text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	}
+
+	/* Touch-friendly utility class */
+	.touch-manipulation {
+		touch-action: manipulation;
+	}
+
+	/* Art Deco glow effect optimized for mobile */
+	.glow-yellow {
+		box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+	}
+
+	.glow-yellow-strong {
+		box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+	}
+}
+
+/* Custom breakpoints for enhanced mobile experience */
+@media (max-width: 320px) {
+	/* Ultra-small mobile optimizations */
+	.text-responsive {
+		font-size: 0.75rem;
+	}
+}
+
+@media (max-width: 480px) {
+	/* Small mobile optimizations */
+	.container-mobile {
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+	}
+}
