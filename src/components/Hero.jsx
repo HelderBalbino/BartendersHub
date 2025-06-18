@@ -93,7 +93,7 @@ const Hero = () => {
 				}`}
 			>
 				{/* Enhanced top decorative section - Mobile optimized */}
-				<div className='mb-8 sm:mb-12'>
+				<div className='mb-8 sm:mb-12 pt-20'>
 					<div className='w-24 sm:w-40 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-3 sm:mb-4'></div>
 					<div className='flex items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4'>
 						<div className='w-2 sm:w-3 h-2 sm:h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
