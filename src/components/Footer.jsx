@@ -38,7 +38,7 @@ const Footer = () => {
 			</div>
 
 			{/* Main Footer Content - Simplified Layout */}
-			<div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10'>
+			<div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-16 relative z-10'>
 				{/* Central Brand Section */}
 				<div className='text-center mb-12'>
 					<div className='flex items-center justify-center mb-6'>
