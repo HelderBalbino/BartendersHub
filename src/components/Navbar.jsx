@@ -21,7 +21,7 @@ const Navbar = () => {
 
 	const navLinks = [
 		{ name: 'Cocktails', href: '#cocktails' },
-		{ name: 'Masterclass', href: '#masterclass' },
+		{ name: 'share a cocktail', href: '#shareCocktail' },
 		{ name: 'Community', href: '#community' },
 		{ name: 'About', href: '#about' },
 	];
