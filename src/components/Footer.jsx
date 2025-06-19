@@ -49,7 +49,7 @@ const Footer = () => {
 						/>
 						<div className='text-left'>
 							<span className='block text-xl md:text-2xl font-light text-white tracking-[0.15em] uppercase'>
-								Bartenders
+								Bartenders'
 							</span>
 							<span className='block text-xl md:text-2xl font-extralight text-yellow-400 tracking-[0.2em] uppercase'>
 								Hub
