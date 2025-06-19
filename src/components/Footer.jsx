@@ -5,10 +5,10 @@ const Footer = () => {
 	const currentYear = new Date().getFullYear();
 
 	const quickLinks = [
-		{ name: 'Cocktails', href: '#cocktails', icon: '🍸' },
-		{ name: 'Share a recipe', href: '#shareRecipe', icon: '🎓' },
-		{ name: 'Community', href: '#community', icon: '👥' },
-		{ name: 'About', href: '#about', icon: '✨' },
+		{ name: 'Cocktails', href: '#cocktails' },
+		{ name: 'Share a recipe', href: '#shareRecipe' },
+		{ name: 'Community', href: '#community' },
+		{ name: 'About', href: '#about' },
 	];
 
 	const socialLinks = [
@@ -71,9 +71,6 @@ const Footer = () => {
 								href={link.href}
 								className='group flex items-center text-gray-400 hover:text-yellow-400 text-sm md:text-base transition-all duration-300 hover:scale-105 touch-manipulation'
 							>
-								<span className='text-lg mr-2 group-hover:scale-110 transition-transform duration-300'>
-									{link.icon}
-								</span>
 								<span className='uppercase tracking-wide font-light'>
 									{link.name}
 								</span>
