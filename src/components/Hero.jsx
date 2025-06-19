@@ -216,7 +216,7 @@ const Hero = () => {
 						<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
 
 						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
-							<span>Join the Elite</span>
+							<span>Join the Hub</span>
 							<span className='text-sm sm:text-base md:text-lg group-hover:scale-110 transition-transform duration-300'>
 								⭐
 							</span>
