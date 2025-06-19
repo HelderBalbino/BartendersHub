@@ -1,4 +1,5 @@
 import logo from '../assets/images/logo.png';
+import { FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
 	const currentYear = new Date().getFullYear();
@@ -14,17 +15,17 @@ const Footer = () => {
 		{
 			name: 'Instagram',
 			href: '#instagram',
-			icon: '📸',
+			icon: <FaInstagram className='text-2xl' />,
 		},
 		{
 			name: 'Twitter',
 			href: '#twitter',
-			icon: '🐦',
+			icon: <FaTwitter className='text-2xl' />,
 		},
 		{
 			name: 'YouTube',
 			href: '#youtube',
-			icon: '📺',
+			icon: <FaYoutube className='text-2xl' />,
 		},
 	];
 
