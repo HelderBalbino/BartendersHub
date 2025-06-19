@@ -21,7 +21,7 @@ const Navbar = () => {
 
 	const navLinks = [
 		{ name: 'Cocktails', href: '#cocktails', icon: '🍸' },
-		{ name: 'Masterclass', href: '#masterclass', icon: '🎓' },
+		{ name: 'Share a Recipe', href: '#shareRecipe', icon: '🍹' },
 		{ name: 'Community', href: '#community', icon: '👥' },
 		{ name: 'About', href: '#about', icon: '✨' },
 	];
@@ -68,7 +68,7 @@ const Navbar = () => {
 							{/* Brand text - Hidden on very small screens */}
 							<div className='ml-2 md:ml-4 hidden xs:hidden sm:block'>
 								<span className='text-white font-light text-base md:text-xl tracking-[0.15em] uppercase'>
-									Bartenders
+									Bartenders'
 								</span>
 								<span className='text-yellow-400 font-extralight text-base md:text-xl tracking-[0.2em] uppercase ml-1 md:ml-2'>
 									Hub
