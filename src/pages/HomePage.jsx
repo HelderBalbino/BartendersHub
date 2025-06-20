@@ -1,8 +1,11 @@
+import Hero from '../components/Hero';
+import Footer from '../components/Footer';
+
 const HomePage = () => {
 	return (
 		<div>
-			<h1>Welcome to the Home Page</h1>
-			<p>This is the main page of our application.</p>
+			<Hero />
+			<Footer />
 		</div>
 	);
 };
