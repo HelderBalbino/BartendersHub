@@ -20,10 +20,10 @@ const Navbar = () => {
 	};
 
 	const navLinks = [
-		{ name: 'Cocktails', href: '#cocktails' },
-		{ name: 'share a cocktail', href: '#shareCocktail' },
-		{ name: 'Community', href: '#community' },
-		{ name: 'About', href: '#about' },
+		{ name: 'Cocktails', href: '/cocktails' },
+		{ name: 'share a cocktail', href: '/shareCocktail' },
+		{ name: 'Community', href: '/community' },
+		{ name: 'About', href: '#/about' },
 	];
 
 	return (
