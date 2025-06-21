@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import logo from '../assets/images/logo.png';
 
-const Navbar = () => {
+const NavBar = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
 
@@ -178,4 +178,4 @@ const Navbar = () => {
 	);
 };
 
-export default Navbar;
+export default NavBar;
