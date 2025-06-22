@@ -34,8 +34,7 @@ const Content = () => {
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
 					prepTime: '4 min',
-					description:
-						'A luxurious twist on the classic Manhattan with gold leaf',
+					description: 'Classic gin cocktail with a twist of lemon',
 					rating: 4.9,
 				},
 				{
@@ -50,7 +49,7 @@ const Content = () => {
 				},
 				{
 					id: 3,
-					name: 'Diamond Fizz',
+					name: 'Mojito',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
 					prepTime: '3 min',
