@@ -33,8 +33,9 @@ const Content = () => {
 					name: 'Gin Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
-					prepTime: '4 min',
-					description: 'Classic gin cocktail with a twist of lemon',
+					prepTime: '3 min',
+					description:
+						'Classic gin cocktail with a twist of lemon or olive',
 					rating: 4.9,
 				},
 				{
@@ -42,9 +43,9 @@ const Content = () => {
 					name: 'Vodka Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
-					prepTime: '5 min',
+					prepTime: '3 min',
 					description:
-						'Mezcal-based cocktail with a mysterious smoky finish',
+						'Smooth Classic vodka cocktail with a twist of lemon or olive',
 					rating: 4.7,
 				},
 				{
@@ -54,7 +55,7 @@ const Content = () => {
 					difficulty: 'Intermediate',
 					prepTime: '3 min',
 					description:
-						'Sparkling cocktail that shimmers like precious gems',
+						'Refreshing mint and lime cocktail with a hint of sweetness',
 					rating: 4.8,
 				},
 				{
