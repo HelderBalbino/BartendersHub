@@ -32,7 +32,7 @@ const Content = () => {
 					id: 1,
 					name: 'Gin Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'intermediate',
+					difficulty: 'Intermediate',
 					prepTime: '4 min',
 					description:
 						'A luxurious twist on the classic Manhattan with gold leaf',
@@ -42,7 +42,7 @@ const Content = () => {
 					id: 2,
 					name: 'Vodka Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: '',
+					difficulty: 'Intermediate',
 					prepTime: '5 min',
 					description:
 						'Mezcal-based cocktail with a mysterious smoky finish',
