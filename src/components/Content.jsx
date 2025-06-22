@@ -35,7 +35,7 @@ const Content = () => {
 					difficulty: 'Intermediate',
 					prepTime: '3 min',
 					description:
-						'Classic gin cocktail with a twist of lemon or olive',
+						'The quintessential gin cocktail, crisp and clean Classic cocktail with a twist of lemon or olive',
 					rating: 4.9,
 				},
 				{
@@ -60,23 +60,23 @@ const Content = () => {
 				},
 				{
 					id: 4,
-					name: 'Noir Martini',
+					name: 'Dirty Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Expert',
 					prepTime: '4 min',
-					description: 'Dark and mysterious with activated charcoal',
-					rating: 4.6,
+					description: 'Savory twist on the classic with olive brine',
+					rating: 5.0,
 				},
 			],
 			classics: [
 				{
 					id: 5,
-					name: 'Classic Martini',
+					name: 'Caipinhira',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
 					prepTime: '3 min',
 					description:
-						'The quintessential gin cocktail, crisp and clean',
+						'Brazilian National drink, made with cachaça, lime, and sugar',
 					rating: 4.8,
 				},
 				{
