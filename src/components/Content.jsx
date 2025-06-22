@@ -30,9 +30,9 @@ const Content = () => {
 			signature: [
 				{
 					id: 1,
-					name: 'Golden Manhattan',
+					name: 'Gin Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Expert',
+					difficulty: 'medium',
 					prepTime: '4 min',
 					description:
 						'A luxurious twist on the classic Manhattan with gold leaf',
