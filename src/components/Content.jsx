@@ -40,7 +40,7 @@ const Content = () => {
 				},
 				{
 					id: 2,
-					name: 'Smoky Gatsby',
+					name: 'Vodka Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Advanced',
 					prepTime: '5 min',
