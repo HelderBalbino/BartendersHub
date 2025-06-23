@@ -109,7 +109,7 @@ const Content = () => {
 					prepTime: '4 min',
 					description:
 						'Refreshing Italian spritz with Aperol, prosecco, and soda',
-					rating: 4.6,
+					rating: 4.7,
 				},
 				{
 					id: 9,
