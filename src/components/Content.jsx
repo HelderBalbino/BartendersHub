@@ -108,7 +108,7 @@ const Content = () => {
 					difficulty: 'Intermediate',
 					prepTime: '4 min',
 					description:
-						'Refreshing blend of gin, elderflower, and cucumber',
+						'Refreshing Italian spritz with Aperol, prosecco, and soda',
 					rating: 4.6,
 				},
 				{
