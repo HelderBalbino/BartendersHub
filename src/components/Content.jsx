@@ -118,7 +118,7 @@ const Content = () => {
 					difficulty: 'Advanced',
 					prepTime: '6 min',
 					description:
-						'Spiced rum cocktail with cinnamon and star anise',
+						'Spiced rum, apple cider, and cinnamon for a cozy drink',
 					rating: 4.4,
 				},
 			],
