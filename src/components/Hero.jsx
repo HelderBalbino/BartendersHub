@@ -31,7 +31,7 @@ const Hero = () => {
 		},
 		{
 			icon: '🌟',
-			title: 'Exclusive Community',
+			title: 'Great Community',
 			desc: 'Connect with elite bartenders worldwide',
 		},
 		{
