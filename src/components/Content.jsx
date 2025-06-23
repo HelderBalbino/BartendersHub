@@ -119,7 +119,7 @@ const Content = () => {
 					prepTime: '6 min',
 					description:
 						'Spiced rum, apple cider, and cinnamon for a cozy drink',
-					rating: 4.4,
+					rating: 4.7,
 				},
 			],
 		}),
