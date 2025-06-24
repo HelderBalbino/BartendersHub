@@ -44,7 +44,7 @@ const Navbar = () => {
 				<div className='flex h-16 md:h-20 items-center justify-between'>
 					{/* Simplified Logo Section */}
 					<div className='flex items-center'>
-						<a
+						<Link
 							className='flex flex-shrink-0 items-center group'
 							href='/'
 						>
@@ -61,7 +61,7 @@ const Navbar = () => {
 									Hub
 								</span>
 							</div>
-						</a>
+						</Link>
 					</div>
 
 					{/* Clean Desktop Navigation */}
