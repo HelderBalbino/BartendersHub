@@ -24,7 +24,7 @@ const Navbar = () => {
 		{ name: 'Cocktails', href: '/cocktails' },
 		{ name: 'share a cocktail', href: '/shareCocktail' },
 		{ name: 'Community', href: '/community' },
-		{ name: 'About', href: '#/about' },
+		{ name: 'About', href: '/about' },
 	];
 
 	return (
