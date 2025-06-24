@@ -78,12 +78,12 @@ const Navbar = () => {
 						))}
 
 						{/* Elegant CTA Button */}
-						<a
-							href='#join'
+						<Link
+							to='/join'
 							className='bg-yellow-400 text-black font-light px-6 py-2.5 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm'
 						>
 							Join the Hub
-						</a>
+						</Link>
 					</div>
 
 					{/* Simplified Mobile Menu Button */}
