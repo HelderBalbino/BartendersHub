@@ -22,9 +22,9 @@ const Navbar = () => {
 
 	const navLinks = [
 		{ name: 'Cocktails', to: '/cocktails' },
-		{ name: 'share a cocktail', href: '/shareCocktail' },
-		{ name: 'Community', href: '/community' },
-		{ name: 'About', href: '/about' },
+		{ name: 'share a cocktail', to: '/shareCocktail' },
+		{ name: 'Community', to: '/community' },
+		{ name: 'About', to: '/about' },
 	];
 
 	return (
