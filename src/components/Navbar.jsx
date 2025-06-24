@@ -158,7 +158,7 @@ const Navbar = () => {
 						{/* Mobile CTA Button */}
 						<div className='pt-4'>
 							<Link
-								href='#join'
+								to='/join'
 								onClick={() => setIsOpen(false)}
 								className='block bg-yellow-400 text-black font-light text-center px-6 py-3 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm'
 							>
