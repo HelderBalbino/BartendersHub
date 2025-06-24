@@ -145,14 +145,14 @@ const Navbar = () => {
 
 					<div className='px-4 pb-6 space-y-3 bg-black/90 backdrop-blur-md border-t border-yellow-400/20'>
 						{navLinks.map((link) => (
-							<a
+							<Link
 								key={link.name}
 								href={link.href}
 								onClick={() => setIsOpen(false)}
 								className='block text-gray-300 hover:text-yellow-400 font-light text-base px-4 py-3 transition-all duration-300 hover:translate-x-2 tracking-[0.1em] uppercase border-l-2 border-transparent hover:border-yellow-400'
 							>
 								{link.name}
-							</a>
+							</Link>
 						))}
 
 						{/* Mobile CTA Button */}
