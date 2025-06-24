@@ -46,7 +46,7 @@ const Navbar = () => {
 					<div className='flex items-center'>
 						<Link
 							className='flex flex-shrink-0 items-center group'
-							href='/'
+							to='/'
 						>
 							<img
 								className='h-10 md:h-12 w-auto transition-all duration-300 group-hover:scale-105 filter drop-shadow-md'
