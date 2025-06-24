@@ -67,14 +67,14 @@ const Navbar = () => {
 					{/* Clean Desktop Navigation */}
 					<div className='hidden lg:flex items-center space-x-8'>
 						{navLinks.map((link) => (
-							<a
+							<Link
 								key={link.name}
-								href={link.href}
+								to={link.to}
 								className='text-gray-300 hover:text-yellow-400 font-light text-sm tracking-[0.1em] uppercase transition-all duration-300 hover:scale-105 relative group'
 							>
 								{link.name}
 								<div className='absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-400 group-hover:w-full transition-all duration-300'></div>
-							</a>
+							</Link>
 						))}
 
 						{/* Elegant CTA Button */}
