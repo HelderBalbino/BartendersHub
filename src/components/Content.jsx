@@ -99,6 +99,16 @@ const Content = () => {
 						'Perfect balance of gin, vermouth, and Campari',
 					rating: 4.5,
 				},
+				{
+					id: 8,
+					name: 'Negroni',
+					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
+					difficulty: 'Beginner',
+					prepTime: '2 min',
+					description:
+						'Perfect balance of gin, vermouth, and Campari',
+					rating: 4.5,
+				},
 			],
 			seasonal: [
 				{
