@@ -112,7 +112,7 @@ const Content = () => {
 			],
 			seasonal: [
 				{
-					id: 8,
+					id: 9,
 					name: 'Aperol Spritz',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
