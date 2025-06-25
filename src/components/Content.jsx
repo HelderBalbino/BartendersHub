@@ -103,7 +103,7 @@ const Content = () => {
 					id: 8,
 					name: 'Manhattan',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Beginner',
+					difficulty: 'Expert',
 					prepTime: '2 min',
 					description:
 						'Perfect balance of gin, vermouth, and Campari',
