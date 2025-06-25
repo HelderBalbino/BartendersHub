@@ -101,7 +101,7 @@ const Content = () => {
 				},
 				{
 					id: 8,
-					name: 'Negroni',
+					name: 'Manhattan',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Beginner',
 					prepTime: '2 min',
