@@ -106,7 +106,7 @@ const Content = () => {
 					difficulty: 'Expert',
 					prepTime: '4 min',
 					description:
-						'Perfect balance of gin, vermouth, and Campari',
+						'Rich whiskey cocktail with sweet vermouth and bitters',
 					rating: 4.5,
 				},
 			],
