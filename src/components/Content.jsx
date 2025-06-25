@@ -122,7 +122,7 @@ const Content = () => {
 					rating: 4.7,
 				},
 				{
-					id: 9,
+					id: 10,
 					name: 'Winter Warmer',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Advanced',
