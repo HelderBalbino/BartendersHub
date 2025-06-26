@@ -100,7 +100,7 @@ const AboutPage = () => {
 							/>
 							<div className='text-left'>
 								<span className='block text-2xl md:text-3xl lg:text-4xl font-light text-white tracking-[0.15em] uppercase'>
-									Bartenders
+									Bartenders'
 								</span>
 								<span className='block text-2xl md:text-3xl lg:text-4xl font-extralight text-yellow-400 tracking-[0.2em] uppercase'>
 									Hub
