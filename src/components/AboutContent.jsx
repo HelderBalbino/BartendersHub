@@ -10,8 +10,8 @@ const AboutPage = () => {
 	}, []);
 
 	const stats = [
-		{ number: '10,000+', label: 'Premium Cocktails', icon: '🍸' },
-		{ number: '500+', label: 'Master Bartenders', icon: '👨‍🍳' },
+		{ number: '100+', label: 'Cocktails', icon: '🍸' },
+		{ number: '5+', label: 'Bartenders', icon: '👨‍🍳' },
 		{ number: '50+', label: 'Countries Served', icon: '🌍' },
 		{ number: '25+', label: 'Years of Excellence', icon: '⭐' },
 	];
