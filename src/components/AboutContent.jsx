@@ -152,8 +152,9 @@ const AboutPage = () => {
 								Drawing inspiration from the legendary
 								speakeasies of the 1920s, we've created a
 								platform where master mixologists and cocktail
-								enthusiasts converge to share knowledge,
-								techniques, and the timeless art of hospitality.
+								enthusiasts converge to share cocktails,
+								knowledge, techniques, and the timeless art of
+								hospitality.
 							</p>
 							<p className='text-base md:text-lg font-light'>
 								Every recipe in our collection has been
