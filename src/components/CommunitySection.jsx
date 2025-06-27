@@ -518,7 +518,7 @@ const CommunitySection = () => {
 								<div className='absolute -bottom-1 -right-1 w-3 h-3 border-r-2 border-b-2 border-yellow-400'></div>
 
 								<span className='relative z-10'>
-									Join Community
+									Join the Hub
 								</span>
 							</button>
 
