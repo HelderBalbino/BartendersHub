@@ -156,13 +156,6 @@ const AboutPage = () => {
 								knowledge, techniques, and the timeless art of
 								hospitality.
 							</p>
-							<p className='text-base md:text-lg font-light'>
-								Every recipe in our collection has been
-								meticulously curated, tested, and perfected by
-								world-renowned bartenders who understand that a
-								great cocktail is more than just a drink—it's an
-								experience.
-							</p>
 						</div>
 					</div>
 
