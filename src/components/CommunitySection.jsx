@@ -52,7 +52,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 4,
-			name: 'Sophie Dubois',
+			name: 'Giorgia',
 			username: 'parisian_pour',
 			avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 62,
