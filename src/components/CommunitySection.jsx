@@ -78,7 +78,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 6,
-			name: 'Emma Johnson',
+			name: 'yeamah',
 			username: 'craft_emma',
 			avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 23,
