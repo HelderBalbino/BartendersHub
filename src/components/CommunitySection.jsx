@@ -59,7 +59,7 @@ const CommunitySection = () => {
 			joinDate: '2024-10-12',
 			isVerified: true,
 			speciality: 'French Classics',
-			location: 'Paris, France',
+			location: 'london, UK',
 			badges: ['European Expert', 'Heritage Keeper'],
 			recentActivity: 'Perfected "French 75 Royale" 4 hours ago',
 		},
