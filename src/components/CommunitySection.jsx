@@ -26,7 +26,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 2,
-			name: 'Isabella Chen',
+			name: 'Giacomo',
 			username: 'cocktail_queen',
 			avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 89,
@@ -39,7 +39,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 3,
-			name: 'Marcus Thompson',
+			name: '',
 			username: 'bartender_marc',
 			avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 34,
