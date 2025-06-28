@@ -524,7 +524,7 @@ const CommunitySection = () => {
 
 							<button className='group relative bg-transparent text-yellow-400 font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400/60 transition-all duration-500 hover:border-yellow-400 hover:bg-yellow-400/10 tracking-[0.1em] uppercase text-sm'>
 								<span className='relative z-10'>
-									Share Cocktail
+									Share a Cocktail
 								</span>
 							</button>
 						</div>
