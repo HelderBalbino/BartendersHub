@@ -39,7 +39,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 3,
-			name: '',
+			name: 'Luca',
 			username: 'bartender_marc',
 			avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 34,
