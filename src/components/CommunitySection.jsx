@@ -72,7 +72,7 @@ const CommunitySection = () => {
 			joinDate: '2024-09-30',
 			isVerified: true,
 			speciality: 'Agave Spirits',
-			location: 'Mexico City, MX',
+			location: 'london, UK',
 			badges: ['Agave Specialist', 'Cultural Ambassador'],
 			recentActivity: 'Shared "Mezcal Dreams" 6 hours ago',
 		},
