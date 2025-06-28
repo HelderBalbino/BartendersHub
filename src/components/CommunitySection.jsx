@@ -85,7 +85,7 @@ const CommunitySection = () => {
 			joinDate: '2025-01-10',
 			isVerified: false,
 			speciality: 'Craft Cocktails',
-			location: 'Portland, OR',
+			location: 'London, UK',
 			badges: ['New Talent'],
 			recentActivity: 'Added "Garden Gimlet" 1 day ago',
 		},
