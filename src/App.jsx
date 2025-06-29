@@ -8,7 +8,7 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import CocktailsPage from './pages/CocktailsPage';
 import CommunityPage from './pages/CommunityPage';
-import AboutPage from './components/AboutContent';
+import AboutPage from './pages/AboutPage';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
