@@ -1,9 +1,9 @@
-import AboutContent from '../components/AboutContent';
+import AboutSection from '../components/AboutSection';
 
 const AboutPage = () => {
 	return (
 		<>
-			<AboutContent />
+			<AboutSection />
 		</>
 	);
 };
