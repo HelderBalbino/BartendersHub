@@ -2,7 +2,7 @@ import CommunitySection from '../components/CommunitySection';
 
 const CommunityPage = () => {
 	return (
-		<div className='min-h-screen bg-black'>
+		<div>
 			<CommunitySection />
 		</div>
 	);
