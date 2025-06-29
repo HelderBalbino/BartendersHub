@@ -33,7 +33,7 @@ const CommunitySection = () => {
 			joinDate: '2024-11-20',
 			isVerified: true,
 			speciality: 'Molecular Mixology',
-			location: 'San Francisco, CA',
+			location: 'London, UK',
 			badges: ['Innovation Leader', 'Top Contributor'],
 			recentActivity: 'Created "Smoky Whisper" 1 day ago',
 		},
