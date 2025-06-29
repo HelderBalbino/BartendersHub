@@ -45,7 +45,7 @@ const CommunitySection = () => {
 			cocktailsAdded: 34,
 			joinDate: '2025-01-05',
 			isVerified: false,
-			speciality: 'Tropical Cocktails',
+			speciality: 'Classic Cocktails',
 			location: 'London, UK',
 			badges: ['Rising Star'],
 			recentActivity: 'Added "Paradise Punch" 3 hours ago',
