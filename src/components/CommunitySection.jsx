@@ -91,7 +91,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 7,
-			name: 'Hiroshi Tanaka',
+			name: 'Hiroshi Sato',
 			username: 'sake_master',
 			avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 71,
