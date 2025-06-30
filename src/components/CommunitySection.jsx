@@ -214,7 +214,7 @@ const CommunitySection = () => {
 
 					<p className='text-lg md:text-xl text-gray-300 font-light italic leading-relaxed max-w-3xl mx-auto mb-8'>
 						"Meet the passionate artisans who craft liquid poetry
-						and share their expertise with our exclusive community."
+						and share their expertise with our community."
 					</p>
 
 					{/* Community Stats */}
