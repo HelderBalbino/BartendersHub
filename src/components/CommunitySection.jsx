@@ -198,7 +198,7 @@ const CommunitySection = () => {
 						<div className='flex items-center justify-center gap-3 md:gap-4 mb-4'>
 							<div className='w-2 h-2 md:w-3 md:h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
 							<div className='text-yellow-400 text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.3em] font-light'>
-								Elite Community
+								Great Community
 							</div>
 							<div className='w-2 h-2 md:w-3 md:h-3 border border-yellow-400 rotate-45 bg-yellow-400'></div>
 						</div>
