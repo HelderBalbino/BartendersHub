@@ -137,7 +137,7 @@ const CommunitySection = () => {
 			key: 'new',
 			label: 'New Members',
 			count: communityMembers.filter(
-				(m) => new Date(m.joinDate) > new Date('2025-01-01'),
+				(m) => new Date(m.joinDate) > new Date('2025-04-04'),
 			).length,
 		},
 	];
