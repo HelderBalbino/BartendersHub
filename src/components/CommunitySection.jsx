@@ -104,7 +104,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 8,
-			name: 'Olivia Rodriguez',
+			name: 'Olivia Martinez',
 			username: 'rum_runner_olivia',
 			avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 45,
