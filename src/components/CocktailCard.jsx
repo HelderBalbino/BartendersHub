@@ -13,7 +13,7 @@ const CocktailCard = ({
 	const defaultCocktail = {
 		id: 1,
 		name: 'Classic Martini',
-		image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
+		image: '/src/assets/images/cocktailsImages/dirtyMartini.png',
 		imageAlt: 'Classic Martini with olives',
 		difficulty: 'Intermediate',
 		prepTime: '3 min',
