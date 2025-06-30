@@ -302,8 +302,7 @@ const AboutPage = () => {
 						</div>
 
 						<p className='text-gray-500 text-sm font-light tracking-[0.2em] uppercase'>
-							Crafted with Excellence • Served with Passion •
-							Experienced with Pride
+							Crafted with Excellence • Served with Passion
 						</p>
 					</div>
 				</div>
