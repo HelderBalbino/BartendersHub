@@ -505,8 +505,8 @@ const CommunitySection = () => {
 							Join Our Elite Circle
 						</h2>
 						<p className='text-lg md:text-xl text-gray-300 font-light italic mb-8 leading-relaxed'>
-							"Share your passion, learn from masters, and become
-							part of the most sophisticated mixology community."
+							"Share your passion, learn, and become part of the
+							greatest mixology community."
 						</p>
 
 						<div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center'>
