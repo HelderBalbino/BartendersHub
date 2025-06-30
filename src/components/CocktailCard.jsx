@@ -85,7 +85,7 @@ const CocktailCard = ({
 								🍸
 							</div>
 							<div className='text-yellow-400 text-sm font-light tracking-wider'>
-								NO IMAGE
+								NO IMAGE AVAILABLE
 							</div>
 						</div>
 					</div>
