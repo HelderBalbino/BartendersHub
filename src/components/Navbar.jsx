@@ -22,7 +22,7 @@ const Navbar = () => {
 
 	const navLinks = [
 		{ name: 'Cocktails', to: '/cocktails' },
-		{ name: 'share a cocktail', to: '/shareCocktail' },
+		{ name: 'Add a cocktail', to: '/shareCocktail' },
 		{ name: 'Community', to: '/community' },
 		{ name: 'About', to: '/about' },
 	];
