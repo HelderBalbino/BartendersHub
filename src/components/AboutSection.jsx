@@ -11,7 +11,7 @@ const AboutPage = () => {
 
 	const stats = [
 		{ number: '100+', label: 'Cocktails', icon: '🍸' },
-		{ number: '5+', label: 'Bartenders', icon: '👨‍🍳' },
+		{ number: '6+', label: 'Bartenders', icon: '👨‍🍳' },
 		{ number: '2', label: 'Countries Served', icon: '🌍' },
 		{ number: '1', label: 'Year of Excellence', icon: '⭐' },
 	];
