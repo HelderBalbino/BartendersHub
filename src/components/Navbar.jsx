@@ -55,7 +55,7 @@ const Navbar = () => {
 							/>
 							<div className='ml-3 md:ml-4 hidden sm:block'>
 								<span className='text-white font-light text-lg md:text-xl tracking-[0.15em] uppercase'>
-									Bartenders
+									Bartenders'
 								</span>
 								<span className='text-yellow-400 font-extralight text-lg md:text-xl tracking-[0.2em] uppercase ml-2'>
 									Hub
