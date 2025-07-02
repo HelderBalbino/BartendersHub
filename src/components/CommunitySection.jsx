@@ -53,7 +53,7 @@ const CommunitySection = () => {
 		{
 			id: 4,
 			name: 'Giorgia',
-			username: 'parisian_pour',
+			username: 'italian_giorgia',
 			avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 62,
 			joinDate: '2024-10-12',
