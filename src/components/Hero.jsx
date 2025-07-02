@@ -270,7 +270,7 @@ const Hero = () => {
 					{/* Premium tagline - Mobile optimized */}
 					<div className='text-center px-4'>
 						<p className='text-gray-500 text-xs sm:text-sm font-light tracking-[0.15em] sm:tracking-[0.2em] uppercase mb-3 sm:mb-4 leading-relaxed'>
-							Crafted with Excellence • Served with Passion •
+							Crafted with Excellence • Served with Passion
 						</p>
 
 						{/* Final decorative element */}
