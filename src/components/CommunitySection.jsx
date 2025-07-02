@@ -502,7 +502,7 @@ const CommunitySection = () => {
 						<div className='absolute -bottom-1 -right-1 w-6 md:w-8 h-6 md:h-8 border-r-2 border-b-2 border-yellow-400'></div>
 
 						<h2 className='text-2xl md:text-3xl font-light text-white tracking-[0.15em] uppercase mb-6'>
-							Join Our Elite Circle
+							Join the Hub
 						</h2>
 						<p className='text-lg md:text-xl text-gray-300 font-light italic mb-8 leading-relaxed'>
 							"Share your passion, learn, and become part of the
