@@ -35,11 +35,6 @@ const Hero = () => {
 			title: 'Great Community',
 			desc: 'Connect with elite bartenders worldwide',
 		},
-		{
-			icon: '💎',
-			title: 'Artisan Crafted',
-			desc: 'Hand-selected ingredients and techniques',
-		},
 	];
 
 	useEffect(() => {
