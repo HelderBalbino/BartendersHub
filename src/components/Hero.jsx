@@ -26,12 +26,6 @@ const Hero = () => {
 		return () => clearInterval(interval);
 	}, [speakeasyQuotes.length]);
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentFeature((prev) => (prev + 1) % premiumFeatures.length);
-		}, 3000);
-		return () => clearInterval(interval);
-	}, [premiumFeatures.length]);
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8'>
 			{/* Enhanced Art Deco Background Pattern - Mobile Optimized */}
