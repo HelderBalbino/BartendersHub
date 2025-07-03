@@ -199,18 +199,6 @@ const Hero = () => {
 					</button>
 				</div>
 
-				{/* Enhanced dynamic feature showcase - Mobile optimized */}
-				<div className='relative mb-10 sm:mb-12 md:mb-16'>
-					{/* Rotating featured highlight */}
-					<div className='bg-black/40 border border-yellow-400/40 sm:border-2 p-6 sm:p-8 max-w-sm sm:max-w-lg md:max-w-2xl mx-auto mb-8 sm:mb-10 md:mb-12 backdrop-blur-sm'>
-						{/* Art Deco corners for feature box */}
-						<div className='absolute top-0 left-0 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-t-2 border-yellow-400'></div>
-						<div className='absolute top-0 right-0 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-t-2 border-yellow-400'></div>
-						<div className='absolute bottom-0 left-0 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-b-2 border-yellow-400'></div>
-						<div className='absolute bottom-0 right-0 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-b-2 border-yellow-400'></div>
-					</div>
-				</div>
-
 				{/* Enhanced bottom decorative element - Mobile optimized */}
 				<div className='mt-12 sm:mt-16 md:mt-20'>
 					{/* Sophisticated divider pattern */}
