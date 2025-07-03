@@ -26,7 +26,7 @@ const Hero = () => {
 	}, [speakeasyQuotes.length]);
 
 	return (
-		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8 pb-60'>
+		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8'>
 			{/* Enhanced Art Deco Background Pattern - Mobile Optimized */}
 			<div className='absolute inset-0 opacity-8'>
 				{/* Golden gradient overlay */}
@@ -151,7 +151,7 @@ const Hero = () => {
 				</div>
 
 				{/* Enhanced Art Deco styled CTA Buttons - Mobile Optimized */}
-				<div className='flex flex-col gap-4 sm:gap-5 md:gap-6 lg:gap-8 justify-center items-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 px-4 sm:px-6'>
+				<div className='flex flex-col gap-4 sm:gap-5 md:gap-6 lg:gap-8 justify-center items-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 px-4 sm:px-6 pb-40'>
 					<button className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400 text-black font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400 sm:border-2 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm shadow-2xl touch-manipulation block text-center'>
 						<Link to='/cocktails'>
 							{/* Enhanced Art Deco corners - Mobile responsive */}
