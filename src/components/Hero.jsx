@@ -208,18 +208,6 @@ const Hero = () => {
 						<div className='absolute top-0 right-0 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-t-2 border-yellow-400'></div>
 						<div className='absolute bottom-0 left-0 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-b-2 border-yellow-400'></div>
 						<div className='absolute bottom-0 right-0 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-b-2 border-yellow-400'></div>
-
-						<div className='text-center transition-all duration-1000'>
-							<div className='text-3xl sm:text-4xl md:text-5xl mb-3 sm:mb-4 filter drop-shadow-lg'>
-								{premiumFeatures[currentFeature].icon}
-							</div>
-							<h3 className='text-yellow-400 font-light mb-2 sm:mb-3 text-base sm:text-lg md:text-xl tracking-[0.1em] sm:tracking-[0.15em] uppercase'>
-								{premiumFeatures[currentFeature].title}
-							</h3>
-							<p className='text-gray-400 text-sm sm:text-base font-light leading-relaxed px-2'>
-								{premiumFeatures[currentFeature].desc}
-							</p>
-						</div>
 					</div>
 				</div>
 
