@@ -26,7 +26,7 @@ const Hero = () => {
 	}, [speakeasyQuotes.length]);
 
 	return (
-		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8'>
+		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8 pb-60'>
 			{/* Enhanced Art Deco Background Pattern - Mobile Optimized */}
 			<div className='absolute inset-0 opacity-8'>
 				{/* Golden gradient overlay */}
