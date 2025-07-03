@@ -19,8 +19,6 @@ const Hero = () => {
 		'Excellence in every drop',
 	];
 
-	const premiumFeatures = [];
-
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setCurrentQuote((prev) => (prev + 1) % speakeasyQuotes.length);
