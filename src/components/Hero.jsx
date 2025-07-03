@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 const Hero = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const [currentQuote, setCurrentQuote] = useState(0);
-	const [currentFeature, setCurrentFeature] = useState(0);
 
 	useEffect(() => {
 		setIsVisible(true);
