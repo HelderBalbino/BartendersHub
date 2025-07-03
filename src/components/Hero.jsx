@@ -30,11 +30,6 @@ const Hero = () => {
 			title: 'Master Classes',
 			desc: 'Learn from legendary mixologists',
 		},
-		{
-			icon: '🌟',
-			title: 'Great Community',
-			desc: 'Connect with elite bartenders worldwide',
-		},
 	];
 
 	useEffect(() => {
