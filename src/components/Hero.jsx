@@ -19,13 +19,7 @@ const Hero = () => {
 		'Excellence in every drop',
 	];
 
-	const premiumFeatures = [
-		{
-			icon: '👑',
-			title: 'Premium Collection',
-			desc: 'Curated selection of world-class cocktails',
-		},
-	];
+	const premiumFeatures = [];
 
 	useEffect(() => {
 		const interval = setInterval(() => {
