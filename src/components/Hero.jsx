@@ -25,11 +25,6 @@ const Hero = () => {
 			title: 'Premium Collection',
 			desc: 'Curated selection of world-class cocktails',
 		},
-		{
-			icon: '🎭',
-			title: 'Master Classes',
-			desc: 'Learn from legendary mixologists',
-		},
 	];
 
 	useEffect(() => {
