@@ -152,29 +152,28 @@ const Hero = () => {
 
 				{/* Enhanced Art Deco styled CTA Buttons - Mobile Optimized */}
 				<div className='flex flex-col gap-4 sm:gap-5 md:gap-6 lg:gap-8 justify-center items-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 px-4 sm:px-6'>
-					<Link
-						to='/cocktails'
-						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400 text-black font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400 sm:border-2 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm shadow-2xl touch-manipulation block text-center'
-					>
-						{/* Enhanced Art Deco corners - Mobile responsive */}
-						<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400'></div>
-						<div className='absolute -top-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400'></div>
-						<div className='absolute -bottom-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-yellow-400'></div>
-						<div className='absolute -bottom-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-yellow-400'></div>
+					<button className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400 text-black font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400 sm:border-2 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm shadow-2xl touch-manipulation block text-center'>
+						<Link to='/cocktails'>
+							{/* Enhanced Art Deco corners - Mobile responsive */}
+							<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400'></div>
+							<div className='absolute -top-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400'></div>
+							<div className='absolute -bottom-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-yellow-400'></div>
+							<div className='absolute -bottom-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-yellow-400'></div>
 
-						{/* Inner decorative elements - Mobile responsive */}
-						<div className='absolute top-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute top-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute bottom-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
-						<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+							{/* Inner decorative elements - Mobile responsive */}
+							<div className='absolute top-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+							<div className='absolute top-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-t border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+							<div className='absolute bottom-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
+							<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-black group-hover:border-yellow-400 transition-colors duration-700'></div>
 
-						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
-							<span>Explore Collection</span>
-							<span className='text-sm sm:text-base md:text-lg group-hover:translate-x-1 transition-transform duration-300'>
-								→
+							<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
+								<span>Explore Collection</span>
+								<span className='text-sm sm:text-base md:text-lg group-hover:translate-x-1 transition-transform duration-300'>
+									→
+								</span>
 							</span>
-						</span>
-					</Link>
+						</Link>
+					</button>
 
 					<button className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation'>
 						{/* Enhanced Art Deco corners - Mobile responsive */}
