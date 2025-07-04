@@ -36,10 +36,10 @@ const Footer = () => {
 							alt='BartendersHub Logo'
 						/>
 						<div className='text-left'>
-							<span className='block text-base md:text-lg font-light text-white tracking-[0.15em] uppercase'>
+							<span className='block text-sm md:text-lg font-light text-white tracking-[0.15em] uppercase'>
 								Bartenders'
 							</span>
-							<span className='block text-base md:text-lg font-extralight text-yellow-400 tracking-[0.2em] uppercase'>
+							<span className='block text-sm md:text-lg font-extralight text-yellow-400 tracking-[0.2em] uppercase'>
 								Hub
 							</span>
 						</div>
@@ -66,7 +66,7 @@ const Footer = () => {
 						<p className='text-gray-400 text-xs font-light tracking-wide mb-1'>
 							&copy; {currentYear} BartendersHub
 						</p>
-						<div className='text-yellow-400/70 text-xs uppercase tracking-[0.15em] md:tracking-[0.2em] font-light'>
+						<div className='text-yellow-400/70 text-xs uppercase tracking-[0.1em] md:tracking-[0.2em] font-light'>
 							🥃 Crafted with Excellence 🥃
 						</div>
 					</div>
