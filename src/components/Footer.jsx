@@ -67,7 +67,7 @@ const Footer = () => {
 				</div>
 
 				{/* Desktop: Full Layout */}
-				<div className='hidden md:block py-6'>
+				<div className='md:block py-6'>
 					<div className='flex items-center justify-between'>
 						{/* Left: Brand */}
 						<div className='flex items-center'>
@@ -100,16 +100,6 @@ const Footer = () => {
 									</span>
 								</a>
 							))}
-						</div>
-
-						{/* Right: Copyright */}
-						<div className='text-right'>
-							<p className='text-gray-400 text-sm font-light'>
-								&copy; {currentYear} BartendersHub
-							</p>
-							<div className='text-yellow-400/80 text-xs font-light mt-1'>
-								🥃 Crafted with Excellence
-							</div>
 						</div>
 					</div>
 				</div>
