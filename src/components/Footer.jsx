@@ -35,7 +35,7 @@ const Footer = () => {
 								src={logo}
 								alt='BartendersHub'
 							/>
-							<span className='text-xs text-white font-light'>
+							<span className=' text-white font-light'>
 								BartendersHub
 							</span>
 						</div>
