@@ -65,11 +65,6 @@ const Footer = () => {
 						</div>
 					</div>
 				</div>
-
-				{/* Desktop: Full Layout */}
-				<div className='md:block py-6'>
-					<div className='flex items-center justify-between'></div>
-				</div>
 			</div>
 		</footer>
 	);
