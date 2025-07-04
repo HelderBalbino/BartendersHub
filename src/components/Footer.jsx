@@ -85,22 +85,6 @@ const Footer = () => {
 								</span>
 							</div>
 						</div>
-
-						{/* Center: Social Links */}
-						<div className='flex space-x-5'>
-							{socialLinks.map((social) => (
-								<a
-									key={social.name}
-									href={social.href}
-									className='text-gray-400 hover:text-yellow-400 transition-all duration-300 hover:scale-110'
-									aria-label={social.name}
-								>
-									<span className='text-lg'>
-										{social.icon}
-									</span>
-								</a>
-							))}
-						</div>
 					</div>
 				</div>
 			</div>
