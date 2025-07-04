@@ -176,7 +176,7 @@ BartendersHub/
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please follow these steps:
+I welcome contributions from the community! Please follow these steps:
 
 1. **Fork the repository**
 2. **Create a feature branch** (`git checkout -b feature/AmazingFeature`)
