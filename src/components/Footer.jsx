@@ -76,14 +76,6 @@ const Footer = () => {
 								src={logo}
 								alt='BartendersHub Logo'
 							/>
-							<div>
-								<span className='block text-base font-light text-white tracking-wide uppercase'>
-									Bartenders'
-								</span>
-								<span className='block text-base font-extralight text-yellow-400 tracking-wide uppercase'>
-									Hub
-								</span>
-							</div>
 						</div>
 					</div>
 				</div>
