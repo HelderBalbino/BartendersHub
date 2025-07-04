@@ -23,87 +23,93 @@ const Footer = () => {
 	];
 
 	return (
-		<footer className='relative bg-black border-t border-yellow-400/30 overflow-hidden'>
-			{/* Mobile-First Footer Content */}
-			<div className='max-w-6xl mx-auto px-4 py-4 md:py-6 relative z-10'>
-				{/* Mobile: Single Column Layout */}
-				<div className='md:hidden flex flex-col items-center space-y-3'>
-					{/* Brand - Compact */}
-					<div className='flex items-center'>
-						<img
-							className='h-5 w-auto mr-2 filter drop-shadow-lg'
-							src={logo}
-							alt='BartendersHub Logo'
-						/>
-						<div className='text-left'>
-							<span className='block text-xs font-light text-white tracking-wider uppercase'>
-								Bartenders' Hub
+		<footer className='bg-black border-t border-yellow-400/20'>
+			<div className='max-w-6xl mx-auto px-4'>
+				{/* Mobile: Ultra-Compact Single Row */}
+				<div className='md:hidden py-3'>
+					<div className='flex items-center justify-between'>
+						{/* Left: Minimal Brand */}
+						<div className='flex items-center'>
+							<img
+								className='h-4 w-auto mr-1.5'
+								src={logo}
+								alt='BartendersHub'
+							/>
+							<span className='text-xs text-white font-light'>
+								BartendersHub
 							</span>
 						</div>
-					</div>
 
-					{/* Social Links - Compact */}
-					<div className='flex justify-center space-x-4'>
-						{socialLinks.map((social) => (
-							<a
-								key={social.name}
-								href={social.href}
-								className='text-gray-400 hover:text-yellow-400 transition-all duration-300 p-1'
-								aria-label={social.name}
-							>
-								<span className='text-sm'>{social.icon}</span>
-							</a>
-						))}
-					</div>
+						{/* Right: Social + Copyright */}
+						<div className='flex items-center space-x-3'>
+							{/* Minimal Social Icons */}
+							<div className='flex space-x-2'>
+								{socialLinks.map((social) => (
+									<a
+										key={social.name}
+										href={social.href}
+										className='text-gray-500 hover:text-yellow-400 transition-colors duration-200'
+										aria-label={social.name}
+									>
+										<span className='text-xs'>
+											{social.icon}
+										</span>
+									</a>
+								))}
+							</div>
 
-					{/* Copyright - Minimal */}
-					<div className='text-center'>
-						<p className='text-gray-500 text-xs font-light'>
-							&copy; {currentYear} BartendersHub
-						</p>
+							{/* Minimal Copyright */}
+							<span className='text-xs text-gray-500'>
+								© {currentYear}
+							</span>
+						</div>
 					</div>
 				</div>
 
-				{/* Desktop: Horizontal Layout */}
-				<div className='hidden md:flex md:items-center md:justify-between'>
-					{/* Left: Brand */}
-					<div className='flex items-center'>
-						<img
-							className='h-9 w-auto mr-3 filter drop-shadow-lg'
-							src={logo}
-							alt='BartendersHub Logo'
-						/>
-						<div className='text-left'>
-							<span className='block text-base font-light text-white tracking-[0.1em] uppercase'>
-								Bartenders'
-							</span>
-							<span className='block text-base font-extralight text-yellow-400 tracking-[0.15em] uppercase'>
-								Hub
-							</span>
+				{/* Desktop: Full Layout */}
+				<div className='hidden md:block py-6'>
+					<div className='flex items-center justify-between'>
+						{/* Left: Brand */}
+						<div className='flex items-center'>
+							<img
+								className='h-8 w-auto mr-3 filter drop-shadow-lg'
+								src={logo}
+								alt='BartendersHub Logo'
+							/>
+							<div>
+								<span className='block text-base font-light text-white tracking-wide uppercase'>
+									Bartenders'
+								</span>
+								<span className='block text-base font-extralight text-yellow-400 tracking-wide uppercase'>
+									Hub
+								</span>
+							</div>
 						</div>
-					</div>
 
-					{/* Center: Social Links */}
-					<div className='flex justify-center space-x-6'>
-						{socialLinks.map((social) => (
-							<a
-								key={social.name}
-								href={social.href}
-								className='text-gray-400 hover:text-yellow-400 transition-all duration-300 hover:scale-110 p-1'
-								aria-label={social.name}
-							>
-								<span className='text-lg'>{social.icon}</span>
-							</a>
-						))}
-					</div>
+						{/* Center: Social Links */}
+						<div className='flex space-x-5'>
+							{socialLinks.map((social) => (
+								<a
+									key={social.name}
+									href={social.href}
+									className='text-gray-400 hover:text-yellow-400 transition-all duration-300 hover:scale-110'
+									aria-label={social.name}
+								>
+									<span className='text-lg'>
+										{social.icon}
+									</span>
+								</a>
+							))}
+						</div>
 
-					{/* Right: Copyright */}
-					<div className='text-right'>
-						<p className='text-gray-400 text-sm font-light tracking-wide'>
-							&copy; {currentYear} BartendersHub
-						</p>
-						<div className='text-yellow-400/80 text-xs font-light mt-1'>
-							🥃 Crafted with Excellence
+						{/* Right: Copyright */}
+						<div className='text-right'>
+							<p className='text-gray-400 text-sm font-light'>
+								&copy; {currentYear} BartendersHub
+							</p>
+							<div className='text-yellow-400/80 text-xs font-light mt-1'>
+								🥃 Crafted with Excellence
+							</div>
 						</div>
 					</div>
 				</div>
