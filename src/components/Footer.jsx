@@ -36,7 +36,10 @@ const Footer = () => {
 								alt='BartendersHub'
 							/>
 							<span className='text-white font-light'>
-								Bartenders' Hub
+								Bartenders'
+							</span>
+							<span className='text-yellow-400 font-light'>
+								Hub
 							</span>
 						</div>
 
