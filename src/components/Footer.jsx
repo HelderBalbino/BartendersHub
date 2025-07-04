@@ -26,7 +26,7 @@ const Footer = () => {
 		<footer className='bg-black border-t border-yellow-400/20'>
 			<div className='max-w-6xl mx-auto px-4'>
 				{/* Mobile: Ultra-Compact Single Row */}
-				<div className='md:hidden py-3'>
+				<div className=' py-3'>
 					<div className='flex items-center justify-between'>
 						{/* Left: Minimal Brand */}
 						<div className='flex items-center'>
