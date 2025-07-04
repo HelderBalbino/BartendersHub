@@ -68,16 +68,7 @@ const Footer = () => {
 
 				{/* Desktop: Full Layout */}
 				<div className='md:block py-6'>
-					<div className='flex items-center justify-between'>
-						{/* Left: Brand */}
-						<div className='flex items-center'>
-							<img
-								className='h-8 w-auto mr-3 filter drop-shadow-lg'
-								src={logo}
-								alt='BartendersHub Logo'
-							/>
-						</div>
-					</div>
+					<div className='flex items-center justify-between'></div>
 				</div>
 			</div>
 		</footer>
