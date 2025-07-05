@@ -175,7 +175,7 @@ const Hero = () => {
 						</Link>
 					</button>
 
-					<button className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation'>
+					<Link to='/login' className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation block text-center'>
 						{/* Enhanced Art Deco corners - Mobile responsive */}
 						<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
 						<div className='absolute -top-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
@@ -191,7 +191,7 @@ const Hero = () => {
 						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
 							Join the Hub
 						</span>
-					</button>
+					</Link>
 				</div>
 
 				{/* Enhanced bottom decorative element - Mobile optimized */}
