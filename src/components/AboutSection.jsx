@@ -268,7 +268,10 @@ const AboutPage = () => {
 						</p>
 
 						<div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center'>
-							<Link to='/cocktails' className='group relative bg-yellow-400 text-black font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400 transition-all duration-500 hover:bg-black hover:text-yellow-400 tracking-[0.1em] uppercase text-sm block text-center'>
+							<Link
+								to='/cocktails'
+								className='group relative bg-yellow-400 text-black font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400 transition-all duration-500 hover:bg-black hover:text-yellow-400 tracking-[0.1em] uppercase text-sm block text-center'
+							>
 								{/* Art Deco corners */}
 								<div className='absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-yellow-400'></div>
 								<div className='absolute -top-1 -right-1 w-3 h-3 border-r-2 border-t-2 border-yellow-400'></div>
@@ -280,7 +283,10 @@ const AboutPage = () => {
 								</span>
 							</Link>
 
-							<Link to='/login' className='group relative bg-transparent text-yellow-400 font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400/60 transition-all duration-500 hover:border-yellow-400 hover:bg-yellow-400/10 tracking-[0.1em] uppercase text-sm block text-center'>
+							<Link
+								to='/login'
+								className='group relative bg-transparent text-yellow-400 font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400/60 transition-all duration-500 hover:border-yellow-400 hover:bg-yellow-400/10 tracking-[0.1em] uppercase text-sm block text-center'
+							>
 								<span className='relative z-10'>
 									Join the Hub
 								</span>
