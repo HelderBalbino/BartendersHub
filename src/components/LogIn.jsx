@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const LoginPage = () => {
+const LogIn = () => {
 	const [isLogin, setIsLogin] = useState(true);
 	const [formData, setFormData] = useState({
 		email: '',
@@ -218,4 +218,4 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export default LogIn;
