@@ -237,7 +237,7 @@ const Hero = () => {
 
 						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
 							<span>🍸</span>
-							<span>Share Your Recipe</span>
+							<span>Add Your Cocktail</span>
 						</span>
 					</Link>
 				</div>
