@@ -512,7 +512,7 @@ const CommunitySection = () => {
 
 						<div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center'>
 							<Link
-								to='/login'
+								to='/login?mode=register'
 								className='group relative bg-yellow-400 text-black font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400 transition-all duration-500 hover:bg-black hover:text-yellow-400 tracking-[0.1em] uppercase text-sm block text-center'
 							>
 								{/* Art Deco corners */}
