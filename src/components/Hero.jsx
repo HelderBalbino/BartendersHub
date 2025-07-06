@@ -176,7 +176,29 @@ const Hero = () => {
 					</button>
 
 					<Link
-						to='/login'
+						to='/login?mode=login'
+						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400/10 text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border-2 border-yellow-400 transition-all duration-700 hover:bg-yellow-400 hover:text-black hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation block text-center'
+					>
+						{/* Enhanced Art Deco corners - Mobile responsive */}
+						<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute -top-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-t sm:border-r-2 sm:border-t-2 border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute -bottom-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-b sm:border-l-2 sm:border-b-2 border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute -bottom-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 border-r border-b sm:border-r-2 sm:border-b-2 border-yellow-400 transition-colors duration-700'></div>
+
+						{/* Inner decorative elements - Mobile responsive */}
+						<div className='absolute top-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute top-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-t border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute bottom-1 left-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-b border-yellow-400 transition-colors duration-700'></div>
+						<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-yellow-400 transition-colors duration-700'></div>
+
+						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
+							<span>🔓</span>
+							<span>Login</span>
+						</span>
+					</Link>
+
+					<Link
+						to='/login?mode=register'
 						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation block text-center'
 					>
 						{/* Enhanced Art Deco corners - Mobile responsive */}
@@ -192,7 +214,8 @@ const Hero = () => {
 						<div className='absolute bottom-1 right-1 w-1.5 sm:w-2 h-1.5 sm:h-2 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-700'></div>
 
 						<span className='relative z-10 flex items-center justify-center gap-2 sm:gap-3'>
-							Join the Hub
+							<span>🚀</span>
+							<span>Join the Hub</span>
 						</span>
 					</Link>
 				</div>
