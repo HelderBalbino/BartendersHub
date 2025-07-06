@@ -10,12 +10,14 @@ import CocktailsPage from './pages/CocktailsPage';
 import CommunityPage from './pages/CommunityPage';
 import AboutPage from './pages/AboutPage';
 import LoginPage from './pages/LoginPage';
+import AddCocktailPage from './pages/AddCocktailPage';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path='/' element={<MainLayout />}>
 			<Route index element={<HomePage />} />
 			<Route path='/cocktails' element={<CocktailsPage />} />
+			<Route path='/addCocktail' element={<AddCocktailPage />} />
 			<Route path='/community' element={<CommunityPage />} />
 			<Route path='/about' element={<AboutPage />} />
 			<Route path='/login' element={<LoginPage />} />
