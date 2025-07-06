@@ -526,11 +526,14 @@ const CommunitySection = () => {
 								</span>
 							</Link>
 
-							<button className='group relative bg-transparent text-yellow-400 font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400/60 transition-all duration-500 hover:border-yellow-400 hover:bg-yellow-400/10 tracking-[0.1em] uppercase text-sm'>
+							<Link
+								to='/addCocktail'
+								className='group relative bg-transparent text-yellow-400 font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400/60 transition-all duration-500 hover:border-yellow-400 hover:bg-yellow-400/10 tracking-[0.1em] uppercase text-sm block text-center'
+							>
 								<span className='relative z-10'>
 									Share a Cocktail
 								</span>
-							</button>
+							</Link>
 						</div>
 					</div>
 				</div>
