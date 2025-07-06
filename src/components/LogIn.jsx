@@ -1,14 +1,28 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const LogIn = () => {
-	const [isLogin, setIsLogin] = useState(true);
+	const [searchParams] = useSearchParams();
+	const mode = searchParams.get('mode'); // 'login' or 'register'
+	const [isLogin, setIsLogin] = useState(
+		mode === 'login' || mode !== 'register',
+	);
+
 	const [formData, setFormData] = useState({
 		email: '',
 		password: '',
 		name: '',
 		confirmPassword: '',
 	});
+
+	// Update login state when URL changes
+	useEffect(() => {
+		if (mode === 'login') {
+			setIsLogin(true);
+		} else if (mode === 'register') {
+			setIsLogin(false);
+		}
+	}, [mode]);
 
 	const handleInputChange = (e) => {
 		setFormData({
