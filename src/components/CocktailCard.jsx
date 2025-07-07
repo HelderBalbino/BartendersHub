@@ -77,6 +77,8 @@ const CocktailCard = ({
 								: 'scale-100 opacity-100'
 						}`}
 						onError={() => setImageError(true)}
+						loading='lazy'
+						decoding='async'
 					/>
 				) : (
 					<div className='w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center'>
@@ -154,15 +156,21 @@ const CocktailCard = ({
 					</div>
 				</div>
 
-				{/* Hover Effect - View Recipe Button */}
+				{/* Mobile-Enhanced Action Button - Always visible on mobile, hover on desktop */}
 				<div
-					className={`absolute inset-x-0 bottom-0 bg-yellow-400 text-black text-center py-3 font-bold tracking-widest uppercase transition-all duration-300 ${
+					className={`absolute inset-x-0 bottom-0 bg-yellow-400 text-black text-center py-3 font-bold tracking-widest uppercase transition-all duration-300 btn-touch ${
 						isHovered
 							? 'translate-y-0 opacity-100'
-							: 'translate-y-full opacity-0'
+							: 'sm:translate-y-full sm:opacity-0 translate-y-0 opacity-90'
 					}`}
 				>
-					View Recipe
+					<span className='flex items-center justify-center gap-2'>
+						<span className='hidden sm:inline'>View Recipe</span>
+						<span className='sm:hidden text-sm'>
+							Tap for Recipe
+						</span>
+						<span className='text-sm'>👁️</span>
+					</span>
 				</div>
 			</div>
 
