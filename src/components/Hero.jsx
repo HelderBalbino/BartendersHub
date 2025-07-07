@@ -151,8 +151,8 @@ const Hero = () => {
 				</div>
 
 				{/* Enhanced Art Deco styled CTA Buttons - Mobile Optimized */}
-				<div className='flex flex-col gap-4 sm:gap-5 md:gap-6 lg:gap-8 justify-center items-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 px-4 sm:px-6 pb-40'>
-					<button className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400 text-black font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400 sm:border-2 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm shadow-2xl touch-manipulation block text-center'>
+				<div className='flex flex-col gap-4 sm:gap-5 md:gap-6 lg:gap-8 justify-center items-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 px-4 sm:px-6 pb-40 button-stack-mobile'>
+					<button className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400 text-black font-light py-4 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400 sm:border-2 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm shadow-2xl touch-manipulation btn-touch tap-feedback block text-center'>
 						<Link to='/cocktails'>
 							{/* Enhanced Art Deco corners - Mobile responsive */}
 							<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400'></div>
@@ -177,7 +177,7 @@ const Hero = () => {
 
 					<Link
 						to='/login?mode=login'
-						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400/10 text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border-2 border-yellow-400 transition-all duration-700 hover:bg-yellow-400 hover:text-black hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation block text-center'
+						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-yellow-400/10 text-yellow-400 font-light py-4 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border-2 border-yellow-400 transition-all duration-700 hover:bg-yellow-400 hover:text-black hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation btn-touch tap-feedback focus-mobile block text-center'
 					>
 						{/* Enhanced Art Deco corners - Mobile responsive */}
 						<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400 transition-colors duration-700'></div>
@@ -199,7 +199,7 @@ const Hero = () => {
 
 					<Link
 						to='/login?mode=register'
-						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation block text-center'
+						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-4 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/60 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/10 hover:shadow-2xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation btn-touch tap-feedback focus-mobile block text-center'
 					>
 						{/* Enhanced Art Deco corners - Mobile responsive */}
 						<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400/60 group-hover:border-yellow-400 transition-colors duration-700'></div>
@@ -221,7 +221,7 @@ const Hero = () => {
 
 					<Link
 						to='/addCocktail'
-						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/30 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/5 hover:shadow-xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation block text-center'
+						className='group relative w-full max-w-xs sm:max-w-sm md:max-w-md bg-transparent text-yellow-400 font-light py-4 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 border border-yellow-400/30 sm:border-2 transition-all duration-700 hover:border-yellow-400 hover:bg-yellow-400/5 hover:shadow-xl tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.2em] uppercase text-xs sm:text-sm touch-manipulation btn-touch tap-feedback focus-mobile block text-center'
 					>
 						{/* Enhanced Art Deco corners - Mobile responsive */}
 						<div className='absolute -top-1 -left-1 w-3 sm:w-4 h-3 sm:h-4 border-l border-t sm:border-l-2 sm:border-t-2 border-yellow-400/30 group-hover:border-yellow-400 transition-colors duration-700'></div>
