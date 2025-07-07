@@ -142,7 +142,7 @@ const Navbar = () => {
 				{/* Clean Mobile Navigation Menu */}
 				<div
 					className={`lg:hidden transition-all duration-500 ease-in-out overflow-hidden ${
-						isOpen ? 'max-h-100 opacity-100' : 'max-h-0 opacity-0'
+						isOpen ? 'max-h-99 opacity-100' : 'max-h-0 opacity-0'
 					}`}
 				>
 					{/* Elegant separator */}
