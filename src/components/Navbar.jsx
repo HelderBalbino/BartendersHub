@@ -53,11 +53,11 @@ const Navbar = () => {
 								src={logo}
 								alt='BartendersHub Logo'
 							/>
-							<div className='ml-3 md:ml-4 hidden sm:block'>
-								<span className='text-white font-light text-lg md:text-xl tracking-[0.15em] uppercase'>
+							<div className='ml-3 md:ml-4 hidden xs:block'>
+								<span className='text-white font-light text-base md:text-lg lg:text-xl tracking-[0.1em] sm:tracking-[0.15em] uppercase'>
 									Bartenders'
 								</span>
-								<span className='text-yellow-400 font-extralight text-lg md:text-xl tracking-[0.2em] uppercase ml-2'>
+								<span className='text-yellow-400 font-extralight text-base md:text-lg lg:text-xl tracking-[0.15em] sm:tracking-[0.2em] uppercase ml-1 sm:ml-2'>
 									Hub
 								</span>
 							</div>
@@ -164,15 +164,14 @@ const Navbar = () => {
 							>
 								{link.name}
 							</Link>
-						))}
-
+						))}{' '}
 						{/* Mobile Action Buttons */}
-						<div className='pt-4 space-y-3'>
+						<div className='pt-4 space-y-4'>
 							{/* Login Button for existing users */}
 							<Link
 								to='/login?mode=login'
 								onClick={() => setIsOpen(false)}
-								className='block bg-transparent text-yellow-400 font-light text-center px-6 py-3 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm'
+								className='block bg-transparent text-yellow-400 font-light text-center px-6 py-4 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
 							>
 								Login
 							</Link>
@@ -181,7 +180,7 @@ const Navbar = () => {
 							<Link
 								to='/login?mode=register'
 								onClick={() => setIsOpen(false)}
-								className='block bg-yellow-400 text-black font-light text-center px-6 py-3 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm'
+								className='block bg-yellow-400 text-black font-light text-center px-6 py-4 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
 							>
 								Join the Hub
 							</Link>
