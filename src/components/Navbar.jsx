@@ -186,8 +186,6 @@ const Navbar = () => {
 								Join the Hub
 							</Link>
 						</div>
-
-						{/* Simple bottom accent */}
 					</div>
 				</div>
 			</div>
