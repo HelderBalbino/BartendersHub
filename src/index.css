@@ -48,19 +48,3 @@
 		box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
 	}
 }
-
-/* Custom breakpoints for enhanced mobile experience */
-@media (max-width: 320px) {
-	/* Ultra-small mobile optimizations */
-	.text-responsive {
-		font-size: 0.75rem;
-	}
-}
-
-@media (max-width: 480px) {
-	/* Small mobile optimizations */
-	.container-mobile {
-		padding-left: 0.75rem;
-		padding-right: 0.75rem;
-	}
-}
