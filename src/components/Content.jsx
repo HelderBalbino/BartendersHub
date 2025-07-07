@@ -6,6 +6,8 @@ const Content = () => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 	const [cardsPerView, setCardsPerView] = useState(1);
+	const [touchStart, setTouchStart] = useState(null);
+	const [touchEnd, setTouchEnd] = useState(null);
 
 	// Handle responsive cards per view
 	useEffect(() => {
@@ -186,6 +188,31 @@ const Content = () => {
 		setIsAutoPlaying(false);
 	};
 
+	// Touch/swipe handlers for mobile
+	const handleTouchStart = (e) => {
+		setTouchEnd(null);
+		setTouchStart(e.targetTouches[0].clientX);
+	};
+
+	const handleTouchMove = (e) => {
+		setTouchEnd(e.targetTouches[0].clientX);
+	};
+
+	const handleTouchEnd = () => {
+		if (!touchStart || !touchEnd) return;
+
+		const distance = touchStart - touchEnd;
+		const isLeftSwipe = distance > 50;
+		const isRightSwipe = distance < -50;
+
+		if (isLeftSwipe && currentSlide < maxSlides) {
+			handleNextSlide();
+		}
+		if (isRightSwipe && currentSlide > 0) {
+			handlePrevSlide();
+		}
+	};
+
 	const handleCategoryChange = (categoryId) => {
 		setActiveCategory(categoryId);
 		setIsAutoPlaying(true);
@@ -223,12 +250,12 @@ const Content = () => {
 				</div>
 
 				{/* Category Navigation - Mobile Optimized */}
-				<div className='flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 px-2'>
+				<div className='flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 px-2 button-stack-mobile'>
 					{categories.map((category) => (
 						<button
 							key={category.id}
 							onClick={() => handleCategoryChange(category.id)}
-							className={`group relative px-4 sm:px-6 md:px-8 py-3 sm:py-4 border transition-all duration-500 w-full sm:w-auto ${
+							className={`group relative px-4 sm:px-6 md:px-8 py-4 sm:py-4 border transition-all duration-500 w-full sm:w-auto btn-touch tap-feedback focus-mobile ${
 								activeCategory === category.id
 									? 'border-yellow-400 bg-yellow-400 text-black'
 									: 'border-yellow-400/30 text-gray-400 hover:border-yellow-400/60 hover:text-white'
@@ -259,33 +286,44 @@ const Content = () => {
 
 				{/* Carousel Container - Mobile Optimized */}
 				<div className='relative'>
-					{/* Navigation Buttons - Mobile responsive */}
+					{/* Enhanced Navigation Buttons - Better Mobile Touch Targets */}
 					<button
 						onClick={handlePrevSlide}
-						className='absolute left-0 sm:left-0 top-1/2 transform -translate-y-1/2 z-20 w-10 sm:w-12 h-10 sm:h-12 bg-black/70 border border-yellow-400/50 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group'
+						className='absolute left-2 sm:left-0 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-black/80 border-2 border-yellow-400/60 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group btn-touch focus-mobile disabled:opacity-50 disabled:cursor-not-allowed'
 						disabled={currentSlide === 0 && maxSlides === 0}
+						aria-label='Previous cocktails'
 					>
-						<div className='absolute top-0 left-0 w-1.5 sm:w-2 h-1.5 sm:h-2 border-l border-t border-yellow-400'></div>
-						<div className='absolute top-0 right-0 w-2 h-2 border-r border-t border-yellow-400'></div>
-						<div className='absolute bottom-0 left-0 w-2 h-2 border-l border-b border-yellow-400'></div>
-						<div className='absolute bottom-0 right-0 w-2 h-2 border-r border-b border-yellow-400'></div>
-						<span className='text-xl'>‹</span>
+						<div className='absolute top-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<div className='absolute top-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<div className='absolute bottom-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<div className='absolute bottom-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<span className='text-xl sm:text-2xl font-light'>
+							‹
+						</span>
 					</button>
 
 					<button
 						onClick={handleNextSlide}
-						className='absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-black/70 border border-yellow-400/50 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group'
+						className='absolute right-2 sm:right-0 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-black/80 border-2 border-yellow-400/60 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group btn-touch focus-mobile disabled:opacity-50 disabled:cursor-not-allowed'
 						disabled={currentSlide === maxSlides && maxSlides === 0}
+						aria-label='Next cocktails'
 					>
-						<div className='absolute top-0 left-0 w-2 h-2 border-l border-t border-yellow-400'></div>
-						<div className='absolute top-0 right-0 w-2 h-2 border-r border-t border-yellow-400'></div>
-						<div className='absolute bottom-0 left-0 w-2 h-2 border-l border-b border-yellow-400'></div>
-						<div className='absolute bottom-0 right-0 w-2 h-2 border-r border-b border-yellow-400'></div>
-						<span className='text-xl'>›</span>
+						<div className='absolute top-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<div className='absolute top-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<div className='absolute bottom-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<div className='absolute bottom-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
+						<span className='text-xl sm:text-2xl font-light'>
+							›
+						</span>
 					</button>
 
-					{/* Carousel Track - Mobile Optimized */}
-					<div className='overflow-hidden mx-4 sm:mx-8 md:mx-12 lg:mx-16'>
+					{/* Carousel Track - Mobile Optimized with Swipe Support */}
+					<div
+						className='overflow-hidden mx-4 sm:mx-8 md:mx-12 lg:mx-16 swipe-area'
+						onTouchStart={handleTouchStart}
+						onTouchMove={handleTouchMove}
+						onTouchEnd={handleTouchEnd}
+					>
 						<div
 							className='flex transition-transform duration-700 ease-in-out gap-2 sm:gap-4 md:gap-6 lg:gap-8'
 							style={{
@@ -322,8 +360,8 @@ const Content = () => {
 					</div>
 				</div>
 
-				{/* Slide Indicators */}
-				<div className='flex justify-center gap-3 mt-12'>
+				{/* Enhanced Slide Indicators - Better Mobile Touch Targets */}
+				<div className='flex justify-center gap-4 sm:gap-3 mt-12'>
 					{Array.from({ length: maxSlides + 1 }, (_, index) => (
 						<button
 							key={index}
@@ -331,11 +369,12 @@ const Content = () => {
 								setCurrentSlide(index);
 								setIsAutoPlaying(false);
 							}}
-							className={`w-3 h-3 border border-yellow-400 rotate-45 transition-all duration-300 ${
+							className={`w-4 h-4 sm:w-3 sm:h-3 border-2 border-yellow-400 rotate-45 transition-all duration-300 btn-touch focus-mobile ${
 								currentSlide === index
-									? 'bg-yellow-400'
-									: 'bg-transparent hover:bg-yellow-400/50'
+									? 'bg-yellow-400 scale-110'
+									: 'bg-transparent hover:bg-yellow-400/50 active:scale-95'
 							}`}
+							aria-label={`Go to slide ${index + 1}`}
 						/>
 					))}
 				</div>
