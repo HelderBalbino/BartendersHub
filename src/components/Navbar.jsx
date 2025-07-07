@@ -188,7 +188,6 @@ const Navbar = () => {
 						</div>
 
 						{/* Simple bottom accent */}
-						<div className='pt-4 text-center'></div>
 					</div>
 				</div>
 			</div>
