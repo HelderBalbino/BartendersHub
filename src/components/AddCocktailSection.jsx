@@ -113,8 +113,11 @@ const AddCocktailSection = () => {
 					<div className='absolute -bottom-1 -left-1 w-8 h-8 border-l-2 border-b-2 border-yellow-400'></div>
 					<div className='absolute -bottom-1 -right-1 w-8 h-8 border-r-2 border-b-2 border-yellow-400'></div>
 
-					<form onSubmit={handleSubmit} className='space-y-8'>
-						{/* Cocktail Name */}
+					<form
+						onSubmit={handleSubmit}
+						className='space-y-8 form-stack-mobile'
+					>
+						{/* Cocktail Name and Difficulty */}
 						<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
 							<div>
 								<label className='block text-yellow-400 text-sm font-light tracking-wide uppercase mb-3'>
@@ -125,7 +128,7 @@ const AddCocktailSection = () => {
 									name='name'
 									value={formData.name}
 									onChange={handleInputChange}
-									className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500'
+									className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500 form-field-mobile focus-mobile'
 									placeholder='Enter cocktail name'
 									required
 								/>
@@ -139,7 +142,7 @@ const AddCocktailSection = () => {
 									name='difficulty'
 									value={formData.difficulty}
 									onChange={handleInputChange}
-									className='w-full bg-black/50 border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300'
+									className='w-full bg-black/50 border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 form-field-mobile focus-mobile'
 								>
 									<option value='beginner'>Beginner</option>
 									<option value='intermediate'>
@@ -161,7 +164,7 @@ const AddCocktailSection = () => {
 								value={formData.description}
 								onChange={handleInputChange}
 								rows={4}
-								className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500 resize-none'
+								className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500 resize-none form-field-mobile focus-mobile'
 								placeholder='Tell the story of your cocktail...'
 								required
 							/>
