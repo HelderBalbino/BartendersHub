@@ -188,11 +188,7 @@ const Navbar = () => {
 						</div>
 
 						{/* Simple bottom accent */}
-						<div className='pt-4 text-center'>
-							<div className='text-yellow-400/60 text-xs uppercase tracking-[0.2em] font-light'>
-								Premium Experience
-							</div>
-						</div>
+						<div className='pt-4 text-center'></div>
 					</div>
 				</div>
 			</div>
