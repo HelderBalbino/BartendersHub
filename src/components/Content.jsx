@@ -42,7 +42,7 @@ const Content = () => {
 				},
 				{
 					id: 2,
-					name: 'Vodka Martini',
+					name: 'Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
 					prepTime: '3 min',
