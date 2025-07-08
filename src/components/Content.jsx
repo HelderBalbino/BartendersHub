@@ -32,7 +32,7 @@ const Content = () => {
 			signature: [
 				{
 					id: 1,
-					name: 'Martini',
+					name: 'Gin Martini',
 					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
 					difficulty: 'Intermediate',
 					prepTime: '3 min',
