@@ -103,6 +103,7 @@ Make sure you have the following installed:
 7. **Start the development servers**
 
     Frontend (Terminal 1):
+
     ```bash
     npm run dev
     # or
@@ -110,20 +111,22 @@ Make sure you have the following installed:
     ```
 
     Backend (Terminal 2):
+
     ```bash
     cd backend
     npm run dev
     ```
 
 8. **Open your browser**
-   - Frontend: `http://localhost:3000`
-   - Backend API: `http://localhost:5000`
+    - Frontend: `http://localhost:3000`
+    - Backend API: `http://localhost:5000`
 
 ---
 
 ## 🛠️ Built With
 
 ### Frontend
+
 | Technology       | Purpose                 | Version |
 | ---------------- | ----------------------- | ------- |
 | **React**        | Frontend Framework      | 18.0+   |
@@ -133,15 +136,16 @@ Make sure you have the following installed:
 | **React Icons**  | Icon Library            | 4.0+    |
 
 ### Backend
-| Technology       | Purpose                 | Version |
-| ---------------- | ----------------------- | ------- |
-| **Node.js**      | Runtime Environment     | 18.0+   |
-| **Express**      | Web Framework           | 4.0+    |
-| **MongoDB**      | Database                | 5.0+    |
-| **Mongoose**     | ODM for MongoDB         | 8.0+    |
-| **JWT**          | Authentication          | 9.0+    |
-| **Cloudinary**   | Image Storage           | 1.0+    |
-| **Multer**       | File Upload             | 1.0+    |
+
+| Technology     | Purpose             | Version |
+| -------------- | ------------------- | ------- |
+| **Node.js**    | Runtime Environment | 18.0+   |
+| **Express**    | Web Framework       | 4.0+    |
+| **MongoDB**    | Database            | 5.0+    |
+| **Mongoose**   | ODM for MongoDB     | 8.0+    |
+| **JWT**        | Authentication      | 9.0+    |
+| **Cloudinary** | Image Storage       | 1.0+    |
+| **Multer**     | File Upload         | 1.0+    |
 
 ---
 
