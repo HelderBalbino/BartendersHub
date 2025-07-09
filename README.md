@@ -12,6 +12,9 @@ experience_
 [![Vite](https://img.shields.io/badge/Vite-4.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Node.js](https://img.shields.io/badge/Node.js-18.0+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.0+-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
 </div>
 
@@ -44,19 +47,20 @@ premium digital experience.
 
 Make sure you have the following installed:
 
--   **Node.js** (v16.0 or higher)
+-   **Node.js** (v18.0 or higher)
 -   **npm** or **yarn**
+-   **MongoDB** (v5.0 or higher)
 
 ### Installation
 
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/yourusername/bartendershub.git
-    cd bartendershub
+    git clone https://github.com/HelderBalbino/BartendersHub.git
+    cd BartendersHub
     ```
 
-2. **Install dependencies**
+2. **Install Frontend dependencies**
 
     ```bash
     npm install
@@ -64,21 +68,62 @@ Make sure you have the following installed:
     yarn install
     ```
 
-3. **Start the development server**
+3. **Install Backend dependencies**
 
+    ```bash
+    cd backend
+    npm install
+    cd ..
+    ```
+
+4. **Set up environment variables**
+
+    ```bash
+    cd backend
+    cp .env.example .env
+    # Edit .env with your configuration
+    ```
+
+5. **Start MongoDB**
+
+    ```bash
+    mongod
+    # or if using MongoDB service
+    sudo service mongod start
+    ```
+
+6. **Seed the database** (optional)
+
+    ```bash
+    cd backend
+    npm run seed
+    cd ..
+    ```
+
+7. **Start the development servers**
+
+    Frontend (Terminal 1):
     ```bash
     npm run dev
     # or
     yarn dev
     ```
 
-4. **Open your browser** Navigate to `http://localhost:3000` to see the
-   application
+    Backend (Terminal 2):
+    ```bash
+    cd backend
+    npm run dev
+    ```
+
+8. **Open your browser**
+   - Frontend: `http://localhost:3000`
+   - Backend API: `http://localhost:5000`
 
 ---
 
 ## 🛠️ Built With
 
+### Frontend
 | Technology       | Purpose                 | Version |
 | ---------------- | ----------------------- | ------- |
 | **React**        | Frontend Framework      | 18.0+   |
@@ -87,12 +132,51 @@ Make sure you have the following installed:
 | **React Router** | Navigation              | 6.0+    |
 | **React Icons**  | Icon Library            | 4.0+    |
 
+### Backend
+| Technology       | Purpose                 | Version |
+| ---------------- | ----------------------- | ------- |
+| **Node.js**      | Runtime Environment     | 18.0+   |
+| **Express**      | Web Framework           | 4.0+    |
+| **MongoDB**      | Database                | 5.0+    |
+| **Mongoose**     | ODM for MongoDB         | 8.0+    |
+| **JWT**          | Authentication          | 9.0+    |
+| **Cloudinary**   | Image Storage           | 1.0+    |
+| **Multer**       | File Upload             | 1.0+    |
+
 ---
 
 ## 📁 Project Structure
 
 ```
 BartendersHub/
+├── 📁 backend/
+│   ├── 📁 src/
+│   │   ├── 📁 config/
+│   │   │   └── 📄 database.js
+│   │   ├── 📁 controllers/
+│   │   │   ├── 📄 authController.js
+│   │   │   ├── 📄 cocktailController.js
+│   │   │   └── 📄 userController.js
+│   │   ├── 📁 middleware/
+│   │   │   ├── 📄 auth.js
+│   │   │   ├── 📄 errorHandler.js
+│   │   │   └── 📄 rateLimiter.js
+│   │   ├── 📁 models/
+│   │   │   ├── 📄 User.js
+│   │   │   ├── 📄 Cocktail.js
+│   │   │   ├── 📄 Follow.js
+│   │   │   └── 📄 Favorite.js
+│   │   ├── 📁 routes/
+│   │   │   ├── 📄 auth.js
+│   │   │   ├── 📄 cocktails.js
+│   │   │   └── 📄 users.js
+│   │   ├── 📁 utils/
+│   │   │   ├── 📄 auth.js
+│   │   │   ├── 📄 cloudinary.js
+│   │   │   └── 📄 seedDatabase.js
+│   │   └── 📄 server.js
+│   ├── 📄 package.json
+│   └── 📄 README.md
 ├── 📁 public/
 │   └── 📄 index.html
 ├── 📁 src/
