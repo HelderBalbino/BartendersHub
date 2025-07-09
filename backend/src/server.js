@@ -36,10 +36,12 @@ connectDB();
 app.use(helmet());
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
+app.use(
+	cors({
+		origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+		credentials: true,
+	}),
+);
 
 // Rate limiting
 app.use(limiter);
@@ -53,7 +55,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+	app.use(morgan('dev'));
 }
 
 // Static files
@@ -66,19 +68,19 @@ app.use('/api/users', userRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'BartendersHub API is running!',
-    timestamp: new Date().toISOString()
-  });
+	res.status(200).json({
+		success: true,
+		message: 'BartendersHub API is running!',
+		timestamp: new Date().toISOString(),
+	});
 });
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  });
+	res.status(404).json({
+		success: false,
+		message: 'Route not found',
+	});
 });
 
 // Error handling middleware
@@ -87,7 +89,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-  console.log(`
+	console.log(`
 🥃 BartendersHub API Server
 🚀 Server running on port ${PORT}
 🌍 Environment: ${process.env.NODE_ENV}
@@ -97,17 +99,17 @@ const server = app.listen(PORT, () => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Promise Rejection:', err);
-  // Close server & exit process
-  server.close(() => {
-    process.exit(1);
-  });
+	console.error('Unhandled Promise Rejection:', err);
+	// Close server & exit process
+	server.close(() => {
+		process.exit(1);
+	});
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-  process.exit(1);
+	console.error('Uncaught Exception:', err);
+	process.exit(1);
 });
 
 export default app;
