@@ -4,8 +4,8 @@ import {
 	createRoutesFromElements,
 	RouterProvider,
 } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -17,8 +17,6 @@ import CommunityPage from './pages/CommunityPage';
 import AboutPage from './pages/AboutPage';
 import LoginPage from './pages/LoginPage';
 import AddCocktailPage from './pages/AddCocktailPage';
-import ProfilePage from './pages/ProfilePage';
-import CocktailDetailPage from './pages/CocktailDetailPage';
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -36,15 +34,13 @@ const router = createBrowserRouter(
 		<Route path='/' element={<MainLayout />}>
 			<Route index element={<HomePage />} />
 			<Route path='/cocktails' element={<CocktailsPage />} />
-			<Route path='/cocktails/:id' element={<CocktailDetailPage />} />
 			<Route path='/community' element={<CommunityPage />} />
 			<Route path='/about' element={<AboutPage />} />
 			<Route path='/login' element={<LoginPage />} />
-
+			
 			{/* Protected Routes */}
 			<Route element={<ProtectedRoute />}>
 				<Route path='/addCocktail' element={<AddCocktailPage />} />
-				<Route path='/profile' element={<ProfilePage />} />
 			</Route>
 		</Route>,
 	),
