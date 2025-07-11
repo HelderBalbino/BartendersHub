@@ -1,9 +1,9 @@
-import LogIn from '../components/LogIn';
+import LogInEnhanced from '../components/LogInEnhanced';
 
 const LoginPage = () => {
 	return (
 		<>
-			<LogIn />
+			<LogInEnhanced />
 		</>
 	);
 };
