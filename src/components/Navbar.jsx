@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
+	const { isAuthenticated, user, logout } = useAuth();
 
 	// Handle scroll effect for navbar backdrop
 	useEffect(() => {
@@ -22,10 +24,14 @@ const Navbar = () => {
 
 	const navLinks = [
 		{ name: 'Cocktails', to: '/cocktails' },
-		{ name: 'Add a cocktail', to: '/addCocktail' },
 		{ name: 'Community', to: '/community' },
 		{ name: 'About', to: '/about' },
 	];
+
+	// Add cocktail link only for authenticated users
+	const authNavLinks = isAuthenticated 
+		? [{ name: 'Add a cocktail', to: '/addCocktail' }, ...navLinks]
+		: navLinks;
 
 	return (
 		<nav
@@ -66,7 +72,7 @@ const Navbar = () => {
 
 					{/* Clean Desktop Navigation */}
 					<div className='hidden lg:flex items-center space-x-8'>
-						{navLinks.map((link) => (
+						{authNavLinks.map((link) => (
 							<Link
 								key={link.name}
 								to={link.to}
@@ -79,21 +85,36 @@ const Navbar = () => {
 
 						{/* Navigation Buttons */}
 						<div className='flex items-center gap-3'>
-							{/* Login Button for existing users */}
-							<Link
-								to='/login?mode=login'
-								className='bg-transparent text-yellow-400 font-light px-4 py-2 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm'
-							>
-								Login
-							</Link>
-
-							{/* Join the Hub Button for new users */}
-							<Link
-								to='/login?mode=register'
-								className='bg-yellow-400 text-black font-light px-6 py-2.5 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm'
-							>
-								Join the Hub
-							</Link>
+							{isAuthenticated ? (
+								/* Authenticated User Menu */
+								<div className='flex items-center gap-4'>
+									<div className='text-gray-300 text-sm'>
+										Welcome, <span className='text-yellow-400'>{user?.name || user?.username}</span>
+									</div>
+									<button
+										onClick={logout}
+										className='bg-transparent text-yellow-400 font-light px-4 py-2 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm'
+									>
+										Logout
+									</button>
+								</div>
+							) : (
+								/* Unauthenticated User Buttons */
+								<>
+									<Link
+										to='/login?mode=login'
+										className='bg-transparent text-yellow-400 font-light px-4 py-2 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm'
+									>
+										Login
+									</Link>
+									<Link
+										to='/login?mode=register'
+										className='bg-yellow-400 text-black font-light px-6 py-2.5 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm'
+									>
+										Join the Hub
+									</Link>
+								</>
+							)}
 						</div>
 					</div>
 
@@ -155,7 +176,7 @@ const Navbar = () => {
 					</div>
 
 					<div className='px-4 pb-6 space-y-3 bg-black/90 backdrop-blur-md border-t border-yellow-400/20'>
-						{navLinks.map((link) => (
+						{authNavLinks.map((link) => (
 							<Link
 								key={link.name}
 								to={link.to}
@@ -167,23 +188,41 @@ const Navbar = () => {
 						))}{' '}
 						{/* Mobile Action Buttons */}
 						<div className='pt-4 space-y-4'>
-							{/* Login Button for existing users */}
-							<Link
-								to='/login?mode=login'
-								onClick={() => setIsOpen(false)}
-								className='block bg-transparent text-yellow-400 font-light text-center px-6 py-4 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
-							>
-								Login
-							</Link>
-
-							{/* Join the Hub Button for new users */}
-							<Link
-								to='/login?mode=register'
-								onClick={() => setIsOpen(false)}
-								className='block bg-yellow-400 text-black font-light text-center px-6 py-4 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
-							>
-								Join the Hub
-							</Link>
+							{isAuthenticated ? (
+								/* Authenticated User Menu */
+								<>
+									<div className='text-center text-gray-300 text-sm px-4 py-2'>
+										Welcome, <span className='text-yellow-400'>{user?.name || user?.username}</span>
+									</div>
+									<button
+										onClick={() => {
+											logout();
+											setIsOpen(false);
+										}}
+										className='block w-full bg-transparent text-yellow-400 font-light text-center px-6 py-4 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
+									>
+										Logout
+									</button>
+								</>
+							) : (
+								/* Unauthenticated User Buttons */
+								<>
+									<Link
+										to='/login?mode=login'
+										onClick={() => setIsOpen(false)}
+										className='block bg-transparent text-yellow-400 font-light text-center px-6 py-4 transition-all duration-300 hover:bg-yellow-400/10 border border-yellow-400/60 hover:border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
+									>
+										Login
+									</Link>
+									<Link
+										to='/login?mode=register'
+										onClick={() => setIsOpen(false)}
+										className='block bg-yellow-400 text-black font-light text-center px-6 py-4 transition-all duration-300 hover:bg-transparent hover:text-yellow-400 border-2 border-yellow-400 tracking-[0.1em] uppercase text-sm btn-touch'
+									>
+										Join the Hub
+									</Link>
+								</>
+							)}
 						</div>
 					</div>
 				</div>
