@@ -10,9 +10,12 @@ const LogInEnhanced = () => {
 	const navigate = useNavigate();
 	const mode = searchParams.get('mode');
 	const redirectPath = searchParams.get('redirect') || '/';
-	const [isLogin, setIsLogin] = useState(mode === 'login' || mode !== 'register');
+	const [isLogin, setIsLogin] = useState(
+		mode === 'login' || mode !== 'register',
+	);
 
-	const { login, register, loading, error, isAuthenticated, clearError } = useAuth();
+	const { login, register, loading, error, isAuthenticated, clearError } =
+		useAuth();
 
 	// Form validation setup
 	const loginValidation = {
@@ -25,7 +28,10 @@ const LogInEnhanced = () => {
 		username: [validationRules.required, validationRules.minLength(3)],
 		email: [validationRules.required, validationRules.email],
 		password: [validationRules.required, validationRules.password],
-		confirmPassword: [validationRules.required, validationRules.confirmPassword],
+		confirmPassword: [
+			validationRules.required,
+			validationRules.confirmPassword,
+		],
 	};
 
 	const initialValues = {
@@ -46,7 +52,7 @@ const LogInEnhanced = () => {
 		reset,
 	} = useFormValidation(
 		initialValues,
-		isLogin ? loginValidation : registerValidation
+		isLogin ? loginValidation : registerValidation,
 	);
 
 	// Redirect if already authenticated
@@ -73,7 +79,7 @@ const LogInEnhanced = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		
+
 		if (!validateAll()) {
 			toast.error('Please fix the errors in the form');
 			return;
@@ -104,7 +110,14 @@ const LogInEnhanced = () => {
 	if (loading) {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
-				<LoadingSpinner size="large" text={isLogin ? "Entering the speakeasy..." : "Joining the elite..."} />
+				<LoadingSpinner
+					size='large'
+					text={
+						isLogin
+							? 'Entering the speakeasy...'
+							: 'Joining the elite...'
+					}
+				/>
 			</section>
 		);
 	}
@@ -158,7 +171,7 @@ const LogInEnhanced = () => {
 					{/* Toggle Buttons */}
 					<div className='flex mb-6 border border-yellow-400/30 rounded-none overflow-hidden'>
 						<button
-							type="button"
+							type='button'
 							onClick={() => setIsLogin(true)}
 							className={`flex-1 py-3 px-4 text-sm font-light tracking-wide uppercase transition-all duration-300 ${
 								isLogin
@@ -169,7 +182,7 @@ const LogInEnhanced = () => {
 							Login
 						</button>
 						<button
-							type="button"
+							type='button'
 							onClick={() => setIsLogin(false)}
 							className={`flex-1 py-3 px-4 text-sm font-light tracking-wide uppercase transition-all duration-300 ${
 								!isLogin
@@ -183,7 +196,7 @@ const LogInEnhanced = () => {
 
 					{/* Error Display */}
 					{error && (
-						<div className="mb-6 p-4 border border-red-400/50 bg-red-900/20 text-red-400 text-sm">
+						<div className='mb-6 p-4 border border-red-400/50 bg-red-900/20 text-red-400 text-sm'>
 							{error}
 						</div>
 					)}
@@ -202,13 +215,17 @@ const LogInEnhanced = () => {
 									onChange={handleChange}
 									onBlur={handleBlur}
 									className={`w-full bg-transparent border ${
-										touched.name && errors.name ? 'border-red-400' : 'border-yellow-400/30'
+										touched.name && errors.name
+											? 'border-red-400'
+											: 'border-yellow-400/30'
 									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 									placeholder='Enter your full name'
 									required={!isLogin}
 								/>
 								{touched.name && errors.name && (
-									<p className="mt-1 text-red-400 text-xs">{errors.name}</p>
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.name}
+									</p>
 								)}
 							</div>
 						)}
@@ -226,13 +243,17 @@ const LogInEnhanced = () => {
 									onChange={handleChange}
 									onBlur={handleBlur}
 									className={`w-full bg-transparent border ${
-										touched.username && errors.username ? 'border-red-400' : 'border-yellow-400/30'
+										touched.username && errors.username
+											? 'border-red-400'
+											: 'border-yellow-400/30'
 									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 									placeholder='Enter your username'
 									required={!isLogin}
 								/>
 								{touched.username && errors.username && (
-									<p className="mt-1 text-red-400 text-xs">{errors.username}</p>
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.username}
+									</p>
 								)}
 							</div>
 						)}
@@ -249,13 +270,17 @@ const LogInEnhanced = () => {
 								onChange={handleChange}
 								onBlur={handleBlur}
 								className={`w-full bg-transparent border ${
-									touched.email && errors.email ? 'border-red-400' : 'border-yellow-400/30'
+									touched.email && errors.email
+										? 'border-red-400'
+										: 'border-yellow-400/30'
 								} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 								placeholder='Enter your email'
 								required
 							/>
 							{touched.email && errors.email && (
-								<p className="mt-1 text-red-400 text-xs">{errors.email}</p>
+								<p className='mt-1 text-red-400 text-xs'>
+									{errors.email}
+								</p>
 							)}
 						</div>
 
@@ -271,13 +296,17 @@ const LogInEnhanced = () => {
 								onChange={handleChange}
 								onBlur={handleBlur}
 								className={`w-full bg-transparent border ${
-									touched.password && errors.password ? 'border-red-400' : 'border-yellow-400/30'
+									touched.password && errors.password
+										? 'border-red-400'
+										: 'border-yellow-400/30'
 								} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 								placeholder='Enter your password'
 								required
 							/>
 							{touched.password && errors.password && (
-								<p className="mt-1 text-red-400 text-xs">{errors.password}</p>
+								<p className='mt-1 text-red-400 text-xs'>
+									{errors.password}
+								</p>
 							)}
 						</div>
 
@@ -294,14 +323,20 @@ const LogInEnhanced = () => {
 									onChange={handleChange}
 									onBlur={handleBlur}
 									className={`w-full bg-transparent border ${
-										touched.confirmPassword && errors.confirmPassword ? 'border-red-400' : 'border-yellow-400/30'
+										touched.confirmPassword &&
+										errors.confirmPassword
+											? 'border-red-400'
+											: 'border-yellow-400/30'
 									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 									placeholder='Confirm your password'
 									required={!isLogin}
 								/>
-								{touched.confirmPassword && errors.confirmPassword && (
-									<p className="mt-1 text-red-400 text-xs">{errors.confirmPassword}</p>
-								)}
+								{touched.confirmPassword &&
+									errors.confirmPassword && (
+										<p className='mt-1 text-red-400 text-xs'>
+											{errors.confirmPassword}
+										</p>
+									)}
 							</div>
 						)}
 
@@ -319,12 +354,14 @@ const LogInEnhanced = () => {
 
 							<span className='relative z-10'>
 								{loading ? (
-									<span className="flex items-center justify-center gap-2">
-										<div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+									<span className='flex items-center justify-center gap-2'>
+										<div className='w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin'></div>
 										{isLogin ? 'Entering...' : 'Joining...'}
 									</span>
+								) : isLogin ? (
+									'Enter the Speakeasy'
 								) : (
-									isLogin ? 'Enter the Speakeasy' : 'Join the Elite'
+									'Join the Elite'
 								)}
 							</span>
 						</button>
