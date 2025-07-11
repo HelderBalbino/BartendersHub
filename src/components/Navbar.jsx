@@ -29,7 +29,7 @@ const Navbar = () => {
 	];
 
 	// Add cocktail link only for authenticated users
-	const authNavLinks = isAuthenticated 
+	const authNavLinks = isAuthenticated
 		? [{ name: 'Add a cocktail', to: '/addCocktail' }, ...navLinks]
 		: navLinks;
 
@@ -89,7 +89,10 @@ const Navbar = () => {
 								/* Authenticated User Menu */
 								<div className='flex items-center gap-4'>
 									<div className='text-gray-300 text-sm'>
-										Welcome, <span className='text-yellow-400'>{user?.name || user?.username}</span>
+										Welcome,{' '}
+										<span className='text-yellow-400'>
+											{user?.name || user?.username}
+										</span>
 									</div>
 									<button
 										onClick={logout}
@@ -192,7 +195,10 @@ const Navbar = () => {
 								/* Authenticated User Menu */
 								<>
 									<div className='text-center text-gray-300 text-sm px-4 py-2'>
-										Welcome, <span className='text-yellow-400'>{user?.name || user?.username}</span>
+										Welcome,{' '}
+										<span className='text-yellow-400'>
+											{user?.name || user?.username}
+										</span>
 									</div>
 									<button
 										onClick={() => {
