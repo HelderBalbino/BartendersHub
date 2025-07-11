@@ -1,9 +1,9 @@
-import Content from '../components/Content';
+import ContentEnhanced from '../components/ContentEnhanced';
 
 const CocktailsPage = () => {
 	return (
 		<>
-			<Content />
+			<ContentEnhanced />
 		</>
 	);
 };
