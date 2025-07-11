@@ -37,7 +37,7 @@ const router = createBrowserRouter(
 			<Route path='/community' element={<CommunityPage />} />
 			<Route path='/about' element={<AboutPage />} />
 			<Route path='/login' element={<LoginPage />} />
-			
+
 			{/* Protected Routes */}
 			<Route element={<ProtectedRoute />}>
 				<Route path='/addCocktail' element={<AddCocktailPage />} />
@@ -53,7 +53,7 @@ const App = () => {
 				<AuthProvider>
 					<RouterProvider router={router} />
 					<Toaster
-						position="top-right"
+						position='top-right'
 						toastOptions={{
 							duration: 4000,
 							style: {
