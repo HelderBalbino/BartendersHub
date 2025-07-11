@@ -24,8 +24,16 @@ const AddCocktailEnhanced = () => {
 	};
 
 	const validationSchema = {
-		name: [validationRules.required, validationRules.minLength(3), validationRules.maxLength(100)],
-		description: [validationRules.required, validationRules.minLength(10), validationRules.maxLength(500)],
+		name: [
+			validationRules.required,
+			validationRules.minLength(3),
+			validationRules.maxLength(100),
+		],
+		description: [
+			validationRules.required,
+			validationRules.minLength(10),
+			validationRules.maxLength(500),
+		],
 		ingredients: [validationRules.arrayMinLength(1)],
 		instructions: [validationRules.arrayMinLength(1)],
 		prepTime: [validationRules.required],
@@ -57,7 +65,7 @@ const AddCocktailEnhanced = () => {
 				return;
 			}
 
-			setValues(prev => ({
+			setValues((prev) => ({
 				...prev,
 				image: file,
 				imagePreview: URL.createObjectURL(file),
@@ -68,14 +76,14 @@ const AddCocktailEnhanced = () => {
 	const handleArrayChange = (index, value, field) => {
 		const newArray = [...values[field]];
 		newArray[index] = value;
-		setValues(prev => ({
+		setValues((prev) => ({
 			...prev,
 			[field]: newArray,
 		}));
 	};
 
 	const addArrayField = (field) => {
-		setValues(prev => ({
+		setValues((prev) => ({
 			...prev,
 			[field]: [...prev[field], ''],
 		}));
@@ -86,9 +94,9 @@ const AddCocktailEnhanced = () => {
 			toast.error(`You must have at least one ${field.slice(0, -1)}`);
 			return;
 		}
-		
+
 		const newArray = values[field].filter((_, i) => i !== index);
-		setValues(prev => ({
+		setValues((prev) => ({
 			...prev,
 			[field]: newArray,
 		}));
@@ -96,7 +104,7 @@ const AddCocktailEnhanced = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		
+
 		if (!validateAll()) {
 			toast.error('Please fix the errors in the form');
 			return;
@@ -105,9 +113,9 @@ const AddCocktailEnhanced = () => {
 		// Filter out empty array items
 		const filteredData = {
 			...values,
-			ingredients: values.ingredients.filter(item => item.trim()),
-			instructions: values.instructions.filter(item => item.trim()),
-			tags: values.tags.filter(item => item.trim()),
+			ingredients: values.ingredients.filter((item) => item.trim()),
+			instructions: values.instructions.filter((item) => item.trim()),
+			tags: values.tags.filter((item) => item.trim()),
 		};
 
 		// Validate that we still have required items
@@ -134,7 +142,10 @@ const AddCocktailEnhanced = () => {
 	if (createCocktailMutation.isLoading) {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
-				<LoadingSpinner size="large" text="Crafting your signature cocktail..." />
+				<LoadingSpinner
+					size='large'
+					text='Crafting your signature cocktail...'
+				/>
 			</section>
 		);
 	}
@@ -184,7 +195,10 @@ const AddCocktailEnhanced = () => {
 					<div className='absolute -bottom-1 -left-1 w-8 h-8 border-l-2 border-b-2 border-yellow-400'></div>
 					<div className='absolute -bottom-1 -right-1 w-8 h-8 border-r-2 border-b-2 border-yellow-400'></div>
 
-					<form onSubmit={handleSubmit} className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+					<form
+						onSubmit={handleSubmit}
+						className='grid grid-cols-1 lg:grid-cols-2 gap-8'
+					>
 						{/* Left Column */}
 						<div className='space-y-6'>
 							{/* Cocktail Name */}
@@ -199,12 +213,16 @@ const AddCocktailEnhanced = () => {
 									onChange={handleChange}
 									onBlur={handleBlur}
 									className={`w-full bg-transparent border ${
-										touched.name && errors.name ? 'border-red-400' : 'border-yellow-400/30'
+										touched.name && errors.name
+											? 'border-red-400'
+											: 'border-yellow-400/30'
 									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 									placeholder='The Golden Fizz'
 								/>
 								{touched.name && errors.name && (
-									<p className="mt-1 text-red-400 text-xs">{errors.name}</p>
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.name}
+									</p>
 								)}
 							</div>
 
@@ -220,12 +238,17 @@ const AddCocktailEnhanced = () => {
 									onBlur={handleBlur}
 									rows={4}
 									className={`w-full bg-transparent border ${
-										touched.description && errors.description ? 'border-red-400' : 'border-yellow-400/30'
+										touched.description &&
+										errors.description
+											? 'border-red-400'
+											: 'border-yellow-400/30'
 									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500 resize-none`}
 									placeholder='A sophisticated blend of gin and elderflower...'
 								/>
 								{touched.description && errors.description && (
-									<p className="mt-1 text-red-400 text-xs">{errors.description}</p>
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.description}
+									</p>
 								)}
 							</div>
 
@@ -242,9 +265,15 @@ const AddCocktailEnhanced = () => {
 										onChange={handleChange}
 										className='w-full bg-black border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300'
 									>
-										<option value='beginner'>Beginner</option>
-										<option value='intermediate'>Intermediate</option>
-										<option value='advanced'>Advanced</option>
+										<option value='beginner'>
+											Beginner
+										</option>
+										<option value='intermediate'>
+											Intermediate
+										</option>
+										<option value='advanced'>
+											Advanced
+										</option>
 										<option value='expert'>Expert</option>
 									</select>
 								</div>
@@ -261,12 +290,16 @@ const AddCocktailEnhanced = () => {
 										onChange={handleChange}
 										onBlur={handleBlur}
 										className={`w-full bg-transparent border ${
-											touched.prepTime && errors.prepTime ? 'border-red-400' : 'border-yellow-400/30'
+											touched.prepTime && errors.prepTime
+												? 'border-red-400'
+												: 'border-yellow-400/30'
 										} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 										placeholder='5 min'
 									/>
 									{touched.prepTime && errors.prepTime && (
-										<p className="mt-1 text-red-400 text-xs">{errors.prepTime}</p>
+										<p className='mt-1 text-red-400 text-xs'>
+											{errors.prepTime}
+										</p>
 									)}
 								</div>
 
@@ -298,12 +331,17 @@ const AddCocktailEnhanced = () => {
 										onChange={handleChange}
 										onBlur={handleBlur}
 										className={`w-full bg-transparent border ${
-											touched.glassType && errors.glassType ? 'border-red-400' : 'border-yellow-400/30'
+											touched.glassType &&
+											errors.glassType
+												? 'border-red-400'
+												: 'border-yellow-400/30'
 										} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 										placeholder='Martini Glass'
 									/>
 									{touched.glassType && errors.glassType && (
-										<p className="mt-1 text-red-400 text-xs">{errors.glassType}</p>
+										<p className='mt-1 text-red-400 text-xs'>
+											{errors.glassType}
+										</p>
 									)}
 								</div>
 							</div>
@@ -332,7 +370,10 @@ const AddCocktailEnhanced = () => {
 									Ingredients *
 								</label>
 								{values.ingredients.map((ingredient, index) => (
-									<div key={index} className='flex gap-2 mb-3'>
+									<div
+										key={index}
+										className='flex gap-2 mb-3'
+									>
 										<input
 											type='text'
 											value={ingredient}
@@ -344,7 +385,9 @@ const AddCocktailEnhanced = () => {
 												)
 											}
 											className='flex-1 bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500'
-											placeholder={`Ingredient ${index + 1}`}
+											placeholder={`Ingredient ${
+												index + 1
+											}`}
 										/>
 										{values.ingredients.length > 1 && (
 											<button
@@ -370,7 +413,9 @@ const AddCocktailEnhanced = () => {
 									+ Add Ingredient
 								</button>
 								{touched.ingredients && errors.ingredients && (
-									<p className="mt-1 text-red-400 text-xs">{errors.ingredients}</p>
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.ingredients}
+									</p>
 								)}
 							</div>
 
@@ -379,50 +424,62 @@ const AddCocktailEnhanced = () => {
 								<label className='block text-yellow-400 text-sm font-light tracking-wide uppercase mb-3'>
 									Instructions *
 								</label>
-								{values.instructions.map((instruction, index) => (
-									<div key={index} className='flex gap-2 mb-3'>
-										<div className='flex-shrink-0 w-8 h-12 flex items-center justify-center border border-yellow-400/30 bg-yellow-400/10 text-yellow-400 text-sm font-bold'>
-											{index + 1}
-										</div>
-										<textarea
-											value={instruction}
-											onChange={(e) =>
-												handleArrayChange(
-													index,
-													e.target.value,
-													'instructions',
-												)
-											}
-											rows={2}
-											className='flex-1 bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500 resize-none'
-											placeholder={`Step ${index + 1}`}
-										/>
-										{values.instructions.length > 1 && (
-											<button
-												type='button'
-												onClick={() =>
-													removeArrayField(
+								{values.instructions.map(
+									(instruction, index) => (
+										<div
+											key={index}
+											className='flex gap-2 mb-3'
+										>
+											<div className='flex-shrink-0 w-8 h-12 flex items-center justify-center border border-yellow-400/30 bg-yellow-400/10 text-yellow-400 text-sm font-bold'>
+												{index + 1}
+											</div>
+											<textarea
+												value={instruction}
+												onChange={(e) =>
+													handleArrayChange(
 														index,
+														e.target.value,
 														'instructions',
 													)
 												}
-												className='text-red-400 hover:text-red-300 px-3 py-2 border border-red-400/30 hover:border-red-400 transition-colors duration-300'
-											>
-												×
-											</button>
-										)}
-									</div>
-								))}
+												rows={2}
+												className='flex-1 bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500 resize-none'
+												placeholder={`Step ${
+													index + 1
+												}`}
+											/>
+											{values.instructions.length > 1 && (
+												<button
+													type='button'
+													onClick={() =>
+														removeArrayField(
+															index,
+															'instructions',
+														)
+													}
+													className='text-red-400 hover:text-red-300 px-3 py-2 border border-red-400/30 hover:border-red-400 transition-colors duration-300'
+												>
+													×
+												</button>
+											)}
+										</div>
+									),
+								)}
 								<button
 									type='button'
-									onClick={() => addArrayField('instructions')}
+									onClick={() =>
+										addArrayField('instructions')
+									}
 									className='text-yellow-400 hover:text-yellow-300 text-sm font-light tracking-wide uppercase'
 								>
 									+ Add Step
 								</button>
-								{touched.instructions && errors.instructions && (
-									<p className="mt-1 text-red-400 text-xs">{errors.instructions}</p>
-								)}
+								{touched.instructions &&
+									errors.instructions && (
+										<p className='mt-1 text-red-400 text-xs'>
+											{errors.instructions}
+										</p>
+									)}
 							</div>
 
 							{/* Tags */}
@@ -431,7 +488,10 @@ const AddCocktailEnhanced = () => {
 									Tags
 								</label>
 								{values.tags.map((tag, index) => (
-									<div key={index} className='flex gap-2 mb-3'>
+									<div
+										key={index}
+										className='flex gap-2 mb-3'
+									>
 										<input
 											type='text'
 											value={tag}
@@ -449,7 +509,10 @@ const AddCocktailEnhanced = () => {
 											<button
 												type='button'
 												onClick={() =>
-													removeArrayField(index, 'tags')
+													removeArrayField(
+														index,
+														'tags',
+													)
 												}
 												className='text-red-400 hover:text-red-300 px-3 py-2 border border-red-400/30 hover:border-red-400 transition-colors duration-300'
 											>
@@ -483,7 +546,7 @@ const AddCocktailEnhanced = () => {
 											<button
 												type='button'
 												onClick={() =>
-													setValues(prev => ({
+													setValues((prev) => ({
 														...prev,
 														image: null,
 														imagePreview: null,
@@ -539,7 +602,7 @@ const AddCocktailEnhanced = () => {
 								<span className='relative z-10 flex items-center gap-3'>
 									{createCocktailMutation.isLoading ? (
 										<>
-											<div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+											<div className='w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin'></div>
 											<span>Creating...</span>
 										</>
 									) : (
