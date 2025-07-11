@@ -19,7 +19,11 @@ const ContentEnhanced = () => {
 	}, [isMobile, isTablet]);
 
 	// Fetch cocktails from API
-	const { data: cocktailsData, isLoading, error } = useCocktails({
+	const {
+		data: cocktailsData,
+		isLoading,
+		error,
+	} = useCocktails({
 		difficulty: activeCategory !== 'all' ? activeCategory : undefined,
 		limit: 12,
 	});
@@ -100,7 +104,8 @@ const ContentEnhanced = () => {
 						Failed to Load Cocktails
 					</h2>
 					<p className='text-gray-400 mb-8'>
-						{error?.message || 'Something went wrong while fetching cocktails.'}
+						{error?.message ||
+							'Something went wrong while fetching cocktails.'}
 					</p>
 					<button
 						onClick={() => window.location.reload()}
@@ -136,7 +141,8 @@ const ContentEnhanced = () => {
 					</h1>
 					<div className='w-24 h-0.5 bg-yellow-400 mx-auto mb-6'></div>
 					<p className='text-gray-400 text-lg md:text-xl font-light italic max-w-2xl mx-auto'>
-						Discover masterfully crafted cocktails from bartenders around the world
+						Discover masterfully crafted cocktails from bartenders
+						around the world
 					</p>
 				</div>
 
@@ -161,7 +167,10 @@ const ContentEnhanced = () => {
 				{/* Loading State */}
 				{isLoading && (
 					<div className='flex justify-center py-20'>
-						<LoadingSpinner size="large" text="Loading cocktails..." />
+						<LoadingSpinner
+							size='large'
+							text='Loading cocktails...'
+						/>
 					</div>
 				)}
 
@@ -180,7 +189,9 @@ const ContentEnhanced = () => {
 							<div
 								className='flex transition-transform duration-500 ease-in-out'
 								style={{
-									transform: `translateX(-${currentSlide * (100 / cardsPerView)}%)`,
+									transform: `translateX(-${
+										currentSlide * (100 / cardsPerView)
+									}%)`,
 								}}
 							>
 								{cocktails.map((cocktail) => (
@@ -198,15 +209,18 @@ const ContentEnhanced = () => {
 											cocktail={{
 												id: cocktail._id || cocktail.id,
 												name: cocktail.name,
-												image: cocktail.image || cocktail.imageUrl,
+												image:
+													cocktail.image ||
+													cocktail.imageUrl,
 												imageAlt: `${cocktail.name} cocktail`,
 												difficulty: cocktail.difficulty,
 												prepTime: cocktail.prepTime,
-												description: cocktail.description,
+												description:
+													cocktail.description,
 												rating: cocktail.rating || 4.5,
 											}}
 											onCardClick={handleCardClick}
-											size="medium"
+											size='medium'
 										/>
 									</div>
 								))}
@@ -221,8 +235,18 @@ const ContentEnhanced = () => {
 									className='absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-6 bg-black/80 border border-yellow-400/50 text-yellow-400 w-12 h-12 flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-all duration-300 z-10'
 									aria-label='Previous cocktail'
 								>
-									<svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-										<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
+									<svg
+										className='w-6 h-6'
+										fill='none'
+										stroke='currentColor'
+										viewBox='0 0 24 24'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth={2}
+											d='M15 19l-7-7 7-7'
+										/>
 									</svg>
 								</button>
 								<button
@@ -230,8 +254,18 @@ const ContentEnhanced = () => {
 									className='absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-6 bg-black/80 border border-yellow-400/50 text-yellow-400 w-12 h-12 flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-all duration-300 z-10'
 									aria-label='Next cocktail'
 								>
-									<svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-										<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
+									<svg
+										className='w-6 h-6'
+										fill='none'
+										stroke='currentColor'
+										viewBox='0 0 24 24'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth={2}
+											d='M9 5l7 7-7 7'
+										/>
 									</svg>
 								</button>
 							</>
@@ -240,7 +274,12 @@ const ContentEnhanced = () => {
 						{/* Slide Indicators */}
 						{cocktails.length > cardsPerView && (
 							<div className='flex justify-center mt-8 space-x-2'>
-								{Array.from({ length: Math.max(0, cocktails.length - cardsPerView + 1) }).map((_, index) => (
+								{Array.from({
+									length: Math.max(
+										0,
+										cocktails.length - cardsPerView + 1,
+									),
+								}).map((_, index) => (
 									<button
 										key={index}
 										onClick={() => setCurrentSlide(index)}
@@ -265,10 +304,9 @@ const ContentEnhanced = () => {
 							No Cocktails Found
 						</h3>
 						<p className='text-gray-400 mb-8'>
-							{activeCategory === 'all' 
-								? 'No cocktails available at the moment.' 
-								: `No ${activeCategory} cocktails found. Try a different category.`
-							}
+							{activeCategory === 'all'
+								? 'No cocktails available at the moment.'
+								: `No ${activeCategory} cocktails found. Try a different category.`}
 						</p>
 						{activeCategory !== 'all' && (
 							<button
@@ -292,7 +330,8 @@ const ContentEnhanced = () => {
 						Ready to Share Your Creation?
 					</h3>
 					<p className='text-gray-400 mb-8 max-w-md mx-auto'>
-						Join our community of master mixologists and share your signature cocktails
+						Join our community of master mixologists and share your
+						signature cocktails
 					</p>
 				</div>
 			</div>
