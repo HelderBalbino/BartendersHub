@@ -79,7 +79,7 @@ const CommunitySection = () => {
 		},
 		{
 			id: 6,
-			name: 'george',
+			name: 'George',
 			username: 'crafty_george',
 			avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 23,
