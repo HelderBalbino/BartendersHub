@@ -114,7 +114,7 @@ const CommunitySection = () => {
 			speciality: 'Cocktails',
 			location: 'Havana, Cuba',
 			badges: ['Caribbean Queen', 'Rum Expert'],
-			recentActivity: 'Added "Havana Nights" 12 hours ago',
+			recentActivity: 'Added "Havana Nights" 9 hours ago',
 		},
 	];
 
