@@ -96,7 +96,7 @@ const CommunitySection = () => {
 			username: 'sake_master',
 			avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 71,
-			joinDate: '2024-08-15',
+			joinDate: '2023-08-15',
 			isVerified: true,
 			speciality: 'Japanese Cocktails',
 			location: 'Tokyo, Japan',
