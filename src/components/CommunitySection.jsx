@@ -79,8 +79,8 @@ const CommunitySection = () => {
 		},
 		{
 			id: 6,
-			name: 'Emma Craft',
-			username: 'craft_emma',
+			name: 'george',
+			username: 'crafty_george',
 			avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 23,
 			joinDate: '2025-01-10',
