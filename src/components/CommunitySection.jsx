@@ -111,7 +111,7 @@ const CommunitySection = () => {
 			cocktailsAdded: 45,
 			joinDate: '2024-12-01',
 			isVerified: true,
-			speciality: 'Cocktails',
+			speciality: 'Rum Cocktails',
 			location: 'Havana, Cuba',
 			badges: ['Caribbean Queen', 'Rum Expert'],
 			recentActivity: 'Added "Havana Nights" 9 hours ago',
