@@ -12,7 +12,7 @@ const AboutPage = () => {
 
 	const stats = [
 		{ number: '1+', label: 'Cocktails', icon: '🍸' },
-		{ number: '6+', label: 'Bartenders', icon: '👨‍🍳' },
+		{ number: '1+', label: 'Bartenders', icon: '👨‍🍳' },
 		{ number: '2', label: 'Countries Served', icon: '🌍' },
 		{ number: '1', label: 'Year of Excellence', icon: '⭐' },
 	];
