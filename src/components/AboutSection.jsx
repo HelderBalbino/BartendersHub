@@ -128,9 +128,9 @@ const AboutPage = () => {
 						</div>
 
 						<p className='text-lg md:text-xl lg:text-2xl text-gray-300 font-light italic leading-relaxed max-w-3xl mx-auto'>
-							"Where passion meets precision, and every cocktail
-							tells a story of uncompromising quality and timeless
-							elegance."
+							"Where the art of mixology meets the elegance of
+							premium cocktails, creating unforgettable moments
+							one sip at a time."
 						</p>
 					</div>
 				</div>
