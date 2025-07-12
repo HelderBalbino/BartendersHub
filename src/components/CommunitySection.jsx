@@ -109,7 +109,7 @@ const CommunitySection = () => {
 			username: 'rum_runner_olivia',
 			avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 45,
-			joinDate: '2024-12-01',
+			joinDate: '2025-1-01',
 			isVerified: true,
 			speciality: 'Rum Cocktails',
 			location: 'Havana, Cuba',
