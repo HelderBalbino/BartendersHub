@@ -39,7 +39,7 @@ const AboutPage = () => {
 		{
 			title: 'Community',
 			description:
-				'Building a global network of passionate bartenders and cocktail enthusiasts.',
+				'Fostering a global network of cocktail enthusiasts and professionals who share a passion for the art of bartending.',
 			icon: '🤝',
 		},
 	];
