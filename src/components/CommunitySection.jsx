@@ -67,7 +67,7 @@ const CommunitySection = () => {
 		{
 			id: 5,
 			name: 'Matteu',
-			username: 'tequila_diego',
+			username: 'agave_mat',
 			avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
 			cocktailsAdded: 56,
 			joinDate: '2024-09-30',
