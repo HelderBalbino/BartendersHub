@@ -1,19 +1,66 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { useAuth } from '../hooks/useAuth';
+import { useFormValidation, validationRules } from '../hooks/useFormValidation';
+import LoadingSpinner from './LoadingSpinner';
 
 const LogIn = () => {
 	const [searchParams] = useSearchParams();
-	const mode = searchParams.get('mode'); // 'login' or 'register'
+	const navigate = useNavigate();
+	const mode = searchParams.get('mode');
+	const redirectPath = searchParams.get('redirect') || '/';
 	const [isLogin, setIsLogin] = useState(
 		mode === 'login' || mode !== 'register',
 	);
 
-	const [formData, setFormData] = useState({
+	const { login, register, loading, error, isAuthenticated, clearError } =
+		useAuth();
+
+	// Form validation setup
+	const loginValidation = {
+		email: [validationRules.required, validationRules.email],
+		password: [validationRules.required],
+	};
+
+	const registerValidation = {
+		name: [validationRules.required, validationRules.minLength(2)],
+		username: [validationRules.required, validationRules.minLength(3)],
+		email: [validationRules.required, validationRules.email],
+		password: [validationRules.required, validationRules.password],
+		confirmPassword: [
+			validationRules.required,
+			validationRules.confirmPassword,
+		],
+	};
+
+	const initialValues = {
 		email: '',
 		password: '',
 		name: '',
+		username: '',
 		confirmPassword: '',
-	});
+	};
+
+	const {
+		values,
+		errors,
+		touched,
+		handleChange,
+		handleBlur,
+		validateAll,
+		reset,
+	} = useFormValidation(
+		initialValues,
+		isLogin ? loginValidation : registerValidation,
+	);
+
+	// Redirect if already authenticated
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate(redirectPath, { replace: true });
+		}
+	}, [isAuthenticated, navigate, redirectPath]);
 
 	// Update login state when URL changes
 	useEffect(() => {
@@ -24,18 +71,56 @@ const LogIn = () => {
 		}
 	}, [mode]);
 
-	const handleInputChange = (e) => {
-		setFormData({
-			...formData,
-			[e.target.name]: e.target.value,
-		});
+	// Clear errors when switching modes
+	useEffect(() => {
+		clearError();
+		reset();
+	}, [isLogin, clearError, reset]);
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		if (!validateAll()) {
+			toast.error('Please fix the errors in the form');
+			return;
+		}
+
+		try {
+			if (isLogin) {
+				await login({
+					email: values.email,
+					password: values.password,
+				});
+				toast.success('Welcome back to the speakeasy!');
+			} else {
+				await register({
+					name: values.name,
+					username: values.username,
+					email: values.email,
+					password: values.password,
+				});
+				toast.success('Welcome to BartendersHub!');
+			}
+		} catch (error) {
+			// Error is handled by the auth context and displayed via toast
+			console.error('Authentication error:', error);
+		}
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		// Handle form submission here
-		console.log('Form submitted:', formData);
-	};
+	if (loading) {
+		return (
+			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+				<LoadingSpinner
+					size='large'
+					text={
+						isLogin
+							? 'Entering the speakeasy...'
+							: 'Joining the elite...'
+					}
+				/>
+			</section>
+		);
+	}
 
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8'>
@@ -86,6 +171,7 @@ const LogIn = () => {
 					{/* Toggle Buttons */}
 					<div className='flex mb-6 border border-yellow-400/30 rounded-none overflow-hidden'>
 						<button
+							type='button'
 							onClick={() => setIsLogin(true)}
 							className={`flex-1 py-3 px-4 text-sm font-light tracking-wide uppercase transition-all duration-300 ${
 								isLogin
@@ -96,6 +182,7 @@ const LogIn = () => {
 							Login
 						</button>
 						<button
+							type='button'
 							onClick={() => setIsLogin(false)}
 							className={`flex-1 py-3 px-4 text-sm font-light tracking-wide uppercase transition-all duration-300 ${
 								!isLogin
@@ -107,6 +194,13 @@ const LogIn = () => {
 						</button>
 					</div>
 
+					{/* Error Display */}
+					{error && (
+						<div className='mb-6 p-4 border border-red-400/50 bg-red-900/20 text-red-400 text-sm'>
+							{error}
+						</div>
+					)}
+
 					<form onSubmit={handleSubmit} className='space-y-6'>
 						{/* Name field (only for register) */}
 						{!isLogin && (
@@ -117,12 +211,50 @@ const LogIn = () => {
 								<input
 									type='text'
 									name='name'
-									value={formData.name}
-									onChange={handleInputChange}
-									className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500'
+									value={values.name}
+									onChange={handleChange}
+									onBlur={handleBlur}
+									className={`w-full bg-transparent border ${
+										touched.name && errors.name
+											? 'border-red-400'
+											: 'border-yellow-400/30'
+									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 									placeholder='Enter your full name'
 									required={!isLogin}
 								/>
+								{touched.name && errors.name && (
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.name}
+									</p>
+								)}
+							</div>
+						)}
+
+						{/* Username field (only for register) */}
+						{!isLogin && (
+							<div>
+								<label className='block text-yellow-400 text-sm font-light tracking-wide uppercase mb-2'>
+									Username
+								</label>
+								<input
+									type='text'
+									name='username'
+									value={values.username}
+									onChange={handleChange}
+									onBlur={handleBlur}
+									className={`w-full bg-transparent border ${
+										touched.username && errors.username
+											? 'border-red-400'
+											: 'border-yellow-400/30'
+									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
+									placeholder='Enter your username'
+									required={!isLogin}
+								/>
+								{touched.username && errors.username && (
+									<p className='mt-1 text-red-400 text-xs'>
+										{errors.username}
+									</p>
+								)}
 							</div>
 						)}
 
@@ -134,12 +266,22 @@ const LogIn = () => {
 							<input
 								type='email'
 								name='email'
-								value={formData.email}
-								onChange={handleInputChange}
-								className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500'
+								value={values.email}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								className={`w-full bg-transparent border ${
+									touched.email && errors.email
+										? 'border-red-400'
+										: 'border-yellow-400/30'
+								} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 								placeholder='Enter your email'
 								required
 							/>
+							{touched.email && errors.email && (
+								<p className='mt-1 text-red-400 text-xs'>
+									{errors.email}
+								</p>
+							)}
 						</div>
 
 						{/* Password field */}
@@ -150,12 +292,22 @@ const LogIn = () => {
 							<input
 								type='password'
 								name='password'
-								value={formData.password}
-								onChange={handleInputChange}
-								className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500'
+								value={values.password}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								className={`w-full bg-transparent border ${
+									touched.password && errors.password
+										? 'border-red-400'
+										: 'border-yellow-400/30'
+								} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 								placeholder='Enter your password'
 								required
 							/>
+							{touched.password && errors.password && (
+								<p className='mt-1 text-red-400 text-xs'>
+									{errors.password}
+								</p>
+							)}
 						</div>
 
 						{/* Confirm Password field (only for register) */}
@@ -167,19 +319,32 @@ const LogIn = () => {
 								<input
 									type='password'
 									name='confirmPassword'
-									value={formData.confirmPassword}
-									onChange={handleInputChange}
-									className='w-full bg-transparent border border-yellow-400/30 text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500'
+									value={values.confirmPassword}
+									onChange={handleChange}
+									onBlur={handleBlur}
+									className={`w-full bg-transparent border ${
+										touched.confirmPassword &&
+										errors.confirmPassword
+											? 'border-red-400'
+											: 'border-yellow-400/30'
+									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
 									placeholder='Confirm your password'
 									required={!isLogin}
 								/>
+								{touched.confirmPassword &&
+									errors.confirmPassword && (
+										<p className='mt-1 text-red-400 text-xs'>
+											{errors.confirmPassword}
+										</p>
+									)}
 							</div>
 						)}
 
 						{/* Submit Button */}
 						<button
 							type='submit'
-							className='group relative w-full bg-yellow-400 text-black font-light py-4 px-6 border border-yellow-400 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.15em] uppercase text-sm shadow-2xl'
+							disabled={loading}
+							className='group relative w-full bg-yellow-400 text-black font-light py-4 px-6 border border-yellow-400 transition-all duration-700 hover:bg-black hover:text-yellow-400 tracking-[0.15em] uppercase text-sm shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed'
 						>
 							{/* Art Deco corners */}
 							<div className='absolute -top-1 -left-1 w-3 h-3 border-l border-t border-yellow-400'></div>
@@ -188,9 +353,16 @@ const LogIn = () => {
 							<div className='absolute -bottom-1 -right-1 w-3 h-3 border-r border-b border-yellow-400'></div>
 
 							<span className='relative z-10'>
-								{isLogin
-									? 'Enter the Speakeasy'
-									: 'Join the Elite'}
+								{loading ? (
+									<span className='flex items-center justify-center gap-2'>
+										<div className='w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin'></div>
+										{isLogin ? 'Entering...' : 'Joining...'}
+									</span>
+								) : isLogin ? (
+									'Enter the Speakeasy'
+								) : (
+									'Join the Elite'
+								)}
 							</span>
 						</button>
 					</form>
