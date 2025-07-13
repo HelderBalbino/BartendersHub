@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
-import { useFormValidation, validationRules } from '../hooks/useFormValidation';
+import { validationRules } from '../hooks/useFormValidation';
 import LoadingSpinner from './LoadingSpinner';
 
 const LogIn = () => {
@@ -17,7 +17,19 @@ const LogIn = () => {
 	const { login, register, loading, error, isAuthenticated, clearError } =
 		useAuth();
 
-	// Form validation setup
+	// FIXED: Replace useFormValidation with simple local state
+	const [formValues, setFormValues] = useState({
+		email: '',
+		password: '',
+		name: '',
+		username: '',
+		confirmPassword: '',
+	});
+
+	const [formErrors, setFormErrors] = useState({});
+	const [formTouched, setFormTouched] = useState({});
+
+	// Validation rules
 	const loginValidation = {
 		email: [validationRules.required, validationRules.email],
 		password: [validationRules.required],
@@ -34,26 +46,95 @@ const LogIn = () => {
 		],
 	};
 
-	const initialValues = {
-		email: '',
-		password: '',
-		name: '',
-		username: '',
-		confirmPassword: '',
+	// Simple form handlers
+	const handleFormChange = (e) => {
+		const { name, value } = e.target;
+		setFormValues((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+
+		// Clear error when user starts typing
+		if (formErrors[name]) {
+			setFormErrors((prev) => ({
+				...prev,
+				[name]: '',
+			}));
+		}
 	};
 
-	const {
-		values,
-		errors,
-		touched,
-		handleChange,
-		handleBlur,
-		validateAll,
-		reset,
-	} = useFormValidation(
-		initialValues,
-		isLogin ? loginValidation : registerValidation,
-	);
+	const handleFormBlur = (e) => {
+		const { name } = e.target;
+		setFormTouched((prev) => ({
+			...prev,
+			[name]: true,
+		}));
+
+		// Validate field on blur
+		validateField(name, formValues[name]);
+	};
+
+	const validateField = (name, value) => {
+		const rules = (isLogin ? loginValidation : registerValidation)[name];
+		if (!rules) return '';
+
+		for (const rule of rules) {
+			const error = rule(value, formValues);
+			if (error) {
+				setFormErrors((prev) => ({
+					...prev,
+					[name]: error,
+				}));
+				return error;
+			}
+		}
+
+		setFormErrors((prev) => ({
+			...prev,
+			[name]: '',
+		}));
+		return '';
+	};
+
+	const validateAllFields = () => {
+		const currentValidation = isLogin
+			? loginValidation
+			: registerValidation;
+		const newErrors = {};
+
+		Object.keys(currentValidation).forEach((field) => {
+			const rules = currentValidation[field];
+			if (rules) {
+				for (const rule of rules) {
+					const error = rule(formValues[field], formValues);
+					if (error) {
+						newErrors[field] = error;
+						break;
+					}
+				}
+			}
+		});
+
+		setFormErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
+	// Remove the old useFormValidation hook
+	// const {
+	// 	values,
+	// 	errors,
+	// 	touched,
+	// 	handleChange,
+	// 	handleBlur,
+	// 	validateAll,
+	// 	reset,
+	// } = useFormValidation(
+	// 	initialValues,
+	// 	isLogin ? loginValidation : registerValidation,
+	// );
+
+	// Debug current render state
+	console.log('� LogIn component render - current values:', formValues);
 
 	// Redirect if already authenticated
 	useEffect(() => {
@@ -74,13 +155,21 @@ const LogIn = () => {
 	// Clear errors when switching modes
 	useEffect(() => {
 		clearError();
-		reset();
-	}, [isLogin, clearError, reset]);
+		setFormValues({
+			email: '',
+			password: '',
+			name: '',
+			username: '',
+			confirmPassword: '',
+		});
+		setFormErrors({});
+		setFormTouched({});
+	}, [isLogin, clearError]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (!validateAll()) {
+		if (!validateAllFields()) {
 			toast.error('Please fix the errors in the form');
 			return;
 		}
@@ -88,16 +177,16 @@ const LogIn = () => {
 		try {
 			if (isLogin) {
 				await login({
-					email: values.email,
-					password: values.password,
+					email: formValues.email,
+					password: formValues.password,
 				});
 				toast.success('Welcome back to the speakeasy!');
 			} else {
 				await register({
-					name: values.name,
-					username: values.username,
-					email: values.email,
-					password: values.password,
+					name: formValues.name,
+					username: formValues.username,
+					email: formValues.email,
+					password: formValues.password,
 				});
 				toast.success('Welcome to BartendersHub!');
 			}
@@ -211,11 +300,11 @@ const LogIn = () => {
 								<input
 									type='text'
 									name='name'
-									value={values.name}
-									onChange={handleChange}
-									onBlur={handleBlur}
+									value={formValues.name}
+									onChange={handleFormChange}
+									onBlur={handleFormBlur}
 									className={`w-full bg-black/20 border ${
-										touched.name && errors.name
+										formTouched.name && formErrors.name
 											? 'border-red-400'
 											: 'border-yellow-400/30'
 									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
@@ -226,9 +315,9 @@ const LogIn = () => {
 									placeholder='Enter your full name'
 									required={!isLogin}
 								/>
-								{touched.name && errors.name && (
+								{formTouched.name && formErrors.name && (
 									<p className='mt-1 text-red-400 text-xs'>
-										{errors.name}
+										{formErrors.name}
 									</p>
 								)}
 							</div>
@@ -243,11 +332,12 @@ const LogIn = () => {
 								<input
 									type='text'
 									name='username'
-									value={values.username}
-									onChange={handleChange}
-									onBlur={handleBlur}
+									value={formValues.username}
+									onChange={handleFormChange}
+									onBlur={handleFormBlur}
 									className={`w-full bg-black/20 border ${
-										touched.username && errors.username
+										formTouched.username &&
+										formErrors.username
 											? 'border-red-400'
 											: 'border-yellow-400/30'
 									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
@@ -258,11 +348,12 @@ const LogIn = () => {
 									placeholder='Enter your username'
 									required={!isLogin}
 								/>
-								{touched.username && errors.username && (
-									<p className='mt-1 text-red-400 text-xs'>
-										{errors.username}
-									</p>
-								)}
+								{formTouched.username &&
+									formErrors.username && (
+										<p className='mt-1 text-red-400 text-xs'>
+											{formErrors.username}
+										</p>
+									)}
 							</div>
 						)}
 
@@ -274,11 +365,11 @@ const LogIn = () => {
 							<input
 								type='email'
 								name='email'
-								value={values.email}
-								onChange={handleChange}
-								onBlur={handleBlur}
+								value={formValues.email}
+								onChange={handleFormChange}
+								onBlur={handleFormBlur}
 								className={`w-full bg-black/20 border ${
-									touched.email && errors.email
+									formTouched.email && formErrors.email
 										? 'border-red-400'
 										: 'border-yellow-400/30'
 								} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
@@ -289,9 +380,9 @@ const LogIn = () => {
 								placeholder='Enter your email'
 								required
 							/>
-							{touched.email && errors.email && (
+							{formTouched.email && formErrors.email && (
 								<p className='mt-1 text-red-400 text-xs'>
-									{errors.email}
+									{formErrors.email}
 								</p>
 							)}
 						</div>
@@ -304,11 +395,11 @@ const LogIn = () => {
 							<input
 								type='password'
 								name='password'
-								value={values.password}
-								onChange={handleChange}
-								onBlur={handleBlur}
+								value={formValues.password}
+								onChange={handleFormChange}
+								onBlur={handleFormBlur}
 								className={`w-full bg-black/20 border ${
-									touched.password && errors.password
+									formTouched.password && formErrors.password
 										? 'border-red-400'
 										: 'border-yellow-400/30'
 								} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
@@ -319,9 +410,9 @@ const LogIn = () => {
 								placeholder='Enter your password'
 								required
 							/>
-							{touched.password && errors.password && (
+							{formTouched.password && formErrors.password && (
 								<p className='mt-1 text-red-400 text-xs'>
-									{errors.password}
+									{formErrors.password}
 								</p>
 							)}
 						</div>
@@ -335,12 +426,12 @@ const LogIn = () => {
 								<input
 									type='password'
 									name='confirmPassword'
-									value={values.confirmPassword}
-									onChange={handleChange}
-									onBlur={handleBlur}
+									value={formValues.confirmPassword}
+									onChange={handleFormChange}
+									onBlur={handleFormBlur}
 									className={`w-full bg-black/20 border ${
-										touched.confirmPassword &&
-										errors.confirmPassword
+										formTouched.confirmPassword &&
+										formErrors.confirmPassword
 											? 'border-red-400'
 											: 'border-yellow-400/30'
 									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
@@ -351,10 +442,10 @@ const LogIn = () => {
 									placeholder='Confirm your password'
 									required={!isLogin}
 								/>
-								{touched.confirmPassword &&
-									errors.confirmPassword && (
+								{formTouched.confirmPassword &&
+									formErrors.confirmPassword && (
 										<p className='mt-1 text-red-400 text-xs'>
-											{errors.confirmPassword}
+											{formErrors.confirmPassword}
 										</p>
 									)}
 							</div>
