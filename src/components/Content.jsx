@@ -206,7 +206,7 @@ const Content = () => {
 										}`}
 									>
 										<CocktailCard
-											cocktail={{
+											cocktailData={{
 												id: cocktail._id || cocktail.id,
 												name: cocktail.name,
 												image:
