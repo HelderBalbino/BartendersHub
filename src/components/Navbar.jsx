@@ -24,13 +24,16 @@ const Navbar = () => {
 
 	const navLinks = [
 		{ name: 'Cocktails', to: '/cocktails' },
-		{ name: 'Community', to: '/community' },
 		{ name: 'About', to: '/about' },
 	];
 
-	// Add cocktail link only for authenticated users
+	// Add auth-specific links for authenticated users
 	const authNavLinks = isAuthenticated
-		? [{ name: 'Add a cocktail', to: '/addCocktail' }, ...navLinks]
+		? [
+				{ name: 'Add a cocktail', to: '/addCocktail' },
+				{ name: 'Community', to: '/community' },
+				...navLinks,
+		  ]
 		: navLinks;
 
 	return (
