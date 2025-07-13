@@ -45,6 +45,17 @@ frontend and backend from working properly together.
 -   ✅ Consistent prop naming (`cocktailData` vs `cocktail`)
 -   ✅ Leveraging reusable UI component library
 
+### 5. **Login Form Input Visibility (Vercel Deployment Fix)**
+
+-   **Problem**: Users couldn't see text they were typing in login/register
+    forms on Vercel
+-   **Fixed**:
+    -   ✅ Changed input backgrounds from `bg-transparent` to `bg-black/20`
+    -   ✅ Added inline style fallbacks:
+        `style={{ color: '#ffffff', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}`
+    -   ✅ Enhanced with `caret-white` and `font-normal` classes
+    -   ✅ Improved placeholder contrast with `placeholder-gray-400`
+
 ## 📁 Files Modified
 
 ### Frontend (.env)
@@ -68,6 +79,7 @@ FRONTEND_URL=http://localhost:5173     # Fixed from 3000
 -   ✅ `src/services/api.js` - API URL consistency
 -   ✅ `src/App.jsx` - TanStack Query v5 compatibility
 -   ✅ `src/hooks/useCocktails.js` - Complete v5 migration
+-   ✅ `src/components/LogIn.jsx` - Input visibility fixes for production
 -   ✅ `backend/src/server.js` - CORS configuration
 -   ✅ `backend/.env.example` - Documentation update
 
