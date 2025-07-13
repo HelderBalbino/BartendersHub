@@ -30,10 +30,21 @@ export const useFormValidation = (initialValues, validationRules) => {
 		const { name, value, type, files } = e.target;
 		const newValue = type === 'file' ? files[0] : value;
 
-		setValues((prev) => ({
-			...prev,
-			[name]: newValue,
-		}));
+		console.log('🔧 useFormValidation.handleChange called:', {
+			name,
+			value,
+			newValue,
+			currentValues: values,
+		});
+
+		setValues((prev) => {
+			const newState = {
+				...prev,
+				[name]: newValue,
+			};
+			console.log('🔧 setValues called with:', newState);
+			return newState;
+		});
 
 		// Validate field if it has been touched
 		if (touched[name]) {
