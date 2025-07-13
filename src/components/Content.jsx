@@ -1,194 +1,59 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useCocktails } from '../hooks/useCocktails';
+import { useResponsive } from '../hooks/useCocktails';
 import CocktailCard from './CocktailCard';
+import LoadingSpinner from './LoadingSpinner';
 
 const Content = () => {
-	const [activeCategory, setActiveCategory] = useState('signature');
+	const [activeCategory, setActiveCategory] = useState('all');
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-	const [cardsPerView, setCardsPerView] = useState(1);
 	const [touchStart, setTouchStart] = useState(null);
 	const [touchEnd, setTouchEnd] = useState(null);
 
-	// Handle responsive cards per view
-	useEffect(() => {
-		const handleResize = () => {
-			if (window.innerWidth >= 1024) {
-				setCardsPerView(3); // lg and above
-			} else if (window.innerWidth >= 768) {
-				setCardsPerView(2); // md
-			} else {
-				setCardsPerView(1); // sm and below
-			}
-		};
+	const { isMobile, isTablet } = useResponsive();
+	const cardsPerView = useMemo(() => {
+		if (isMobile) return 1;
+		if (isTablet) return 2;
+		return 3;
+	}, [isMobile, isTablet]);
 
-		handleResize(); // Set initial value
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, []);
+	// Fetch cocktails from API
+	const {
+		data: cocktailsData,
+		isLoading,
+		error,
+	} = useCocktails({
+		difficulty: activeCategory !== 'all' ? activeCategory : undefined,
+		limit: 12,
+	});
 
-	// Sample cocktail data organized by categories
-	const cocktailData = useMemo(
-		() => ({
-			signature: [
-				{
-					id: 1,
-					name: 'Gin Martini',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Intermediate',
-					prepTime: '3 min',
-					description:
-						'The quintessential gin cocktail, crisp and clean Classic cocktail with a twist of lemon or olive',
-					rating: 4.9,
-				},
-				{
-					id: 2,
-					name: 'Vodka Martini',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Intermediate',
-					prepTime: '3 min',
-					description:
-						'Smooth Classic vodka cocktail with a twist of lemon or olive',
-					rating: 4.7,
-				},
-				{
-					id: 3,
-					name: 'Mojito',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Intermediate',
-					prepTime: '3 min',
-					description:
-						'Refreshing mint and lime cocktail with a hint of sweetness',
-					rating: 4.8,
-				},
-				{
-					id: 4,
-					name: 'Dirty Martini',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Expert',
-					prepTime: '4 min',
-					description: 'Savory twist on the classic with olive brine',
-					rating: 5.0,
-				},
-			],
-			classics: [
-				{
-					id: 5,
-					name: 'Caipinhira',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Intermediate',
-					prepTime: '3 min',
-					description:
-						'Brazilian National drink, made with cachaça, lime, and sugar',
-					rating: 4.8,
-				},
-				{
-					id: 6,
-					name: 'Old Fashioned',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Beginner',
-					prepTime: '3 min',
-					description:
-						'Timeless whiskey cocktail with sugar and bitters',
-					rating: 4.7,
-				},
-				{
-					id: 7,
-					name: 'Negroni',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Beginner',
-					prepTime: '2 min',
-					description:
-						'Perfect balance of gin, vermouth, and Campari',
-					rating: 4.5,
-				},
-				{
-					id: 8,
-					name: 'Manhattan',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Expert',
-					prepTime: '4 min',
-					description:
-						'Rich whiskey cocktail with sweet vermouth and bitters',
-					rating: 4.5,
-				},
-			],
-			seasonal: [
-				{
-					id: 9,
-					name: 'Aperol Spritz',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Intermediate',
-					prepTime: '4 min',
-					description:
-						'Refreshing Italian spritz with Aperol, prosecco, and soda',
-					rating: 4.7,
-				},
-				{
-					id: 10,
-					name: 'Winter Warmer',
-					image: 'src/assets/images/cocktailsImages/dirtyMartini.png',
-					difficulty: 'Advanced',
-					prepTime: '6 min',
-					description:
-						'Spiced rum, apple cider, and cinnamon for a cozy drink',
-					rating: 4.7,
-				},
-			],
-		}),
-		[],
-	);
+	const cocktails = cocktailsData?.cocktails || [];
 
+	// Categories for filtering
 	const categories = [
-		{
-			id: 'signature',
-			label: 'Signature Collection',
-			icon: '👑',
-			description: 'Our masterfully crafted signature cocktails',
-		},
-		{
-			id: 'classics',
-			label: 'Timeless Classics',
-			icon: '🎩',
-			description: 'Traditional cocktails perfected over time',
-		},
-		{
-			id: 'seasonal',
-			label: 'Seasonal Specials',
-			icon: '🍂',
-			description: 'Limited time seasonal creations',
-		},
+		{ id: 'all', name: 'All Cocktails', emoji: '🍸' },
+		{ id: 'beginner', name: 'Beginner', emoji: '🟢' },
+		{ id: 'intermediate', name: 'Intermediate', emoji: '🟡' },
+		{ id: 'advanced', name: 'Advanced', emoji: '🟠' },
+		{ id: 'expert', name: 'Expert', emoji: '🔴' },
 	];
-
-	const currentCocktails = cocktailData[activeCategory];
-	const maxSlides = Math.max(0, currentCocktails.length - cardsPerView);
 
 	// Auto-play functionality
 	useEffect(() => {
-		if (!isAutoPlaying) return;
+		if (!isAutoPlaying || cocktails.length === 0) return;
 
 		const interval = setInterval(() => {
-			setCurrentSlide((prev) => (prev >= maxSlides ? 0 : prev + 1));
+			setCurrentSlide((prev) => {
+				const maxSlide = Math.max(0, cocktails.length - cardsPerView);
+				return prev >= maxSlide ? 0 : prev + 1;
+			});
 		}, 4000);
 
 		return () => clearInterval(interval);
-	}, [maxSlides, isAutoPlaying]);
+	}, [isAutoPlaying, cocktails.length, cardsPerView]);
 
-	// Reset slide when category changes
-	useEffect(() => {
-		setCurrentSlide(0);
-	}, [activeCategory]);
-
-	const handlePrevSlide = () => {
-		setCurrentSlide((prev) => (prev <= 0 ? maxSlides : prev - 1));
-		setIsAutoPlaying(false);
-	};
-
-	const handleNextSlide = () => {
-		setCurrentSlide((prev) => (prev >= maxSlides ? 0 : prev + 1));
-		setIsAutoPlaying(false);
-	};
-
-	// Touch/swipe handlers for mobile
+	// Touch handlers
 	const handleTouchStart = (e) => {
 		setTouchEnd(null);
 		setTouchStart(e.targetTouches[0].clientX);
@@ -205,198 +70,269 @@ const Content = () => {
 		const isLeftSwipe = distance > 50;
 		const isRightSwipe = distance < -50;
 
-		if (isLeftSwipe && currentSlide < maxSlides) {
-			handleNextSlide();
-		}
-		if (isRightSwipe && currentSlide > 0) {
-			handlePrevSlide();
-		}
+		if (isLeftSwipe) nextSlide();
+		if (isRightSwipe) prevSlide();
 	};
 
-	const handleCategoryChange = (categoryId) => {
-		setActiveCategory(categoryId);
-		setIsAutoPlaying(true);
+	const nextSlide = () => {
+		const maxSlide = Math.max(0, cocktails.length - cardsPerView);
+		setCurrentSlide((prev) => (prev >= maxSlide ? 0 : prev + 1));
 	};
+
+	const prevSlide = () => {
+		const maxSlide = Math.max(0, cocktails.length - cardsPerView);
+		setCurrentSlide((prev) => (prev <= 0 ? maxSlide : prev - 1));
+	};
+
+	const handleCategoryChange = (category) => {
+		setActiveCategory(category);
+		setCurrentSlide(0);
+	};
+
+	const handleCardClick = (cocktail) => {
+		// Navigate to cocktail detail page or show modal
+		console.log('Cocktail clicked:', cocktail);
+		// TODO: Implement navigation to detail page
+	};
+
+	if (error) {
+		return (
+			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-20'>
+				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
+					<div className='text-6xl text-red-400 mb-6'>⚠️</div>
+					<h2 className='text-2xl text-white font-light tracking-wide uppercase mb-4'>
+						Failed to Load Cocktails
+					</h2>
+					<p className='text-gray-400 mb-8'>
+						{error?.message ||
+							'Something went wrong while fetching cocktails.'}
+					</p>
+					<button
+						onClick={() => window.location.reload()}
+						className='bg-yellow-400 text-black px-6 py-3 border border-yellow-400 hover:bg-black hover:text-yellow-400 transition-all duration-300 tracking-wide uppercase text-sm'
+					>
+						Try Again
+					</button>
+				</div>
+			</section>
+		);
+	}
 
 	return (
-		<section className='bg-gradient-to-br from-black via-gray-900 to-black py-12 sm:py-16 lg:py-24 relative overflow-hidden'>
-			{/* Art Deco Background Pattern - Mobile Optimized */}
+		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-20'>
+			{/* Background Elements */}
 			<div className='absolute inset-0 opacity-5'>
-				<div className='absolute top-0 left-0 w-full h-full bg-gradient-to-br from-yellow-400/10 to-transparent'></div>
-				<div className='absolute top-8 sm:top-20 left-8 sm:left-20 w-20 sm:w-32 h-20 sm:h-32 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute bottom-8 sm:bottom-20 right-8 sm:right-20 w-16 sm:w-24 h-16 sm:h-24 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-1/2 left-4 sm:left-10 w-12 sm:w-16 h-12 sm:h-16 border border-yellow-400/20 rotate-45'></div>
-				<div className='absolute top-1/3 right-4 sm:right-10 w-14 sm:w-20 h-14 sm:h-20 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-20 left-10 w-40 h-40 border border-yellow-400/30 rotate-45'></div>
+				<div className='absolute bottom-20 right-10 w-32 h-32 border border-yellow-400/30 rotate-45'></div>
+				<div className='absolute top-1/2 left-1/4 w-24 h-24 border border-yellow-400/20 rotate-45'></div>
+				<div className='absolute top-1/3 right-1/4 w-28 h-28 border border-yellow-400/20 rotate-45'></div>
 			</div>
 
-			<div className='max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10'>
-				{/* Section Header - Mobile Optimized */}
-				<div className='text-center mb-12 sm:mb-16'>
-					{/* Golden decorative line - Mobile responsive */}
-					<div className='w-16 sm:w-24 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-4 sm:mb-6'></div>
-
-					<h2 className='text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white mb-3 sm:mb-4 tracking-widest uppercase px-2'>
-						Cocktail{' '}
-						<span className='text-yellow-400'>Collection</span>
-					</h2>
-
-					<p className='text-gray-400 text-sm sm:text-lg max-w-2xl mx-auto font-light italic px-4'>
-						"Discover the finest cocktails crafted with precision
-						and passion"
+			<div className='relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+				{/* Header */}
+				<div className='text-center mb-16'>
+					<div className='flex items-center justify-center mb-6'>
+						<div className='text-6xl md:text-7xl lg:text-8xl text-yellow-400 mb-4 filter drop-shadow-lg'>
+							🍸
+						</div>
+					</div>
+					<h1 className='text-3xl md:text-4xl lg:text-5xl font-light text-white mb-6 tracking-[0.2em] uppercase'>
+						Premium Cocktail Collection
+					</h1>
+					<div className='w-24 h-0.5 bg-yellow-400 mx-auto mb-6'></div>
+					<p className='text-gray-400 text-lg md:text-xl font-light italic max-w-2xl mx-auto'>
+						Discover masterfully crafted cocktails from bartenders
+						around the world
 					</p>
-
-					{/* Bottom decorative line - Mobile responsive */}
-					<div className='w-12 sm:w-16 h-0.5 bg-yellow-400 mx-auto mt-4 sm:mt-6'></div>
 				</div>
 
-				{/* Category Navigation - Mobile Optimized */}
-				<div className='flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 px-2 button-stack-mobile'>
+				{/* Category Filter */}
+				<div className='flex flex-wrap justify-center gap-4 mb-12'>
 					{categories.map((category) => (
 						<button
 							key={category.id}
 							onClick={() => handleCategoryChange(category.id)}
-							className={`group relative px-4 sm:px-6 md:px-8 py-4 sm:py-4 border transition-all duration-500 w-full sm:w-auto btn-touch tap-feedback focus-mobile ${
+							className={`px-6 py-3 text-sm font-light tracking-wide uppercase transition-all duration-300 border ${
 								activeCategory === category.id
-									? 'border-yellow-400 bg-yellow-400 text-black'
-									: 'border-yellow-400/30 text-gray-400 hover:border-yellow-400/60 hover:text-white'
+									? 'bg-yellow-400 text-black border-yellow-400'
+									: 'bg-transparent text-yellow-400 border-yellow-400/30 hover:border-yellow-400 hover:bg-yellow-400/10'
 							}`}
 						>
-							{/* Art Deco corners - Mobile responsive */}
-							<div className='absolute top-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l border-t border-yellow-400'></div>
-							<div className='absolute top-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r border-t border-yellow-400'></div>
-							<div className='absolute bottom-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l border-b border-yellow-400'></div>
-							<div className='absolute bottom-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r border-b border-yellow-400'></div>
-
-							<div className='flex items-center justify-center sm:justify-start gap-2 sm:gap-3'>
-								<span className='text-xl sm:text-2xl'>
-									{category.icon}
-								</span>
-								<div className='text-center sm:text-left'>
-									<div className='font-light tracking-wide uppercase text-xs sm:text-sm'>
-										{category.label}
-									</div>
-									<div className='text-xs opacity-70 mt-1 hidden sm:block'>
-										{category.description}
-									</div>
-								</div>
-							</div>
+							<span className='mr-2'>{category.emoji}</span>
+							{category.name}
 						</button>
 					))}
 				</div>
 
-				{/* Carousel Container - Mobile Optimized */}
-				<div className='relative'>
-					{/* Enhanced Navigation Buttons - Better Mobile Touch Targets */}
-					<button
-						onClick={handlePrevSlide}
-						className='absolute left-2 sm:left-0 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-black/80 border-2 border-yellow-400/60 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group btn-touch focus-mobile disabled:opacity-50 disabled:cursor-not-allowed'
-						disabled={currentSlide === 0 && maxSlides === 0}
-						aria-label='Previous cocktails'
-					>
-						<div className='absolute top-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<div className='absolute top-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<div className='absolute bottom-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<div className='absolute bottom-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<span className='text-xl sm:text-2xl font-light'>
-							‹
-						</span>
-					</button>
+				{/* Loading State */}
+				{isLoading && (
+					<div className='flex justify-center py-20'>
+						<LoadingSpinner
+							size='large'
+							text='Loading cocktails...'
+						/>
+					</div>
+				)}
 
-					<button
-						onClick={handleNextSlide}
-						className='absolute right-2 sm:right-0 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-black/80 border-2 border-yellow-400/60 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 group btn-touch focus-mobile disabled:opacity-50 disabled:cursor-not-allowed'
-						disabled={currentSlide === maxSlides && maxSlides === 0}
-						aria-label='Next cocktails'
-					>
-						<div className='absolute top-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<div className='absolute top-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-t-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<div className='absolute bottom-0 left-0 w-2 sm:w-3 h-2 sm:h-3 border-l-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<div className='absolute bottom-0 right-0 w-2 sm:w-3 h-2 sm:h-3 border-r-2 border-b-2 border-yellow-400 group-hover:border-black transition-colors duration-300'></div>
-						<span className='text-xl sm:text-2xl font-light'>
-							›
-						</span>
-					</button>
-
-					{/* Carousel Track - Mobile Optimized with Swipe Support */}
-					<div
-						className='overflow-hidden mx-4 sm:mx-8 md:mx-12 lg:mx-16 swipe-area'
-						onTouchStart={handleTouchStart}
-						onTouchMove={handleTouchMove}
-						onTouchEnd={handleTouchEnd}
-					>
+				{/* Cocktails Grid/Carousel */}
+				{!isLoading && cocktails.length > 0 && (
+					<div className='relative'>
+						{/* Carousel Container */}
 						<div
-							className='flex transition-transform duration-700 ease-in-out gap-2 sm:gap-4 md:gap-6 lg:gap-8'
-							style={{
-								transform: `translateX(-${
-									currentSlide * (100 / cardsPerView)
-								}%)`,
-							}}
+							className='relative overflow-hidden'
+							onTouchStart={handleTouchStart}
+							onTouchMove={handleTouchMove}
+							onTouchEnd={handleTouchEnd}
+							onMouseEnter={() => setIsAutoPlaying(false)}
+							onMouseLeave={() => setIsAutoPlaying(true)}
 						>
-							{currentCocktails.map((cocktail) => (
-								<div
-									key={cocktail.id}
-									className='flex-shrink-0'
-									style={{ width: `${100 / cardsPerView}%` }}
-								>
-									<div className='px-1 sm:px-2'>
+							<div
+								className='flex transition-transform duration-500 ease-in-out'
+								style={{
+									transform: `translateX(-${
+										currentSlide * (100 / cardsPerView)
+									}%)`,
+								}}
+							>
+								{cocktails.map((cocktail) => (
+									<div
+										key={cocktail._id || cocktail.id}
+										className={`flex-shrink-0 px-4 ${
+											cardsPerView === 1
+												? 'w-full'
+												: cardsPerView === 2
+												? 'w-1/2'
+												: 'w-1/3'
+										}`}
+									>
 										<CocktailCard
-											cocktail={cocktail}
-											size={
-												cardsPerView === 1
-													? 'large'
-													: 'medium'
-											}
-											onCardClick={(cocktail) =>
-												console.log(
-													'Clicked:',
-													cocktail.name,
-												)
-											}
+											cocktail={{
+												id: cocktail._id || cocktail.id,
+												name: cocktail.name,
+												image:
+													cocktail.image ||
+													cocktail.imageUrl,
+												imageAlt: `${cocktail.name} cocktail`,
+												difficulty: cocktail.difficulty,
+												prepTime: cocktail.prepTime,
+												description:
+													cocktail.description,
+												rating: cocktail.rating || 4.5,
+											}}
+											onCardClick={handleCardClick}
+											size='medium'
 										/>
 									</div>
-								</div>
-							))}
+								))}
+							</div>
 						</div>
+
+						{/* Navigation Arrows */}
+						{cocktails.length > cardsPerView && (
+							<>
+								<button
+									onClick={prevSlide}
+									className='absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-6 bg-black/80 border border-yellow-400/50 text-yellow-400 w-12 h-12 flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-all duration-300 z-10'
+									aria-label='Previous cocktail'
+								>
+									<svg
+										className='w-6 h-6'
+										fill='none'
+										stroke='currentColor'
+										viewBox='0 0 24 24'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth={2}
+											d='M15 19l-7-7 7-7'
+										/>
+									</svg>
+								</button>
+								<button
+									onClick={nextSlide}
+									className='absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-6 bg-black/80 border border-yellow-400/50 text-yellow-400 w-12 h-12 flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-all duration-300 z-10'
+									aria-label='Next cocktail'
+								>
+									<svg
+										className='w-6 h-6'
+										fill='none'
+										stroke='currentColor'
+										viewBox='0 0 24 24'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth={2}
+											d='M9 5l7 7-7 7'
+										/>
+									</svg>
+								</button>
+							</>
+						)}
+
+						{/* Slide Indicators */}
+						{cocktails.length > cardsPerView && (
+							<div className='flex justify-center mt-8 space-x-2'>
+								{Array.from({
+									length: Math.max(
+										0,
+										cocktails.length - cardsPerView + 1,
+									),
+								}).map((_, index) => (
+									<button
+										key={index}
+										onClick={() => setCurrentSlide(index)}
+										className={`w-3 h-3 border border-yellow-400 rotate-45 transition-all duration-300 ${
+											currentSlide === index
+												? 'bg-yellow-400'
+												: 'bg-transparent hover:bg-yellow-400/50'
+										}`}
+										aria-label={`Go to slide ${index + 1}`}
+									/>
+								))}
+							</div>
+						)}
 					</div>
-				</div>
+				)}
 
-				{/* Enhanced Slide Indicators - Better Mobile Touch Targets */}
-				<div className='flex justify-center gap-4 sm:gap-3 mt-12'>
-					{Array.from({ length: maxSlides + 1 }, (_, index) => (
-						<button
-							key={index}
-							onClick={() => {
-								setCurrentSlide(index);
-								setIsAutoPlaying(false);
-							}}
-							className={`w-4 h-4 sm:w-3 sm:h-3 border-2 border-yellow-400 rotate-45 transition-all duration-300 btn-touch focus-mobile ${
-								currentSlide === index
-									? 'bg-yellow-400 scale-110'
-									: 'bg-transparent hover:bg-yellow-400/50 active:scale-95'
-							}`}
-							aria-label={`Go to slide ${index + 1}`}
-						/>
-					))}
-				</div>
+				{/* Empty State */}
+				{!isLoading && cocktails.length === 0 && (
+					<div className='text-center py-20'>
+						<div className='text-6xl text-gray-600 mb-6'>🍸</div>
+						<h3 className='text-2xl text-white font-light tracking-wide uppercase mb-4'>
+							No Cocktails Found
+						</h3>
+						<p className='text-gray-400 mb-8'>
+							{activeCategory === 'all'
+								? 'No cocktails available at the moment.'
+								: `No ${activeCategory} cocktails found. Try a different category.`}
+						</p>
+						{activeCategory !== 'all' && (
+							<button
+								onClick={() => handleCategoryChange('all')}
+								className='bg-yellow-400 text-black px-6 py-3 border border-yellow-400 hover:bg-black hover:text-yellow-400 transition-all duration-300 tracking-wide uppercase text-sm'
+							>
+								Show All Cocktails
+							</button>
+						)}
+					</div>
+				)}
 
-				{/* Auto-play Toggle */}
-				<div className='text-center mt-8'>
-					<button
-						onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-						className='text-gray-400 hover:text-yellow-400 transition-colors duration-300 text-sm uppercase tracking-wide'
-					>
-						{isAutoPlaying
-							? '⏸️ Pause Auto-play'
-							: '▶️ Resume Auto-play'}
-					</button>
-				</div>
-
-				{/* Bottom decorative element */}
+				{/* Call to Action */}
 				<div className='text-center mt-16'>
-					<div className='w-32 h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent mx-auto mb-4'></div>
-					<div className='text-yellow-400 text-sm uppercase tracking-widest font-light'>
-						Crafted with Excellence
+					<div className='flex items-center justify-center mb-8'>
+						<div className='w-16 h-0.5 bg-gradient-to-r from-transparent to-yellow-400'></div>
+						<div className='w-3 h-3 border border-yellow-400 rotate-45 bg-yellow-400/20 mx-4'></div>
+						<div className='w-16 h-0.5 bg-gradient-to-l from-transparent to-yellow-400'></div>
 					</div>
+					<h3 className='text-xl md:text-2xl font-light text-white mb-4 tracking-wide uppercase'>
+						Ready to Share Your Creation?
+					</h3>
+					<p className='text-gray-400 mb-8 max-w-md mx-auto'>
+						Join our community of master mixologists and share your
+						signature cocktails
+					</p>
 				</div>
 			</div>
 		</section>
