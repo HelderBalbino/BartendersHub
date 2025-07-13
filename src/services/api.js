@@ -112,6 +112,15 @@ class ApiService {
 		});
 	}
 
+	async getCommunityMembers(filters = {}) {
+		const params = new URLSearchParams(filters);
+		return this.request(`/users?${params}`);
+	}
+
+	async getUserStats(userId) {
+		return this.request(`/users/${userId}/stats`);
+	}
+
 	async followUser(userId) {
 		return this.request(`/users/${userId}/follow`, {
 			method: 'POST',
