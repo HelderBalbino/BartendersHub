@@ -214,11 +214,15 @@ const LogIn = () => {
 									value={values.name}
 									onChange={handleChange}
 									onBlur={handleBlur}
-									className={`w-full bg-transparent border ${
+									className={`w-full bg-black/20 border ${
 										touched.name && errors.name
 											? 'border-red-400'
 											: 'border-yellow-400/30'
-									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
+									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
+									style={{
+										color: '#ffffff',
+										backgroundColor: 'rgba(0, 0, 0, 0.2)',
+									}}
 									placeholder='Enter your full name'
 									required={!isLogin}
 								/>
@@ -242,11 +246,15 @@ const LogIn = () => {
 									value={values.username}
 									onChange={handleChange}
 									onBlur={handleBlur}
-									className={`w-full bg-transparent border ${
+									className={`w-full bg-black/20 border ${
 										touched.username && errors.username
 											? 'border-red-400'
 											: 'border-yellow-400/30'
-									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
+									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
+									style={{
+										color: '#ffffff',
+										backgroundColor: 'rgba(0, 0, 0, 0.2)',
+									}}
 									placeholder='Enter your username'
 									required={!isLogin}
 								/>
@@ -269,11 +277,15 @@ const LogIn = () => {
 								value={values.email}
 								onChange={handleChange}
 								onBlur={handleBlur}
-								className={`w-full bg-transparent border ${
+								className={`w-full bg-black/20 border ${
 									touched.email && errors.email
 										? 'border-red-400'
 										: 'border-yellow-400/30'
-								} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
+								} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
+								style={{
+									color: '#ffffff',
+									backgroundColor: 'rgba(0, 0, 0, 0.2)',
+								}}
 								placeholder='Enter your email'
 								required
 							/>
@@ -295,11 +307,15 @@ const LogIn = () => {
 								value={values.password}
 								onChange={handleChange}
 								onBlur={handleBlur}
-								className={`w-full bg-transparent border ${
+								className={`w-full bg-black/20 border ${
 									touched.password && errors.password
 										? 'border-red-400'
 										: 'border-yellow-400/30'
-								} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
+								} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
+								style={{
+									color: '#ffffff',
+									backgroundColor: 'rgba(0, 0, 0, 0.2)',
+								}}
 								placeholder='Enter your password'
 								required
 							/>
@@ -322,12 +338,16 @@ const LogIn = () => {
 									value={values.confirmPassword}
 									onChange={handleChange}
 									onBlur={handleBlur}
-									className={`w-full bg-transparent border ${
+									className={`w-full bg-black/20 border ${
 										touched.confirmPassword &&
 										errors.confirmPassword
 											? 'border-red-400'
 											: 'border-yellow-400/30'
-									} text-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-500`}
+									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
+									style={{
+										color: '#ffffff',
+										backgroundColor: 'rgba(0, 0, 0, 0.2)',
+									}}
 									placeholder='Confirm your password'
 									required={!isLogin}
 								/>
