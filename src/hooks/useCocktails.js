@@ -5,25 +5,24 @@ import { toast } from 'react-hot-toast';
 
 // Hook for fetching cocktails
 export const useCocktails = (filters = {}) => {
-	return useQuery(
-		['cocktails', filters],
-		() => apiService.getCocktails(filters),
-		{
-			staleTime: 5 * 60 * 1000, // 5 minutes
-			onError: (error) => {
-				toast.error(error.message || 'Failed to fetch cocktails');
-			},
+	return useQuery({
+		queryKey: ['cocktails', filters],
+		queryFn: () => apiService.getCocktails(filters),
+		staleTime: 5 * 60 * 1000, // 5 minutes
+		onError: (error) => {
+			toast.error(error.message || 'Failed to fetch cocktails');
 		},
-	);
+	});
 };
 
 // Hook for creating cocktails
 export const useCreateCocktail = () => {
 	const queryClient = useQueryClient();
 
-	return useMutation(apiService.createCocktail, {
+	return useMutation({
+		mutationFn: apiService.createCocktail,
 		onSuccess: (data) => {
-			queryClient.invalidateQueries('cocktails');
+			queryClient.invalidateQueries({ queryKey: ['cocktails'] });
 			toast.success('Cocktail created successfully!');
 			return data;
 		},
@@ -37,21 +36,19 @@ export const useCreateCocktail = () => {
 export const useFavoriteCocktail = () => {
 	const queryClient = useQueryClient();
 
-	const toggleFavorite = useMutation(
-		({ cocktailId, isFavorite }) =>
+	const toggleFavorite = useMutation({
+		mutationFn: ({ cocktailId, isFavorite }) =>
 			isFavorite
 				? apiService.removeFavorite(cocktailId)
 				: apiService.addFavorite(cocktailId),
-		{
-			onSuccess: () => {
-				queryClient.invalidateQueries('cocktails');
-				queryClient.invalidateQueries('favorites');
-			},
-			onError: (error) => {
-				toast.error(error.message || 'Failed to update favorite');
-			},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['cocktails'] });
+			queryClient.invalidateQueries({ queryKey: ['favorites'] });
 		},
-	);
+		onError: (error) => {
+			toast.error(error.message || 'Failed to update favorite');
+		},
+	});
 
 	return { toggleFavorite };
 };
