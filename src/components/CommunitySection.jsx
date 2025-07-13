@@ -1,126 +1,64 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useCommunityMembers } from '../hooks/useCommunity';
+import LoadingSpinner from './LoadingSpinner';
 
 const CommunitySection = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const [activeFilter, setActiveFilter] = useState('all');
 	const [currentFeatured, setCurrentFeatured] = useState(0);
 
+	const {
+		data: communityData,
+		isLoading,
+		error,
+	} = useCommunityMembers({
+		filter: activeFilter,
+		limit: 20,
+	});
+
 	useEffect(() => {
 		setIsVisible(true);
 	}, []);
 
-	// Mock community data - replace with real data from your backend
-	const communityMembers = [
-		{
-			id: 1,
-			name: 'Helder Balbino',
-			username: 'helder_bartender',
-			avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 47,
-			joinDate: '2024-12-15',
-			isVerified: true,
-			speciality: 'Classic Cocktails',
-			location: 'London, UK',
-			badges: ['Master Mixologist', 'Classic Expert'],
-			recentActivity: 'Added "Negroni Sbagliato" 2 hours ago',
-		},
-		{
-			id: 2,
-			name: 'Giacomo',
-			username: 'cocktail_queen',
-			avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 89,
-			joinDate: '2024-11-20',
-			isVerified: true,
-			speciality: 'Molecular Mixology',
-			location: 'London, UK',
-			badges: ['Innovation Leader', 'Top Contributor'],
-			recentActivity: 'Created "Smoky Whisper" 1 day ago',
-		},
-		{
-			id: 3,
-			name: 'Luca',
-			username: 'bartender_luca',
-			avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 34,
-			joinDate: '2025-01-05',
-			isVerified: false,
-			speciality: 'Classic Cocktails',
-			location: 'London, UK',
-			badges: ['Rising Star'],
-			recentActivity: 'Added "Paradise Punch" 3 hours ago',
-		},
-		{
-			id: 4,
-			name: 'Giorgia',
-			username: 'italian_giorgia',
-			avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 62,
-			joinDate: '2024-10-12',
-			isVerified: true,
-			speciality: 'French Classics',
-			location: 'london, UK',
-			badges: ['European Expert', 'Heritage Keeper'],
-			recentActivity: 'Perfected "French 75 Royale" 4 hours ago',
-		},
-		{
-			id: 5,
-			name: 'Matteu',
-			username: 'agave_mat',
-			avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 56,
-			joinDate: '2024-09-30',
-			isVerified: true,
-			speciality: 'Agave Spirits',
-			location: 'london, UK',
-			badges: ['Agave Specialist', 'Cultural Ambassador'],
-			recentActivity: 'Shared "Mezcal Dreams" 6 hours ago',
-		},
-		{
-			id: 6,
-			name: 'George',
-			username: 'crafty_george',
-			avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 23,
-			joinDate: '2025-01-10',
-			isVerified: false,
-			speciality: 'Cocktails',
-			location: 'London, UK',
-			badges: ['New Talent'],
-			recentActivity: 'Added "Garden Gimlet" 1 day ago',
-		},
-		{
-			id: 7,
-			name: 'Craig',
-			username: 'sake_master',
-			avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 71,
-			joinDate: '2023-08-15',
-			isVerified: true,
-			speciality: 'Japanese Cocktails',
-			location: 'Tokyo, Japan',
-			badges: ['Eastern Wisdom', 'Sake Specialist'],
-			recentActivity: 'Created "Sakura Sour" 8 hours ago',
-		},
-		{
-			id: 8,
-			name: 'Sarah',
-			username: 'rum_runner_olivia',
-			avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face',
-			cocktailsAdded: 45,
-			joinDate: '2025-1-01',
-			isVerified: true,
-			speciality: 'Rum Cocktails',
-			location: 'Havana, Cuba',
-			badges: ['Caribbean Queen', 'Rum Expert'],
-			recentActivity: 'Added "Havana Nights" 9 hours ago',
-		},
-	];
-
+	// Extract members from API response
+	const communityMembers = communityData?.users || [];
 	const featuredMembers = communityMembers
 		.filter((member) => member.isVerified)
 		.slice(0, 3);
+
+	// Carousel effect for featured members
+	useEffect(() => {
+		if (featuredMembers.length > 0) {
+			const interval = setInterval(() => {
+				setCurrentFeatured(
+					(prev) => (prev + 1) % featuredMembers.length,
+				);
+			}, 4000);
+			return () => clearInterval(interval);
+		}
+	}, [featuredMembers.length]);
+
+	// Show loading state
+	if (isLoading) {
+		return (
+			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+				<LoadingSpinner />
+			</section>
+		);
+	}
+
+	// Show error state
+	if (error) {
+		return (
+			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+				<div className='text-center text-white'>
+					<h2 className='text-2xl mb-4'>Unable to load community</h2>
+					<p className='text-gray-400'>Please try again later</p>
+				</div>
+			</section>
+		);
+	}
 
 	const filters = [
 		{ key: 'all', label: 'All Members', count: communityMembers.length },
@@ -165,13 +103,6 @@ const CommunitySection = () => {
 				);
 		}
 	};
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentFeatured((prev) => (prev + 1) % featuredMembers.length);
-		}, 4000);
-		return () => clearInterval(interval);
-	}, [featuredMembers.length]);
 
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black overflow-hidden py-16 md:py-20'>
