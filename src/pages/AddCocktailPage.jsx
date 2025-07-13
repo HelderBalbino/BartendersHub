@@ -1,9 +1,9 @@
-import AddCocktailEnhanced from '../components/AddCocktailEnhanced';
+import AddCocktailSection from '../components/AddCocktailSection';
 
 const AddCocktailPage = () => {
 	return (
 		<>
-			<AddCocktailEnhanced />
+			<AddCocktailSection />
 		</>
 	);
 };
