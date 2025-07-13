@@ -34,12 +34,12 @@ const router = createBrowserRouter(
 		<Route path='/' element={<MainLayout />}>
 			<Route index element={<HomePage />} />
 			<Route path='/cocktails' element={<CocktailsPage />} />
-			<Route path='/community' element={<CommunityPage />} />
 			<Route path='/about' element={<AboutPage />} />
 			<Route path='/login' element={<LoginPage />} />
 
 			{/* Protected Routes */}
 			<Route element={<ProtectedRoute />}>
+				<Route path='/community' element={<CommunityPage />} />
 				<Route path='/addCocktail' element={<AddCocktailPage />} />
 			</Route>
 		</Route>,
