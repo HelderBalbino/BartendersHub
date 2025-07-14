@@ -70,8 +70,10 @@ const LogIn = () => {
 			[name]: true,
 		}));
 
-		// Validate field on blur
-		validateField(name, formValues[name]);
+		// Validate field on blur (simplified)
+		setTimeout(() => {
+			validateField(name, formValues[name]);
+		}, 0);
 	};
 
 	const validateField = (name, value) => {
@@ -133,9 +135,6 @@ const LogIn = () => {
 	// 	isLogin ? loginValidation : registerValidation,
 	// );
 
-	// Debug current render state
-	console.log('� LogIn component render - current values:', formValues);
-
 	// Redirect if already authenticated
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -154,7 +153,7 @@ const LogIn = () => {
 
 	// Clear errors when switching modes
 	useEffect(() => {
-		clearError();
+		// Clear form state when switching between login/register
 		setFormValues({
 			email: '',
 			password: '',
@@ -164,7 +163,10 @@ const LogIn = () => {
 		});
 		setFormErrors({});
 		setFormTouched({});
-	}, [isLogin, clearError]);
+
+		// Clear auth errors (call function directly without dependency)
+		clearError();
+	}, [isLogin]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
