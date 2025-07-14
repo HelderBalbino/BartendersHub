@@ -2,9 +2,13 @@
 const API_BASE_URL =
 	import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
+console.log('API_BASE_URL configured as:', API_BASE_URL);
+console.log('Environment variables:', import.meta.env);
+
 class ApiService {
 	constructor() {
 		this.baseURL = API_BASE_URL;
+		console.log('ApiService initialized with baseURL:', this.baseURL);
 	}
 
 	async request(endpoint, options = {}) {
@@ -23,8 +27,17 @@ class ApiService {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
 
+		console.log('Making API request to:', url);
+		console.log('Request config:', config);
+
 		try {
 			const response = await fetch(url, config);
+			console.log('Response status:', response.status);
+			console.log(
+				'Response headers:',
+				Object.fromEntries(response.headers.entries()),
+			);
+
 			const data = await response.json();
 
 			if (!response.ok) {
@@ -34,6 +47,11 @@ class ApiService {
 			return data;
 		} catch (error) {
 			console.error('API Error:', error);
+			console.error('Error details:', {
+				name: error.name,
+				message: error.message,
+				stack: error.stack,
+			});
 			throw error;
 		}
 	}
