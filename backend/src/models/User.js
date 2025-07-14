@@ -118,9 +118,7 @@ userSchema.virtual('followingCount', {
 	count: true,
 });
 
-// Index for better search performance
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+// Index for better search performance (email and username already have unique indexes)
 userSchema.index({ createdAt: -1 });
 
 export default mongoose.model('User', userSchema);
