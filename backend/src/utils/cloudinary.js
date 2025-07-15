@@ -76,11 +76,17 @@ export const uploadAvatar = async (imagePath) => {
 		// Delete the local file if upload fails
 		try {
 			const resolvedPath = fs.realpathSync(path.resolve(imagePath));
-			if (resolvedPath.startsWith(UPLOADS_ROOT) && fs.existsSync(resolvedPath)) {
+			if (
+				resolvedPath.startsWith(UPLOADS_ROOT) &&
+				fs.existsSync(resolvedPath)
+			) {
 				fs.unlinkSync(resolvedPath);
 			}
 		} catch (validationError) {
-			console.error('Error validating file path during cleanup:', validationError);
+			console.error(
+				'Error validating file path during cleanup:',
+				validationError,
+			);
 		}
 		throw error;
 	}
