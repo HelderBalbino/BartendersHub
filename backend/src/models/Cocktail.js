@@ -213,7 +213,7 @@ cocktailSchema.virtual('commentsCount').get(function () {
 	return this.comments.length;
 });
 
-// Index for better search performance
+// Indexes for better search performance
 cocktailSchema.index({ name: 'text', description: 'text' });
 cocktailSchema.index({ category: 1 });
 cocktailSchema.index({ difficulty: 1 });
@@ -221,5 +221,15 @@ cocktailSchema.index({ createdBy: 1 });
 cocktailSchema.index({ createdAt: -1 });
 cocktailSchema.index({ isApproved: 1 });
 cocktailSchema.index({ isFeatured: 1 });
+
+// Additional performance indexes
+cocktailSchema.index({ 'ingredients.name': 1 });
+cocktailSchema.index({ tags: 1 });
+cocktailSchema.index({ 'ratings.rating': -1 });
+
+// Compound indexes for common queries
+cocktailSchema.index({ createdBy: 1, createdAt: -1 });
+cocktailSchema.index({ difficulty: 1, 'ratings.rating': -1 });
+cocktailSchema.index({ category: 1, isApproved: 1 });
 
 export default mongoose.model('Cocktail', cocktailSchema);

@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import { generateToken, hashPassword, comparePassword } from '../utils/auth.js';
+import { sendWelcomeEmail } from '../services/emailQueue.js';
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -33,6 +34,13 @@ export const register = async (req, res) => {
 
 		// Generate token
 		const token = generateToken(user._id);
+
+		// Send welcome email in background
+		sendWelcomeEmail({
+			name: user.name,
+			email: user.email,
+			username: user.username,
+		});
 
 		res.status(201).json({
 			success: true,

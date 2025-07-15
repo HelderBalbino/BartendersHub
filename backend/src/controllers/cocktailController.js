@@ -1,5 +1,6 @@
 import Cocktail from '../models/Cocktail.js';
 import { uploadImage, deleteImage } from '../utils/cloudinary.js';
+import { invalidateCocktailCache } from '../middleware/cache.js';
 
 // @desc    Get all cocktails
 // @route   GET /api/cocktails
@@ -44,11 +45,18 @@ export const getCocktails = async (req, res) => {
 			sortBy = { 'likes.length': -1 };
 		}
 
+		// Field selection for optimized responses
+		const fields = req.query.fields
+			? req.query.fields.split(',').join(' ')
+			: '';
+
 		const cocktails = await Cocktail.find(query)
+			.select(fields)
 			.populate('createdBy', 'name username avatar isVerified')
 			.sort(sortBy)
 			.skip(skip)
-			.limit(limit);
+			.limit(limit)
+			.lean(); // Use lean() for better performance
 
 		const total = await Cocktail.countDocuments(query);
 
@@ -58,6 +66,12 @@ export const getCocktails = async (req, res) => {
 			total,
 			page,
 			pages: Math.ceil(total / limit),
+			pagination: {
+				current: page,
+				total: Math.ceil(total / limit),
+				hasNext: page * limit < total,
+				hasPrev: page > 1,
+			},
 			data: cocktails,
 		});
 	} catch (error) {
@@ -144,6 +158,9 @@ export const createCocktail = async (req, res) => {
 
 		// Populate the created cocktail
 		await cocktail.populate('createdBy', 'name username avatar isVerified');
+
+		// Invalidate cocktail cache
+		invalidateCocktailCache();
 
 		res.status(201).json({
 			success: true,

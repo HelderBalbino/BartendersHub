@@ -15,6 +15,7 @@ import {
 import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
 import { uploadLimiter } from '../middleware/rateLimiter.js';
+import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = express.Router();
 
@@ -82,8 +83,8 @@ const ratingValidation = [
 ];
 
 // Routes
-router.get('/', getCocktails);
-router.get('/:id', getCocktail);
+router.get('/', cacheMiddleware(600), getCocktails); // Cache for 10 minutes
+router.get('/:id', cacheMiddleware(300), getCocktail); // Cache for 5 minutes
 router.post(
 	'/',
 	protect,
