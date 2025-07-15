@@ -1,5 +1,6 @@
 import cloudinary from 'cloudinary';
 import fs from 'fs';
+import path from 'path';
 
 // Configure cloudinary
 cloudinary.v2.config({
@@ -46,8 +47,15 @@ export const deleteImage = async (publicId) => {
 
 // Upload avatar to cloudinary
 export const uploadAvatar = async (imagePath) => {
+	const UPLOADS_ROOT = path.resolve('/path/to/uploads'); // Define the safe root directory
 	try {
-		const result = await cloudinary.v2.uploader.upload(imagePath, {
+		// Resolve and validate the imagePath
+		const resolvedPath = fs.realpathSync(path.resolve(imagePath));
+		if (!resolvedPath.startsWith(UPLOADS_ROOT)) {
+			throw new Error('Invalid file path');
+		}
+
+		const result = await cloudinary.v2.uploader.upload(resolvedPath, {
 			folder: 'bartendershub/avatars',
 			width: 200,
 			height: 200,
@@ -57,7 +65,7 @@ export const uploadAvatar = async (imagePath) => {
 		});
 
 		// Delete the local file after upload
-		fs.unlinkSync(imagePath);
+		fs.unlinkSync(resolvedPath);
 
 		return {
 			url: result.secure_url,
