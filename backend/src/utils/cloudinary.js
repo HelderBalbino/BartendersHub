@@ -1,6 +1,7 @@
 import cloudinary from 'cloudinary';
 import fs from 'fs';
 import path from 'path';
+import process from 'process';
 
 // Configure cloudinary
 cloudinary.v2.config({
@@ -83,4 +84,43 @@ export const uploadAvatar = async (imagePath) => {
 		}
 		throw error;
 	}
+};
+
+// Optimize image URL for different use cases
+export const optimizeImageUrl = (publicId, options = {}) => {
+	if (!publicId) return null;
+
+	const {
+		width = 400,
+		height = 300,
+		quality = 'auto',
+		format = 'auto',
+		crop = 'fill',
+	} = options;
+
+	return cloudinary.v2.url(publicId, {
+		width,
+		height,
+		crop,
+		quality,
+		format,
+		fetch_format: 'auto',
+		flags: 'progressive',
+	});
+};
+
+// Generate different image sizes for responsive design
+export const generateImageVariants = (publicId) => {
+	if (!publicId) return {};
+
+	return {
+		thumbnail: optimizeImageUrl(publicId, { width: 150, height: 150 }),
+		small: optimizeImageUrl(publicId, { width: 300, height: 200 }),
+		medium: optimizeImageUrl(publicId, { width: 600, height: 400 }),
+		large: optimizeImageUrl(publicId, { width: 1200, height: 800 }),
+		original: cloudinary.v2.url(publicId, {
+			quality: 'auto',
+			format: 'auto',
+		}),
+	};
 };
