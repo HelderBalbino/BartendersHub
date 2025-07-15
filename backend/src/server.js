@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
 import path from 'path';
+import process from 'process';
 import { fileURLToPath } from 'url';
 
 // Load environment variables
@@ -36,9 +37,11 @@ connectDB();
 app.use(helmet());
 
 // CORS configuration
+const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+console.log('🌐 CORS configured for origin:', corsOrigin);
 app.use(
 	cors({
-		origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+		origin: corsOrigin,
 		credentials: true,
 	}),
 );
