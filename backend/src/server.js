@@ -89,30 +89,33 @@ app.use('*', (req, res) => {
 // Error handling middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-const server = app.listen(PORT, () => {
-	console.log(`
+// Only start server if not in Vercel serverless environment
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+	const server = app.listen(PORT, () => {
+		console.log(`
 🥃 BartendersHub API Server
 🚀 Server running on port ${PORT}
 🌍 Environment: ${process.env.NODE_ENV}
 📅 Started at: ${new Date().toLocaleString()}
   `);
-});
+	});
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
-	console.error('Unhandled Promise Rejection:', err);
-	// Close server & exit process
-	server.close(() => {
+	// Handle unhandled promise rejections
+	process.on('unhandledRejection', (err) => {
+		console.error('Unhandled Promise Rejection:', err);
+		// Close server & exit process
+		server.close(() => {
+			process.exit(1);
+		});
+	});
+
+	// Handle uncaught exceptions
+	process.on('uncaughtException', (err) => {
+		console.error('Uncaught Exception:', err);
 		process.exit(1);
 	});
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-	console.error('Uncaught Exception:', err);
-	process.exit(1);
-});
+}
 
 export default app;
