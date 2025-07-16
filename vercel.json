@@ -1,10 +1,5 @@
 {
 	"version": 2,
-	"functions": {
-		"backend/src/server.js": {
-			"runtime": "@vercel/node"
-		}
-	},
 	"builds": [
 		{
 			"src": "package.json",
@@ -16,15 +11,11 @@
 	],
 	"routes": [
 		{
-			"src": "/api/(.*)",
-			"dest": "/backend/src/server.js"
-		},
-		{
 			"src": "/(.*)",
 			"dest": "/index.html"
 		}
 	],
 	"env": {
-		"NODE_ENV": "production"
+		"VITE_API_URL": "@vite_api_url"
 	}
 }
