@@ -3,6 +3,7 @@
 ## 1. Enhanced Environment Variables Security
 
 ### Backend Environment Validation
+
 Create `backend/src/config/env.js`:
 
 ```javascript
@@ -12,27 +13,23 @@ import process from 'process';
 dotenv.config();
 
 // Required environment variables
-const requiredEnvVars = [
-	'MONGODB_URI',
-	'JWT_SECRET',
-	'NODE_ENV',
-];
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET', 'NODE_ENV'];
 
 // Validate environment variables
 const validateEnv = () => {
-	const missing = requiredEnvVars.filter(envVar => !process.env[envVar]);
-	
+	const missing = requiredEnvVars.filter((envVar) => !process.env[envVar]);
+
 	if (missing.length > 0) {
 		console.error('❌ Missing required environment variables:', missing);
 		process.exit(1);
 	}
-	
+
 	// Validate JWT secret strength
 	if (process.env.JWT_SECRET.length < 32) {
 		console.error('❌ JWT_SECRET must be at least 32 characters long');
 		process.exit(1);
 	}
-	
+
 	console.log('✅ All environment variables validated');
 };
 
@@ -65,6 +62,7 @@ export const config = {
 ## 2. Enhanced Password Security
 
 ### Strong Password Validation
+
 Update `backend/src/utils/auth.js`:
 
 ```javascript
@@ -79,27 +77,42 @@ export const validatePasswordStrength = (password) => {
 	const hasLowerCase = /[a-z]/.test(password);
 	const hasNumbers = /\d/.test(password);
 	const hasNonalphas = /\W/.test(password);
-	
+
 	if (password.length < minLength) {
-		return { valid: false, message: 'Password must be at least 8 characters long' };
+		return {
+			valid: false,
+			message: 'Password must be at least 8 characters long',
+		};
 	}
-	
+
 	if (!hasUpperCase) {
-		return { valid: false, message: 'Password must contain at least one uppercase letter' };
+		return {
+			valid: false,
+			message: 'Password must contain at least one uppercase letter',
+		};
 	}
-	
+
 	if (!hasLowerCase) {
-		return { valid: false, message: 'Password must contain at least one lowercase letter' };
+		return {
+			valid: false,
+			message: 'Password must contain at least one lowercase letter',
+		};
 	}
-	
+
 	if (!hasNumbers) {
-		return { valid: false, message: 'Password must contain at least one number' };
+		return {
+			valid: false,
+			message: 'Password must contain at least one number',
+		};
 	}
-	
+
 	if (!hasNonalphas) {
-		return { valid: false, message: 'Password must contain at least one special character' };
+		return {
+			valid: false,
+			message: 'Password must contain at least one special character',
+		};
 	}
-	
+
 	return { valid: true, message: 'Password is strong' };
 };
 
@@ -122,6 +135,7 @@ export const generateToken = (userId) => {
 ## 3. Request Sanitization & Validation
 
 ### Input Sanitization Middleware
+
 Create `backend/src/middleware/sanitize.js`:
 
 ```javascript
@@ -147,11 +161,11 @@ export const xssProtection = (req, res, next) => {
 			}
 		}
 	};
-	
+
 	if (req.body) sanitizeObject(req.body);
 	if (req.query) sanitizeObject(req.query);
 	if (req.params) sanitizeObject(req.params);
-	
+
 	next();
 };
 ```
@@ -159,6 +173,7 @@ export const xssProtection = (req, res, next) => {
 ## 4. Enhanced Rate Limiting
 
 ### Advanced Rate Limiting
+
 Update `backend/src/middleware/rateLimiter.js`:
 
 ```javascript
@@ -211,28 +226,35 @@ export const uploadLimiter = rateLimit({
 ## 5. Security Headers Enhancement
 
 ### Enhanced Helmet Configuration
+
 Update `backend/src/server.js` security middleware:
 
 ```javascript
 import helmet from 'helmet';
 
 // Enhanced security headers
-app.use(helmet({
-	contentSecurityPolicy: {
-		directives: {
-			defaultSrc: ["'self'"],
-			styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-			fontSrc: ["'self'", "https://fonts.gstatic.com"],
-			imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
-			scriptSrc: ["'self'"],
-			connectSrc: ["'self'", "https://api.cloudinary.com"],
+app.use(
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				defaultSrc: ["'self'"],
+				styleSrc: [
+					"'self'",
+					"'unsafe-inline'",
+					'https://fonts.googleapis.com',
+				],
+				fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+				imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
+				scriptSrc: ["'self'"],
+				connectSrc: ["'self'", 'https://api.cloudinary.com'],
+			},
 		},
-	},
-	crossOriginEmbedderPolicy: false,
-	hsts: {
-		maxAge: 31536000,
-		includeSubDomains: true,
-		preload: true,
-	},
-}));
+		crossOriginEmbedderPolicy: false,
+		hsts: {
+			maxAge: 31536000,
+			includeSubDomains: true,
+			preload: true,
+		},
+	}),
+);
 ```
