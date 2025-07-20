@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useCommunityMembers } from '../hooks/useCommunity';
 import LoadingSpinner from './LoadingSpinner';
+import FeaturedMemberCarousel from './community/FeaturedMemberCarousel';
+import MemberFilters from './community/MemberFilters';
+import MembersGrid from './community/MembersGrid';
+import CommunityStats from './community/CommunityStats';
+import JoinCommunityCTA from './community/JoinCommunityCTA';
 
 const CommunitySection = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const [activeFilter, setActiveFilter] = useState('all');
-	const [currentFeatured, setCurrentFeatured] = useState(0);
 
 	const {
 		data: communityData,
@@ -26,18 +29,6 @@ const CommunitySection = () => {
 	const featuredMembers = communityMembers
 		.filter((member) => member.isVerified)
 		.slice(0, 3);
-
-	// Carousel effect for featured members
-	useEffect(() => {
-		if (featuredMembers.length > 0) {
-			const interval = setInterval(() => {
-				setCurrentFeatured(
-					(prev) => (prev + 1) % featuredMembers.length,
-				);
-			}, 4000);
-			return () => clearInterval(interval);
-		}
-	}, [featuredMembers.length]);
 
 	// Show loading state
 	if (isLoading) {
@@ -150,324 +141,45 @@ const CommunitySection = () => {
 					</p>
 
 					{/* Community Stats */}
-					<div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto mb-12'>
-						{[
+					<CommunityStats
+						stats={[
 							{
-								number: communityMembers.length,
+								value: communityMembers.length,
 								label: 'Members',
-								icon: '👥',
 							},
 							{
-								number: communityMembers.reduce(
+								value: communityMembers.reduce(
 									(sum, m) => sum + m.cocktailsAdded,
 									0,
 								),
 								label: 'Cocktails',
-								icon: '🍸',
 							},
 							{
-								number: communityMembers.filter(
+								value: communityMembers.filter(
 									(m) => m.isVerified,
 								).length,
 								label: 'Verified',
-								icon: '✅',
 							},
-							{ number: '50+', label: 'Countries', icon: '🌍' },
-						].map((stat, index) => (
-							<div
-								key={index}
-								className='bg-black/30 border border-yellow-400/30 p-4 md:p-6 backdrop-blur-sm'
-							>
-								<div className='text-2xl md:text-3xl mb-2'>
-									{stat.icon}
-								</div>
-								<div className='text-xl md:text-2xl font-light text-yellow-400 mb-1'>
-									{stat.number}
-								</div>
-								<div className='text-xs md:text-sm text-gray-400 font-light uppercase tracking-wide'>
-									{stat.label}
-								</div>
-							</div>
-						))}
-					</div>
+							{ value: '50+', label: 'Countries' },
+						]}
+					/>
 				</div>
 
 				{/* Featured Member Spotlight */}
-				<div className='mb-12 md:mb-16'>
-					<div className='text-center mb-8'>
-						<h2 className='text-2xl md:text-3xl font-light text-yellow-400 tracking-[0.15em] uppercase mb-4'>
-							Featured Mixologist
-						</h2>
-						<div className='flex items-center justify-center'>
-							<div className='w-16 md:w-24 h-0.5 bg-yellow-400/50'></div>
-							<div className='w-2 h-2 border border-yellow-400/50 rotate-45 mx-4'></div>
-							<div className='w-16 md:w-24 h-0.5 bg-yellow-400/50'></div>
-						</div>
-					</div>
+				<FeaturedMemberCarousel featuredMembers={featuredMembers} />
 
-					{featuredMembers.length > 0 && (
-						<div className='relative border border-yellow-400/40 p-8 md:p-12 bg-black/20 backdrop-blur-sm max-w-4xl mx-auto'>
-							{/* Art Deco corners */}
-							<div className='absolute -top-1 -left-1 w-8 md:w-12 h-8 md:h-12 border-l-2 border-t-2 md:border-l-4 md:border-t-4 border-yellow-400'></div>
-							<div className='absolute -top-1 -right-1 w-8 md:w-12 h-8 md:h-12 border-r-2 border-t-2 md:border-r-4 md:border-t-4 border-yellow-400'></div>
-							<div className='absolute -bottom-1 -left-1 w-8 md:w-12 h-8 md:h-12 border-l-2 border-b-2 md:border-l-4 md:border-b-4 border-yellow-400'></div>
-							<div className='absolute -bottom-1 -right-1 w-8 md:w-12 h-8 md:h-12 border-r-2 border-b-2 md:border-r-4 md:border-b-4 border-yellow-400'></div>
-
-							<div className='flex flex-col md:flex-row items-center gap-6 md:gap-8 transition-all duration-1000'>
-								<div className='relative'>
-									<img
-										src={
-											featuredMembers[currentFeatured]
-												.avatar
-										}
-										alt={
-											featuredMembers[currentFeatured]
-												.name
-										}
-										className='w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-yellow-400/60 object-cover'
-									/>
-									{featuredMembers[currentFeatured]
-										.isVerified && (
-										<div className='absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-black'>
-											<span className='text-black text-sm font-bold'>
-												✓
-											</span>
-										</div>
-									)}
-								</div>
-
-								<div className='flex-1 text-center md:text-left'>
-									<h3 className='text-2xl md:text-3xl font-light text-white mb-2'>
-										{featuredMembers[currentFeatured].name}
-									</h3>
-									<p className='text-yellow-400 text-lg mb-3'>
-										@
-										{
-											featuredMembers[currentFeatured]
-												.username
-										}
-									</p>
-									<p className='text-gray-300 mb-3'>
-										{
-											featuredMembers[currentFeatured]
-												.speciality
-										}
-									</p>
-									<p className='text-gray-400 text-sm mb-4'>
-										{
-											featuredMembers[currentFeatured]
-												.location
-										}
-									</p>
-
-									<div className='flex flex-wrap justify-center md:justify-start gap-2 mb-4'>
-										{featuredMembers[
-											currentFeatured
-										].badges.map((badge, index) => (
-											<span
-												key={index}
-												className='bg-yellow-400/20 text-yellow-400 px-3 py-1 text-xs uppercase tracking-wide border border-yellow-400/40'
-											>
-												{badge}
-											</span>
-										))}
-									</div>
-
-									<div className='flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start'>
-										<div className='flex items-center gap-4'>
-											<div className='text-center'>
-												<div className='text-2xl font-light text-yellow-400'>
-													{
-														featuredMembers[
-															currentFeatured
-														].cocktailsAdded
-													}
-												</div>
-												<div className='text-xs text-gray-400 uppercase tracking-wide'>
-													Cocktails
-												</div>
-											</div>
-											<div className='w-px h-8 bg-yellow-400/30'></div>
-											<div className='text-center'>
-												<div className='text-sm text-gray-300'>
-													{
-														featuredMembers[
-															currentFeatured
-														].recentActivity
-													}
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					)}
-				</div>
-
-				{/* Filter Tabs */}
-				<div className='mb-8 md:mb-12'>
-					<div className='flex flex-wrap justify-center gap-2 md:gap-4'>
-						{filters.map((filter) => (
-							<button
-								key={filter.key}
-								onClick={() => setActiveFilter(filter.key)}
-								className={`group relative px-4 md:px-6 py-2 md:py-3 border transition-all duration-300 tracking-[0.1em] uppercase text-xs md:text-sm font-light ${
-									activeFilter === filter.key
-										? 'border-yellow-400 bg-yellow-400/10 text-yellow-400'
-										: 'border-yellow-400/30 text-gray-300 hover:border-yellow-400/60 hover:text-yellow-400'
-								}`}
-							>
-								{/* Small Art Deco corners for active filter */}
-								{activeFilter === filter.key && (
-									<>
-										<div className='absolute top-0 left-0 w-2 h-2 border-l border-t border-yellow-400'></div>
-										<div className='absolute top-0 right-0 w-2 h-2 border-r border-t border-yellow-400'></div>
-										<div className='absolute bottom-0 left-0 w-2 h-2 border-l border-b border-yellow-400'></div>
-										<div className='absolute bottom-0 right-0 w-2 h-2 border-r border-b border-yellow-400'></div>
-									</>
-								)}
-
-								<span className='relative z-10'>
-									{filter.label}{' '}
-									<span className='text-yellow-400/70'>
-										({filter.count})
-									</span>
-								</span>
-							</button>
-						))}
-					</div>
-				</div>
+				{/* Member Filters */}
+				<MemberFilters
+					filters={filters}
+					activeFilter={activeFilter}
+					onFilterChange={setActiveFilter}
+				/>
 
 				{/* Members Grid */}
-				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8'>
-					{getFilteredMembers().map((member) => (
-						<div
-							key={member.id}
-							className='group relative bg-black/30 border border-yellow-400/30 p-6 backdrop-blur-sm transition-all duration-500 hover:border-yellow-400/60 hover:bg-yellow-400/5 hover:scale-105'
-						>
-							{/* Small Art Deco corners */}
-							<div className='absolute top-0 left-0 w-3 h-3 border-l border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-							<div className='absolute top-0 right-0 w-3 h-3 border-r border-t border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-							<div className='absolute bottom-0 left-0 w-3 h-3 border-l border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-							<div className='absolute bottom-0 right-0 w-3 h-3 border-r border-b border-yellow-400/40 group-hover:border-yellow-400 transition-colors duration-500'></div>
-
-							<div className='text-center'>
-								{/* Avatar */}
-								<div className='relative mb-4'>
-									<img
-										src={member.avatar}
-										alt={member.name}
-										className='w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-yellow-400/40 group-hover:border-yellow-400 object-cover mx-auto transition-all duration-300'
-									/>
-									{member.isVerified && (
-										<div className='absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center border border-black'>
-											<span className='text-black text-xs font-bold'>
-												✓
-											</span>
-										</div>
-									)}
-								</div>
-
-								{/* Member Info */}
-								<h3 className='text-white font-light text-lg mb-1 group-hover:text-yellow-400 transition-colors duration-300'>
-									{member.name}
-								</h3>
-								<p className='text-yellow-400/70 text-sm mb-3'>
-									@{member.username}
-								</p>
-								<p className='text-gray-400 text-xs mb-3'>
-									{member.speciality}
-								</p>
-								<p className='text-gray-500 text-xs mb-4'>
-									{member.location}
-								</p>
-
-								{/* Cocktails Count */}
-								<div className='mb-4'>
-									<div className='flex items-center justify-center gap-2 mb-2'>
-										<span className='text-2xl'>🍸</span>
-										<span className='text-xl font-light text-yellow-400'>
-											{member.cocktailsAdded}
-										</span>
-									</div>
-									<div className='text-xs text-gray-400 uppercase tracking-wide'>
-										Cocktails Added
-									</div>
-								</div>
-
-								{/* Badges */}
-								<div className='flex flex-wrap justify-center gap-1 mb-4'>
-									{member.badges
-										.slice(0, 2)
-										.map((badge, badgeIndex) => (
-											<span
-												key={badgeIndex}
-												className='bg-yellow-400/20 text-yellow-400 px-2 py-1 text-xs rounded border border-yellow-400/40'
-											>
-												{badge}
-											</span>
-										))}
-								</div>
-
-								{/* Recent Activity */}
-								<div className='text-xs text-gray-500 italic'>
-									{member.recentActivity}
-								</div>
-
-								{/* View Profile Button */}
-								<button className='mt-4 w-full bg-transparent border border-yellow-400/40 text-yellow-400 py-2 px-4 text-xs uppercase tracking-wide transition-all duration-300 hover:bg-yellow-400/10 hover:border-yellow-400'>
-									View Profile
-								</button>
-							</div>
-						</div>
-					))}
-				</div>
+				<MembersGrid members={getFilteredMembers()} />
 
 				{/* Join Community CTA */}
-				<div className='text-center mt-16 md:mt-20'>
-					<div className='relative border border-yellow-400/40 p-8 md:p-12 bg-black/20 backdrop-blur-sm max-w-3xl mx-auto'>
-						{/* Art Deco corners */}
-						<div className='absolute -top-1 -left-1 w-6 md:w-8 h-6 md:h-8 border-l-2 border-t-2 border-yellow-400'></div>
-						<div className='absolute -top-1 -right-1 w-6 md:w-8 h-6 md:h-8 border-r-2 border-t-2 border-yellow-400'></div>
-						<div className='absolute -bottom-1 -left-1 w-6 md:w-8 h-6 md:h-8 border-l-2 border-b-2 border-yellow-400'></div>
-						<div className='absolute -bottom-1 -right-1 w-6 md:w-8 h-6 md:h-8 border-r-2 border-b-2 border-yellow-400'></div>
-
-						<h2 className='text-2xl md:text-3xl font-light text-white tracking-[0.15em] uppercase mb-6'>
-							Join the Hub
-						</h2>
-						<p className='text-lg md:text-xl text-gray-300 font-light italic mb-8 leading-relaxed'>
-							"Share your passion, learn, and become part of the
-							greatest mixology community."
-						</p>
-
-						<div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center'>
-							<Link
-								to='/login?mode=register'
-								className='group relative bg-yellow-400 text-black font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400 transition-all duration-500 hover:bg-black hover:text-yellow-400 tracking-[0.1em] uppercase text-sm block text-center'
-							>
-								{/* Art Deco corners */}
-								<div className='absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-yellow-400'></div>
-								<div className='absolute -top-1 -right-1 w-3 h-3 border-r-2 border-t-2 border-yellow-400'></div>
-								<div className='absolute -bottom-1 -left-1 w-3 h-3 border-l-2 border-b-2 border-yellow-400'></div>
-								<div className='absolute -bottom-1 -right-1 w-3 h-3 border-r-2 border-b-2 border-yellow-400'></div>
-
-								<span className='relative z-10'>
-									Join the Hub
-								</span>
-							</Link>
-
-							<Link
-								to='/addCocktail'
-								className='group relative bg-transparent text-yellow-400 font-light py-3 md:py-4 px-8 md:px-10 border-2 border-yellow-400/60 transition-all duration-500 hover:border-yellow-400 hover:bg-yellow-400/10 tracking-[0.1em] uppercase text-sm block text-center'
-							>
-								<span className='relative z-10'>
-									Add a Cocktail
-								</span>
-							</Link>
-						</div>
-					</div>
-				</div>
+				<JoinCommunityCTA />
 			</div>
 		</section>
 	);
