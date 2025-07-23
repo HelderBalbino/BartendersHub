@@ -11,7 +11,8 @@ const BasicInfoForm = ({ values, errors, touched, onChange, onBlur }) => {
 				value={values.name}
 				onChange={onChange}
 				onBlur={onBlur}
-				placeholder='The Golden Fizz'
+				placeholder='Enter cocktail name...'
+				type='text'
 				required
 				error={errors.name}
 				touched={touched.name}
@@ -25,7 +26,7 @@ const BasicInfoForm = ({ values, errors, touched, onChange, onBlur }) => {
 				onChange={onChange}
 				onBlur={onBlur}
 				rows={4}
-				placeholder='A sophisticated blend of gin and elderflower...'
+				placeholder='Describe the cocktail...'
 				required
 				error={errors.description}
 				touched={touched.description}
