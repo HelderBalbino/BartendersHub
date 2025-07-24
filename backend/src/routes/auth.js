@@ -22,8 +22,14 @@ const registerValidation = [
 		.withMessage('Name must be between 2 and 50 characters'),
 	body('email').isEmail().withMessage('Please provide a valid email'),
 	body('password')
-		.isLength({ min: 6 })
-		.withMessage('Password must be at least 6 characters'),
+		.isLength({ min: 8 })
+		.withMessage('Password must be at least 8 characters')
+		.matches(
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+		)
+		.withMessage(
+			'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+		),
 	body('username')
 		.notEmpty()
 		.withMessage('Username is required')
@@ -45,8 +51,14 @@ const updatePasswordValidation = [
 		.notEmpty()
 		.withMessage('Current password is required'),
 	body('newPassword')
-		.isLength({ min: 6 })
-		.withMessage('New password must be at least 6 characters'),
+		.isLength({ min: 8 })
+		.withMessage('New password must be at least 8 characters')
+		.matches(
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+		)
+		.withMessage(
+			'New password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+		),
 ];
 
 // Routes
