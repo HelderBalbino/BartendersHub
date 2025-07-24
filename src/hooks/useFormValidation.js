@@ -106,16 +106,22 @@ export const validationRules = {
 	},
 
 	password: (value) => {
-		if (value && value.length < 6) {
-			return 'Password must be at least 6 characters long';
+		if (value && value.length < 8) {
+			return 'Password must be at least 8 characters long';
 		}
 		return '';
 	},
 
 	passwordStrong: (value) => {
+		if (!value) return '';
+
+		if (value.length < 8) {
+			return 'Password must be at least 8 characters long';
+		}
+
 		const strongPasswordRegex =
 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-		if (value && !strongPasswordRegex.test(value)) {
+		if (!strongPasswordRegex.test(value)) {
 			return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
 		}
 		return '';
