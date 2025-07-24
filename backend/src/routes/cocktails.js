@@ -2,6 +2,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 import path from 'path';
+import process from 'process';
 import {
 	getCocktails,
 	getCocktail,
@@ -16,16 +17,19 @@ import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
 import { uploadLimiter } from '../middleware/rateLimiter.js';
 import { cacheMiddleware } from '../middleware/cache.js';
+import { validateFileUpload } from '../middleware/sanitization.js';
 
 const router = express.Router();
 
-// Multer configuration for file uploads
+// Enhanced multer configuration for file uploads
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, 'uploads/');
 	},
 	filename: function (req, file, cb) {
-		cb(null, `cocktail-${Date.now()}${path.extname(file.originalname)}`);
+		// Sanitize filename to prevent path traversal
+		const sanitizedName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '');
+		cb(null, `cocktail-${Date.now()}-${sanitizedName}`);
 	},
 });
 
@@ -33,13 +37,30 @@ const upload = multer({
 	storage: storage,
 	limits: {
 		fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5000000, // 5MB default
+		files: 1, // Only one file
 	},
 	fileFilter: function (req, file, cb) {
-		// Check file type
-		if (file.mimetype.startsWith('image/')) {
+		// Strict file type checking
+		const allowedMimeTypes = [
+			'image/jpeg',
+			'image/jpg',
+			'image/png',
+			'image/webp',
+		];
+		const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+
+		const fileExtension = path.extname(file.originalname).toLowerCase();
+
+		if (
+			allowedMimeTypes.includes(file.mimetype) &&
+			allowedExtensions.includes(fileExtension)
+		) {
 			cb(null, true);
 		} else {
-			cb(new Error('Only image files are allowed'), false);
+			cb(
+				new Error('Only JPEG, PNG, and WebP image files are allowed'),
+				false,
+			);
 		}
 	},
 });
@@ -90,6 +111,7 @@ router.post(
 	protect,
 	uploadLimiter,
 	upload.single('image'),
+	validateFileUpload,
 	createCocktailValidation,
 	handleValidationErrors,
 	createCocktail,
@@ -98,6 +120,8 @@ router.put(
 	'/:id',
 	protect,
 	uploadLimiter,
+	upload.single('image'),
+	validateFileUpload,
 	upload.single('image'),
 	updateCocktail,
 );
