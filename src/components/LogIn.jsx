@@ -39,7 +39,7 @@ const LogIn = () => {
 		name: [validationRules.required, validationRules.minLength(2)],
 		username: [validationRules.required, validationRules.minLength(3)],
 		email: [validationRules.required, validationRules.email],
-		password: [validationRules.required, validationRules.password],
+		password: [validationRules.required, validationRules.passwordStrong],
 		confirmPassword: [
 			validationRules.required,
 			validationRules.confirmPassword,
