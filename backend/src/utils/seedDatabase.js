@@ -1,8 +1,15 @@
 import dotenv from 'dotenv';
+import process from 'process';
 import connectDB from '../config/database.js';
 import User from '../models/User.js';
 import Cocktail from '../models/Cocktail.js';
 import { hashPassword } from '../utils/auth.js';
+
+/*
+ * SECURITY WARNING: This file contains seed data for development purposes only.
+ * All passwords used here are weak and should NEVER be used in production.
+ * If running this seeder in production, ensure all passwords are changed immediately.
+ */
 
 // Load environment variables
 dotenv.config();
