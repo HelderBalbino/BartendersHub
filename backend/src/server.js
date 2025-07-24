@@ -11,9 +11,14 @@ import { fileURLToPath } from 'url';
 // Load environment variables
 dotenv.config();
 
+// Validate environment variables
+import { validateEnvironmentVariables } from './config/validateEnv.js';
+validateEnvironmentVariables();
+
 // Import middleware
 import { limiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { sanitizeInput } from './middleware/sanitization.js';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -33,8 +38,44 @@ const app = express();
 // Connect to database
 connectDB();
 
-// Security middleware
-app.use(helmet());
+// Security middleware - Enhanced helmet configuration
+app.use(
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				defaultSrc: ["'self'"],
+				styleSrc: [
+					"'self'",
+					"'unsafe-inline'",
+					'https://fonts.googleapis.com',
+				],
+				fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+				imgSrc: [
+					"'self'",
+					'data:',
+					'https://res.cloudinary.com',
+					'https://images.unsplash.com',
+				],
+				scriptSrc: ["'self'"],
+				connectSrc: ["'self'"],
+				frameSrc: ["'none'"],
+				objectSrc: ["'none'"],
+				mediaSrc: ["'self'"],
+				manifestSrc: ["'self'"],
+			},
+		},
+		crossOriginEmbedderPolicy: false, // Disable for Cloudinary compatibility
+		hsts: {
+			maxAge: 31536000,
+			includeSubDomains: true,
+			preload: true,
+		},
+		noSniff: true,
+		frameguard: { action: 'deny' },
+		xssFilter: true,
+		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+	}),
+);
 
 // CORS configuration
 const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -55,6 +96,9 @@ app.use(compression());
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Input sanitization middleware
+app.use(sanitizeInput);
 
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
