@@ -12,17 +12,33 @@ cloudinary.v2.config({
 
 // Upload image to cloudinary
 export const uploadImage = async (imagePath, folder = 'cocktails') => {
+	const UPLOADS_ROOT = path.resolve('./uploads');
 	try {
-		const result = await cloudinary.v2.uploader.upload(imagePath, {
+		// Resolve and validate the imagePath
+		const resolvedPath = path.resolve(imagePath);
+
+		// Ensure the resolved path is within the uploads directory
+		if (!resolvedPath.startsWith(UPLOADS_ROOT)) {
+			throw new Error('Invalid file path - path traversal detected');
+		}
+
+		// Additional security check - ensure file exists and is readable
+		if (!fs.existsSync(resolvedPath)) {
+			throw new Error('File does not exist');
+		}
+
+		const result = await cloudinary.v2.uploader.upload(resolvedPath, {
 			folder: `bartendershub/${folder}`,
 			width: 800,
 			height: 600,
 			crop: 'limit',
 			quality: 'auto:best',
+			resource_type: 'image',
+			allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
 		});
 
 		// Delete the local file after upload
-		fs.unlinkSync(imagePath);
+		fs.unlinkSync(resolvedPath);
 
 		return {
 			url: result.secure_url,
@@ -30,8 +46,12 @@ export const uploadImage = async (imagePath, folder = 'cocktails') => {
 		};
 	} catch (error) {
 		// Delete the local file if upload fails
-		if (fs.existsSync(imagePath)) {
-			fs.unlinkSync(imagePath);
+		const resolvedPath = path.resolve(imagePath);
+		if (
+			resolvedPath.startsWith(UPLOADS_ROOT) &&
+			fs.existsSync(resolvedPath)
+		) {
+			fs.unlinkSync(resolvedPath);
 		}
 		throw error;
 	}
@@ -48,12 +68,19 @@ export const deleteImage = async (publicId) => {
 
 // Upload avatar to cloudinary
 export const uploadAvatar = async (imagePath) => {
-	const UPLOADS_ROOT = path.resolve('/path/to/uploads'); // Define the safe root directory
+	const UPLOADS_ROOT = path.resolve('./uploads'); // Define the safe root directory
 	try {
 		// Resolve and validate the imagePath
-		const resolvedPath = fs.realpathSync(path.resolve(imagePath));
+		const resolvedPath = path.resolve(imagePath);
+
+		// Ensure the resolved path is within the uploads directory
 		if (!resolvedPath.startsWith(UPLOADS_ROOT)) {
-			throw new Error('Invalid file path');
+			throw new Error('Invalid file path - path traversal detected');
+		}
+
+		// Additional security check - ensure file exists and is readable
+		if (!fs.existsSync(resolvedPath)) {
+			throw new Error('File does not exist');
 		}
 
 		const result = await cloudinary.v2.uploader.upload(resolvedPath, {
@@ -63,6 +90,8 @@ export const uploadAvatar = async (imagePath) => {
 			crop: 'fill',
 			gravity: 'face',
 			quality: 'auto:best',
+			resource_type: 'image',
+			allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
 		});
 
 		// Delete the local file after upload
@@ -75,7 +104,7 @@ export const uploadAvatar = async (imagePath) => {
 	} catch (error) {
 		// Delete the local file if upload fails
 		try {
-			const resolvedPath = fs.realpathSync(path.resolve(imagePath));
+			const resolvedPath = path.resolve(imagePath);
 			if (
 				resolvedPath.startsWith(UPLOADS_ROOT) &&
 				fs.existsSync(resolvedPath)
