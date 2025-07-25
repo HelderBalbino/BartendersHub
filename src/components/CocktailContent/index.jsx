@@ -131,7 +131,7 @@ const CocktailContent = () => {
 					</h3>
 					<p className='text-gray-400 mb-8 max-w-md mx-auto'>
 						Join our community of mixologists and share your
-						signature cocktails
+						cocktails
 					</p>
 				</div>
 			</div>
