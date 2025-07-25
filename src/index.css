@@ -31,7 +31,7 @@
 @layer utilities {
 	/* Custom mobile-optimized shadow for Art Deco elements */
 	.text-shadow-lg {
-		text-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+		text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 	}
 
 	/* Touch-friendly utility class */
