@@ -18,7 +18,7 @@ const CocktailContent = () => {
 
 	// Categories for filtering
 	const categories = [
-		{ id: 'all', name: 'All Cocktails', emoji: '🍿' },
+		{ id: 'all', name: 'All Cocktails', emoji: '🍸' },
 		{ id: 'beginner', name: 'Beginner', emoji: '🟢' },
 		{ id: 'intermediate', name: 'Intermediate', emoji: '🟡' },
 		{ id: 'advanced', name: 'Advanced', emoji: '🟠' },
