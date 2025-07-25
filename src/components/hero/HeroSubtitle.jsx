@@ -6,7 +6,7 @@ const HeroSubtitle = () => {
 			<p className='text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-400 leading-relaxed font-light tracking-wide px-4 sm:px-2'>
 				Step into the golden age of cocktails. Where mixologists craft
 				liquid poetry and every drink is a work of art. Welcome to the
-				most exclusive and bartending experience.
+				most exclusive and welcoming bartending experience.
 			</p>
 
 			{/* Subtitle decorative element */}
