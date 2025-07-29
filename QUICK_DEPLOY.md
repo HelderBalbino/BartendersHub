@@ -1,4 +1,4 @@
-# 🚀 Quick Render Deployment Guide
+# 🚀 Render Deployment Guide
 
 ## TL;DR - Fast Track to Deployment
 
