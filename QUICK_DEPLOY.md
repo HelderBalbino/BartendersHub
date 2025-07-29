@@ -2,7 +2,7 @@
 
 ## TL;DR - Fast Track to Deployment
 
-### 1. Prerequisites Setup (15 minutes)
+### 1. Prerequisites to Setup backend (15 minutes)
 
 ```bash
 # 1. Push code to GitHub
