@@ -44,7 +44,7 @@ FRONTEND_URL=https://your-frontend-domain.com
 2. Wait for deployment
 3. Test: `https://your-app.onrender.com/api/health`
 
-**Total time: ~25 minutes** ⏱️
+**Total time: ~26 minutes** ⏱️
 
 ---
 
