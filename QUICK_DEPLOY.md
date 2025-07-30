@@ -11,7 +11,7 @@ git commit -m "Deploy to Render"
 git push origin main
 
 # 2. Get MongoDB connection string from MongoDB Atlas
-# 3. Get Cloudinary credentials (cloud name, API key, API secret) - 3
+# 3. Get Cloudinary credentials (cloud name, API key, API secret)
 ```
 
 ### 2. Create Render Web Service (5 minutes)
