@@ -23,7 +23,7 @@ git push origin main
     - **Build Command**: `npm install`
     - **Start Command**: `npm start`
 
-### 3. Environment Variables (5 minutes)
+### 3. Environment Variables (6 minutes)
 
 Add these in Render dashboard:
 
