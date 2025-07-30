@@ -23,7 +23,7 @@ git push origin main
     - **Build Command**: `npm install`
     - **Start Command**: `npm start`
 
-### 3. Environment Variables (6 minutes)
+### 3. Environment Variables (5 minutes)
 
 Add these in Render dashboard:
 
@@ -32,9 +32,9 @@ NODE_ENV=production
 PORT=10000
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/bartendershub
 JWT_SECRET=your-32-plus-character-super-secure-secret
-CLOUDINARY_CLOUD_NAME=your-cloud-name.
-CLOUDINARY_API_KEY=your-api-key.
-CLOUDINARY_API_SECRET=your-api-secret.
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 FRONTEND_URL=https://your-frontend-domain.com
 ```
 
@@ -44,7 +44,7 @@ FRONTEND_URL=https://your-frontend-domain.com
 2. Wait for deployment
 3. Test: `https://your-app.onrender.com/api/health`
 
-**Total time: ~26 minutes** ⏱️
+**Total time: ~25 minutes** ⏱️
 
 ---
 
