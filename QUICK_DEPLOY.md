@@ -33,7 +33,7 @@ PORT=10000
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/bartendershub
 JWT_SECRET=your-32-plus-character-super-secure-secret
 CLOUDINARY_CLOUD_NAME=your-cloud-name.
-CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_KEY=your-api-key.
 CLOUDINARY_API_SECRET=your-api-secret
 FRONTEND_URL=https://your-frontend-domain.com
 ```
