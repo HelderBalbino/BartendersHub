@@ -10,7 +10,7 @@
 -   [ ] CORS origins properly configured for production
 -   [ ] No sensitive data in environment example files
 
-### Authentication & Authorization
+### Important Authentication & Authorization
 
 -   [ ] Strong password policy enforced (8+ chars, mixed case, numbers, special
         chars)
