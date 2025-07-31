@@ -2,7 +2,7 @@
 
 ## important Pre-Deployment Security Checklist
 
-### Environment & Configuration
+### Environment & important Configuration
 
 -   [ ] Strong JWT secret (32+ characters) configured
 -   [ ] Environment variables validated at startup
