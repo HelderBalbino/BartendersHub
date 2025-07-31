@@ -1,6 +1,6 @@
 # BartendersHub important Security Checklist
 
-## Pre-Deployment Security Checklist
+## important Pre-Deployment Security Checklist
 
 ### Environment & Configuration
 
