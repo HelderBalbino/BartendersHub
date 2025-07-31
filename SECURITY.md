@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document outlines the security measures implemented in BartendersHub to
-protect against common web application vulnerabilities.
+This document outlines the necessary security measures implemented in
+BartendersHub to protect against common web application vulnerabilities.
 
 ## Security Features Implemented
 
