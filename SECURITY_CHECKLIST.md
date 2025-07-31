@@ -1,4 +1,4 @@
-# BartendersHub Security Checklist
+# BartendersHub important Security Checklist
 
 ## Pre-Deployment Security Checklist
 
