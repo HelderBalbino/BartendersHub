@@ -27,7 +27,7 @@
 -   [ ] File upload validation and restrictions in place
 -   [ ] Request size limits configured (10MB max)
 
-### Security Headers
+### Important Security Headers
 
 -   [ ] Helmet.js configured with strict CSP
 -   [ ] HSTS headers enabled for HTTPS
