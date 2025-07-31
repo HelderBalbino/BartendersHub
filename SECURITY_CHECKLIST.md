@@ -43,7 +43,7 @@
 -   [ ] Filename sanitization in place
 -   [ ] Upload directory outside web root
 
-### Database Security
+### Important Database Security
 
 -   [ ] MongoDB authentication enabled
 -   [ ] Connection pooling configured
