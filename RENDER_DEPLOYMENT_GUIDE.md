@@ -13,7 +13,7 @@
 
 ## 🚀 **Step 1: Prepare Your Repository**
 
-### 1.1 Push Your Code to GitHub
+### 1.1 Push Your Code to GitHub -
 
 ```bash
 # If not already done, initialize git and push to GitHub
