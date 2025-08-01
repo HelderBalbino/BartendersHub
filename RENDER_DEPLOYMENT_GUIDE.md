@@ -42,7 +42,7 @@ Ensure your backend folder has:
 2. Sign up or log in
 3. Create a new project: "BartendersHub"
 
-### 2.2 Create Database Cluster
+### 2.2 Create Database Cluster -
 
 1. Click "Build a Database"
 2. Choose **M0 Sandbox** (Free tier)
