@@ -23,7 +23,7 @@ git commit -m "Prepare backend for Render deployment"
 git push origin main
 ```
 
-### 1.2 Verify Backend Structure
+### 1.2 Verify Backend Structure -
 
 Ensure your backend folder has:
 
