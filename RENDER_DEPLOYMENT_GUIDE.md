@@ -1,4 +1,4 @@
-# BartendersHub Backend Deployment Guide - Render
+# BartendersHub Backend Deployment Guide - Render -
 
 ## Step-by-Step Guide to Deploy Your Backend on Render -
 
