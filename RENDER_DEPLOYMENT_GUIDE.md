@@ -36,7 +36,7 @@ Ensure your backend folder has:
 
 ## 🗄️ **Step 2: Set Up MongoDB Atlas (Production Database)**
 
-### 2.1 Create MongoDB Atlas Account
+### 2.1 Create MongoDB Atlas Account -
 
 1. Go to [MongoDB Atlas](https://www.mongodb.com/atlas)
 2. Sign up or log in
