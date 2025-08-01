@@ -2,7 +2,7 @@
 
 ## Step-by-Step Guide to Deploy Your Backend on Render
 
-### Prerequisites
+### Important Prerequisites
 
 -   ✅ GitHub account with your code pushed
 -   ✅ MongoDB Atlas account (for production database)
