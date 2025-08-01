@@ -50,7 +50,7 @@ Ensure your backend folder has:
 4. Name your cluster: `bartendershub-cluster`
 5. Click "Create"
 
-### 2.3 Configure Database Access
+### 2.3 Configure Database Access -
 
 1. Go to "Database Access" in sidebar
 2. Click "Add New Database User"
