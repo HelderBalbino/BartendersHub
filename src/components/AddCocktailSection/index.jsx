@@ -90,7 +90,7 @@ const AddCocktailSection = () => {
 	const handleImageChange = async (file) => {
 		// Select the file and show preview
 		handleFileSelect(file);
-		
+
 		// Auto-upload to Cloudinary
 		try {
 			const result = await uploadImage();
@@ -168,7 +168,7 @@ const AddCocktailSection = () => {
 				...filteredData,
 				image: values.imageUrl, // Send Cloudinary URL instead of file
 			};
-			
+
 			await createCocktailMutation.mutateAsync(cocktailData);
 			toast.success('Cocktail recipe created successfully!');
 			navigate('/cocktails');
