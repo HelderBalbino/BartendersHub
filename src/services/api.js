@@ -67,7 +67,15 @@ class ApiService {
 	}
 
 	async createCocktail(cocktailData) {
-		// Handle FormData for file uploads
+		// If image is a URL (from Cloudinary), send as JSON
+		if (cocktailData.image && typeof cocktailData.image === 'string') {
+			return this.request('/cocktails', {
+				method: 'POST',
+				body: JSON.stringify(cocktailData),
+			});
+		}
+		
+		// Handle FormData for file uploads (fallback for direct file uploads)
 		const formData = new FormData();
 		Object.keys(cocktailData).forEach((key) => {
 			if (key === 'ingredients' || key === 'instructions') {
