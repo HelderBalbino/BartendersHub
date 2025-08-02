@@ -10,6 +10,7 @@ const ImageUpload = ({
 	maxSize = 5 * 1024 * 1024, // 5MB default
 	acceptedTypes = ['image/*'],
 	placeholder = 'Upload Image',
+	uploading = false,
 }) => {
 	const [isDragOver, setIsDragOver] = useState(false);
 
@@ -69,12 +70,22 @@ const ImageUpload = ({
 					isDragOver
 						? 'border-yellow-400 bg-yellow-400/10'
 						: 'border-yellow-400/30 hover:border-yellow-400/60'
-				}`}
+				} ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
 				onDrop={handleDrop}
 				onDragOver={handleDragOver}
 				onDragLeave={handleDragLeave}
 			>
-				{preview ? (
+				{uploading ? (
+					<div className='space-y-4'>
+						<div className='text-4xl text-yellow-400/60'>⏳</div>
+						<div className='text-yellow-400 font-light tracking-wide uppercase text-sm'>
+							Uploading to cloud...
+						</div>
+						<div className='text-gray-400 text-xs'>
+							Please wait while we process your image
+						</div>
+					</div>
+				) : preview ? (
 					<div className='space-y-4'>
 						<img
 							src={preview}
@@ -128,6 +139,7 @@ ImageUpload.propTypes = {
 	maxSize: PropTypes.number,
 	acceptedTypes: PropTypes.arrayOf(PropTypes.string),
 	placeholder: PropTypes.string,
+	uploading: PropTypes.bool,
 };
 
 export default ImageUpload;
