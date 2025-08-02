@@ -9,6 +9,7 @@ const ImageAndTagsForm = ({
 	onImageRemove,
 	tags,
 	onTagsChange,
+	uploading = false,
 }) => {
 	return (
 		<FormSection title='Image & Tags'>
@@ -17,6 +18,7 @@ const ImageAndTagsForm = ({
 				onChange={onImageChange}
 				onRemove={onImageRemove}
 				placeholder='Cocktail Image'
+				uploading={uploading}
 			/>
 
 			<div>
@@ -41,6 +43,7 @@ ImageAndTagsForm.propTypes = {
 	onImageRemove: PropTypes.func.isRequired,
 	tags: PropTypes.array.isRequired,
 	onTagsChange: PropTypes.func.isRequired,
+	uploading: PropTypes.bool,
 };
 
 export default ImageAndTagsForm;
