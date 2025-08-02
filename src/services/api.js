@@ -74,7 +74,7 @@ class ApiService {
 				body: JSON.stringify(cocktailData),
 			});
 		}
-		
+
 		// Handle FormData for file uploads (fallback for direct file uploads)
 		const formData = new FormData();
 		Object.keys(cocktailData).forEach((key) => {
