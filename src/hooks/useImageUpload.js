@@ -49,42 +49,45 @@ export const useImageUpload = (options = {}) => {
 	);
 
 	// Upload to Cloudinary
-	const uploadToCloudinary = useCallback(async (file) => {
-		if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-			toast.error('Cloudinary configuration is missing');
-			return null;
-		}
-
-		const formData = new FormData();
-		formData.append('file', file);
-		formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-		formData.append('folder', folder);
-		formData.append('quality', 'auto:good');
-		formData.append('format', 'auto');
-
-		try {
-			const response = await fetch(CLOUDINARY_UPLOAD_URL, {
-				method: 'POST',
-				body: formData,
-			});
-
-			if (!response.ok) {
-				throw new Error('Upload failed');
+	const uploadToCloudinary = useCallback(
+		async (file) => {
+			if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+				toast.error('Cloudinary configuration is missing');
+				return null;
 			}
 
-			const data = await response.json();
-			return {
-				url: data.secure_url,
-				publicId: data.public_id,
-				format: data.format,
-				width: data.width,
-				height: data.height,
-			};
-		} catch (error) {
-			console.error('Cloudinary upload error:', error);
-			throw error;
-		}
-	}, [folder]);
+			const formData = new FormData();
+			formData.append('file', file);
+			formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+			formData.append('folder', folder);
+			formData.append('quality', 'auto:good');
+			formData.append('format', 'auto');
+
+			try {
+				const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+					method: 'POST',
+					body: formData,
+				});
+
+				if (!response.ok) {
+					throw new Error('Upload failed');
+				}
+
+				const data = await response.json();
+				return {
+					url: data.secure_url,
+					publicId: data.public_id,
+					format: data.format,
+					width: data.width,
+					height: data.height,
+				};
+			} catch (error) {
+				console.error('Cloudinary upload error:', error);
+				throw error;
+			}
+		},
+		[folder],
+	);
 
 	const handleFileSelect = useCallback(
 		(selectedFile) => {
@@ -92,7 +95,7 @@ export const useImageUpload = (options = {}) => {
 
 			setFile(selectedFile);
 			setPreview(URL.createObjectURL(selectedFile));
-			
+
 			if (onUploadStart) {
 				onUploadStart(selectedFile);
 			}
