@@ -22,10 +22,28 @@ import {
 	useFormValidation,
 	validationRules,
 } from '../../hooks/useFormValidation';
+import { useImageUpload } from '../../hooks/useImageUpload';
 
 const AddCocktailSection = () => {
 	const navigate = useNavigate();
 	const createCocktailMutation = useCreateCocktail();
+
+	// Initialize image upload hook
+	const {
+		preview: imagePreview,
+		uploading: imageUploading,
+		handleFileSelect,
+		clearFile: clearImage,
+		uploadImage,
+	} = useImageUpload({
+		folder: 'cocktails',
+		onUploadComplete: (result) => {
+			console.log('Image uploaded successfully:', result);
+		},
+		onUploadError: (error) => {
+			console.error('Image upload failed:', error);
+		},
+	});
 
 	const initialValues = {
 		name: '',
@@ -38,8 +56,7 @@ const AddCocktailSection = () => {
 		glassType: '',
 		garnish: '',
 		tags: [''],
-		image: null,
-		imagePreview: null,
+		imageUrl: null, // Store the Cloudinary URL instead of file
 	};
 
 	const validationSchema = {
@@ -69,20 +86,30 @@ const AddCocktailSection = () => {
 		setValues,
 	} = useFormValidation(initialValues, validationSchema);
 
-	// Image handling
-	const handleImageChange = (file) => {
-		setValues((prev) => ({
-			...prev,
-			image: file,
-			imagePreview: URL.createObjectURL(file),
-		}));
+	// Image handling with Cloudinary
+	const handleImageChange = async (file) => {
+		// Select the file and show preview
+		handleFileSelect(file);
+		
+		// Auto-upload to Cloudinary
+		try {
+			const result = await uploadImage();
+			if (result && result.url) {
+				setValues((prev) => ({
+					...prev,
+					imageUrl: result.url,
+				}));
+			}
+		} catch (error) {
+			console.error('Failed to upload image:', error);
+		}
 	};
 
 	const handleImageRemove = () => {
+		clearImage();
 		setValues((prev) => ({
 			...prev,
-			image: null,
-			imagePreview: null,
+			imageUrl: null,
 		}));
 	};
 
@@ -137,7 +164,12 @@ const AddCocktailSection = () => {
 		}
 
 		try {
-			await createCocktailMutation.mutateAsync(filteredData);
+			const cocktailData = {
+				...filteredData,
+				image: values.imageUrl, // Send Cloudinary URL instead of file
+			};
+			
+			await createCocktailMutation.mutateAsync(cocktailData);
 			toast.success('Cocktail recipe created successfully!');
 			navigate('/cocktails');
 		} catch (error) {
@@ -217,11 +249,12 @@ const AddCocktailSection = () => {
 							/>
 
 							<ImageAndTagsForm
-								imagePreview={values.imagePreview}
+								imagePreview={imagePreview}
 								onImageChange={handleImageChange}
 								onImageRemove={handleImageRemove}
 								tags={values.tags}
 								onTagsChange={handleTagsChange}
+								uploading={imageUploading}
 							/>
 						</div>
 
