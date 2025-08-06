@@ -10,6 +10,10 @@ import {
 import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
+import {
+	trackLoginAttempts,
+	validatePasswordStrength,
+} from '../middleware/enhancedAuth.js';
 
 const router = express.Router();
 
@@ -65,6 +69,7 @@ const updatePasswordValidation = [
 router.post(
 	'/register',
 	authLimiter,
+	validatePasswordStrength,
 	registerValidation,
 	handleValidationErrors,
 	register,
@@ -72,6 +77,7 @@ router.post(
 router.post(
 	'/login',
 	authLimiter,
+	trackLoginAttempts,
 	loginValidation,
 	handleValidationErrors,
 	login,
@@ -81,6 +87,7 @@ router.put('/updatedetails', protect, updateDetails);
 router.put(
 	'/updatepassword',
 	protect,
+	validatePasswordStrength,
 	updatePasswordValidation,
 	handleValidationErrors,
 	updatePassword,
