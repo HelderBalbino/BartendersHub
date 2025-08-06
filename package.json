@@ -18,6 +18,7 @@
 		"axios": "^1.6.2",
 		"clsx": "^2.0.0",
 		"date-fns": "^2.30.0",
+		"isomorphic-dompurify": "^2.26.0",
 		"prop-types": "^15.8.1",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
