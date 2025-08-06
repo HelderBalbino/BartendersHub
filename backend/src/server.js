@@ -19,6 +19,10 @@ validateEnvironmentVariables();
 import { limiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { sanitizeInput } from './middleware/sanitization.js';
+import {
+	detectSuspiciousActivity,
+	monitorRateLimit,
+} from './utils/securityMonitoring.js';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -56,8 +60,8 @@ app.use(
 					'https://res.cloudinary.com',
 					'https://images.unsplash.com',
 				],
-				scriptSrc: ["'self'"],
-				connectSrc: ["'self'"],
+				scriptSrc: ["'self'", "'unsafe-eval'"], // Required for Vite in development
+				connectSrc: ["'self'", 'https://api.cloudinary.com'],
 				frameSrc: ["'none'"],
 				objectSrc: ["'none'"],
 				mediaSrc: ["'self'"],
@@ -65,6 +69,7 @@ app.use(
 			},
 		},
 		crossOriginEmbedderPolicy: false, // Disable for Cloudinary compatibility
+		crossOriginResourcePolicy: { policy: 'cross-origin' }, // Allow cross-origin requests
 		hsts: {
 			maxAge: 31536000,
 			includeSubDomains: true,
@@ -74,8 +79,36 @@ app.use(
 		frameguard: { action: 'deny' },
 		xssFilter: true,
 		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+		hidePoweredBy: true,
+		ieNoOpen: true,
+		dnsPrefetchControl: { allow: false },
+		permittedCrossDomainPolicies: false,
 	}),
 );
+
+// Additional security headers
+app.use((req, res, next) => {
+	// Prevent clickjacking
+	res.setHeader('X-Frame-Options', 'DENY');
+
+	// Prevent MIME type sniffing
+	res.setHeader('X-Content-Type-Options', 'nosniff');
+
+	// Enable XSS filtering
+	res.setHeader('X-XSS-Protection', '1; mode=block');
+
+	// Feature policy / Permissions policy
+	res.setHeader(
+		'Permissions-Policy',
+		'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+	);
+
+	// Prevent sensitive information leakage
+	res.removeHeader('X-Powered-By');
+	res.removeHeader('Server');
+
+	next();
+});
 
 // CORS configuration
 const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -87,7 +120,8 @@ app.use(
 	}),
 );
 
-// Rate limiting
+// Rate limiting with monitoring
+app.use(monitorRateLimit);
 app.use(limiter);
 
 // Compression middleware
@@ -97,7 +131,8 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Input sanitization middleware
+// Input sanitization middleware with security monitoring
+app.use(detectSuspiciousActivity);
 app.use(sanitizeInput);
 
 // Logging middleware
