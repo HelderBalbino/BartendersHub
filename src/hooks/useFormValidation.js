@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { sanitizeUserInput } from '../utils/security';
 
 export const useFormValidation = (initialValues, validationRules) => {
 	const [values, setValues] = useState(initialValues);
@@ -9,8 +10,14 @@ export const useFormValidation = (initialValues, validationRules) => {
 		const rules = validationRules[name];
 		if (!rules) return '';
 
+		// Sanitize input before validation
+		const sanitizedValue = sanitizeUserInput(value, {
+			maxLength: 1000, // Prevent extremely long inputs
+			trimWhitespace: true,
+		});
+
 		for (const rule of rules) {
-			const error = rule(value, values);
+			const error = rule(sanitizedValue, values);
 			if (error) return error;
 		}
 		return '';
@@ -28,7 +35,20 @@ export const useFormValidation = (initialValues, validationRules) => {
 
 	const handleChange = (e) => {
 		const { name, value, type, files } = e.target;
-		const newValue = type === 'file' ? files[0] : value;
+		let newValue = type === 'file' ? files[0] : value;
+
+		// Sanitize text inputs
+		if (
+			type === 'text' ||
+			type === 'email' ||
+			type === 'password' ||
+			type === 'textarea'
+		) {
+			newValue = sanitizeUserInput(newValue, {
+				maxLength: name === 'bio' ? 500 : 100,
+				trimWhitespace: name !== 'password', // Don't trim passwords
+			});
+		}
 
 		console.log('🔧 useFormValidation.handleChange called:', {
 			name,
