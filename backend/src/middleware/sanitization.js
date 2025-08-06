@@ -1,20 +1,63 @@
 import DOMPurify from 'isomorphic-dompurify';
 
-// Sanitize HTML input to prevent XSS
+// Enhanced input sanitization middleware
 export const sanitizeInput = (req, res, next) => {
-	const sanitizeObject = (obj) => {
+	const sanitizeObject = (obj, depth = 0) => {
+		// Prevent deep recursion attacks
+		if (depth > 10) {
+			throw new Error('Object nesting too deep');
+		}
+
 		if (typeof obj === 'string') {
-			return DOMPurify.sanitize(obj, { ALLOWED_TAGS: [] }); // Strip all HTML tags
+			// Trim whitespace
+			let sanitized = obj.trim();
+
+			// Prevent excessively long strings
+			if (sanitized.length > 10000) {
+				sanitized = sanitized.substring(0, 10000);
+			}
+
+			// Sanitize HTML/XSS
+			sanitized = DOMPurify.sanitize(sanitized, {
+				ALLOWED_TAGS: [],
+				ALLOWED_ATTR: [],
+				STRIP_SCRIPT: true,
+				KEEP_CONTENT: true,
+			});
+
+			// Additional XSS prevention
+			sanitized = sanitized.replace(/<script[^>]*>.*?<\/script>/gi, '');
+			sanitized = sanitized.replace(/javascript:/gi, '');
+			sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+
+			return sanitized;
 		}
 
 		if (Array.isArray(obj)) {
-			return obj.map(sanitizeObject);
+			// Limit array size to prevent DoS
+			if (obj.length > 1000) {
+				throw new Error('Array too large');
+			}
+			return obj.map((item) => sanitizeObject(item, depth + 1));
 		}
 
 		if (obj && typeof obj === 'object') {
+			// Limit object size to prevent DoS
+			const keys = Object.keys(obj);
+			if (keys.length > 100) {
+				throw new Error('Object has too many properties');
+			}
+
 			const sanitized = {};
 			for (const [key, value] of Object.entries(obj)) {
-				sanitized[key] = sanitizeObject(value);
+				// Sanitize key names
+				const sanitizedKey = key.replace(/[^\w.-]/g, '');
+				if (sanitizedKey !== key) {
+					console.warn(
+						`Suspicious key detected and sanitized: ${key} -> ${sanitizedKey}`,
+					);
+				}
+				sanitized[sanitizedKey] = sanitizeObject(value, depth + 1);
 			}
 			return sanitized;
 		}
@@ -22,17 +65,30 @@ export const sanitizeInput = (req, res, next) => {
 		return obj;
 	};
 
-	// Sanitize request body
-	if (req.body && typeof req.body === 'object') {
-		req.body = sanitizeObject(req.body);
-	}
+	try {
+		// Sanitize request body
+		if (req.body && typeof req.body === 'object') {
+			req.body = sanitizeObject(req.body);
+		}
 
-	// Sanitize query parameters
-	if (req.query && typeof req.query === 'object') {
-		req.query = sanitizeObject(req.query);
-	}
+		// Sanitize query parameters
+		if (req.query && typeof req.query === 'object') {
+			req.query = sanitizeObject(req.query);
+		}
 
-	next();
+		// Sanitize URL parameters
+		if (req.params && typeof req.params === 'object') {
+			req.params = sanitizeObject(req.params);
+		}
+
+		next();
+	} catch (error) {
+		return res.status(400).json({
+			success: false,
+			message: 'Invalid request data',
+			error: error.message,
+		});
+	}
 };
 
 // Validate and sanitize file uploads
