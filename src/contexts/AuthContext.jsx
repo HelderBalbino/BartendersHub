@@ -1,5 +1,6 @@
 import { createContext, useReducer, useEffect } from 'react';
 import apiService from '../services/api';
+import { SecureTokenManager } from '../utils/security';
 
 // Auth Context
 export const AuthContext = createContext();
@@ -49,7 +50,7 @@ const authReducer = (state, action) => {
 const initialState = {
 	isAuthenticated: false,
 	user: null,
-	token: localStorage.getItem('authToken'),
+	token: SecureTokenManager.getToken(),
 	loading: false,
 	error: null,
 };
@@ -59,8 +60,8 @@ export const AuthProvider = ({ children }) => {
 
 	// Check if user is logged in on app start
 	useEffect(() => {
-		const token = localStorage.getItem('authToken');
-		if (token) {
+		const token = SecureTokenManager.getToken();
+		if (token && !SecureTokenManager.isTokenExpired(token)) {
 			// Verify token validity and get user data
 			apiService
 				.getProfile()
@@ -71,9 +72,13 @@ export const AuthProvider = ({ children }) => {
 					});
 				})
 				.catch(() => {
-					localStorage.removeItem('authToken');
+					SecureTokenManager.removeToken();
 					dispatch({ type: 'LOGOUT' });
 				});
+		} else if (token && SecureTokenManager.isTokenExpired(token)) {
+			// Remove expired token
+			SecureTokenManager.removeToken();
+			dispatch({ type: 'LOGOUT' });
 		}
 	}, []);
 
@@ -81,7 +86,7 @@ export const AuthProvider = ({ children }) => {
 		dispatch({ type: 'LOGIN_START' });
 		try {
 			const data = await apiService.login(credentials);
-			localStorage.setItem('authToken', data.token);
+			SecureTokenManager.setToken(data.token);
 			dispatch({
 				type: 'LOGIN_SUCCESS',
 				payload: { user: data.user, token: data.token },
@@ -97,7 +102,7 @@ export const AuthProvider = ({ children }) => {
 		dispatch({ type: 'LOGIN_START' });
 		try {
 			const data = await apiService.register(userData);
-			localStorage.setItem('authToken', data.token);
+			SecureTokenManager.setToken(data.token);
 			dispatch({
 				type: 'LOGIN_SUCCESS',
 				payload: { user: data.user, token: data.token },
@@ -110,7 +115,7 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const logout = () => {
-		localStorage.removeItem('authToken');
+		SecureTokenManager.removeToken();
 		dispatch({ type: 'LOGOUT' });
 	};
 
