@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
+import { validateFileUpload } from '../utils/security';
 
 // Cloudinary configuration
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -25,21 +26,16 @@ export const useImageUpload = (options = {}) => {
 		(file) => {
 			if (!file) return false;
 
-			// Check file type
-			if (!allowedTypes.includes(file.type)) {
-				toast.error(
-					'Please select a valid image file (JPEG, PNG, or WebP)',
-				);
-				return false;
-			}
+			// Use enhanced security validation
+			const validation = validateFileUpload(file, {
+				maxSize,
+				allowedTypes,
+				allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+				validateFilename: true,
+			});
 
-			// Check file size
-			if (file.size > maxSize) {
-				toast.error(
-					`Image size must be less than ${Math.round(
-						maxSize / 1024 / 1024,
-					)}MB`,
-				);
+			if (!validation.valid) {
+				validation.errors.forEach((error) => toast.error(error));
 				return false;
 			}
 
