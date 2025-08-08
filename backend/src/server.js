@@ -157,11 +157,44 @@ app.get('/api/health', (req, res) => {
 	});
 });
 
-// 404 handler
+// Root endpoint - API documentation/welcome
+app.get('/', (req, res) => {
+	res.status(200).json({
+		success: true,
+		message: 'Welcome to BartendersHub API! 🥃',
+		version: '1.0.0',
+		documentation: {
+			health: '/api/health',
+			auth: {
+				register: 'POST /api/auth/register',
+				login: 'POST /api/auth/login',
+				profile: 'GET /api/auth/me',
+			},
+			cocktails: {
+				list: 'GET /api/cocktails',
+				create: 'POST /api/cocktails',
+				single: 'GET /api/cocktails/:id',
+			},
+			users: {
+				list: 'GET /api/users',
+				single: 'GET /api/users/:id',
+			},
+		},
+		frontend: process.env.FRONTEND_URL || 'Not configured',
+		status: 'Production Ready',
+		timestamp: new Date().toISOString(),
+	});
+});
+
+// 404 handler for unknown routes
 app.use('*', (req, res) => {
 	res.status(404).json({
 		success: false,
 		message: 'Route not found',
+		availableEndpoints: {
+			api: '/api/health',
+			documentation: '/',
+		},
 	});
 });
 
