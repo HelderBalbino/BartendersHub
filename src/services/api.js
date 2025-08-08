@@ -8,6 +8,14 @@ import {
 const API_BASE_URL =
 	import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
+// Debug: Log the API URL being used
+console.log('🔗 API Base URL:', API_BASE_URL);
+console.log('📊 Environment Variables:', {
+	VITE_API_URL: import.meta.env.VITE_API_URL,
+	NODE_ENV: import.meta.env.NODE_ENV,
+	MODE: import.meta.env.MODE
+});
+
 // Client-side rate limiter
 const rateLimiter = new ClientRateLimiter(50, 15 * 60 * 1000); // 50 requests per 15 minutes
 
