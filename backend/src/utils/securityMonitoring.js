@@ -113,25 +113,31 @@ export const logSecurityEvent = (event) => {
 // Detect suspicious patterns in requests
 export const detectSuspiciousActivity = (req, res, next) => {
 	const suspiciousPatterns = [
-		// SQL Injection patterns
-		/('|(\\?))|(\\?)|('$)/i,
-		/(union|select|insert|delete|update|drop|create|alter|exec|script)/i,
+		// SQL Injection patterns (more specific)
+		/(union\s+select|insert\s+into|delete\s+from|update\s+set|drop\s+table)/i,
+		/(exec\s*\(|exec\s+sp_|xp_cmdshell)/i,
+		/(';\s*--)|(';|\s*or\s*1\s*=\s*1)/i,
 
-		// XSS patterns
+		// XSS patterns (more specific)
 		/<script[^>]*>.*?<\/script>/gi,
-		/javascript:/gi,
-		/on\w+\s*=/gi,
+		/javascript\s*:/gi,
+		/on(click|load|error|focus|blur)\s*=/gi,
+		/<iframe[^>]*src\s*=/gi,
 
 		// Path traversal patterns
 		/\.\.[/\\]/g,
 		/(\.\.%2f|\.\.%5c)/gi,
 
-		// Command injection patterns
-		/[;&|`$]/g,
+		// Command injection patterns (more specific)
+		/(\|\s*nc\s|-e\s|&&\s|;\s*cat\s)/g,
 	];
 
 	const checkString = (str, context) => {
-		if (typeof str !== 'string') return;
+		if (typeof str !== 'string' || str.length < 3) return; // Skip very short strings
+
+		// Skip checking normal JSON strings
+		if (context === 'request_body' && (str === '{}' || str === '[]'))
+			return;
 
 		for (const pattern of suspiciousPatterns) {
 			if (pattern.test(str)) {
@@ -148,19 +154,17 @@ export const detectSuspiciousActivity = (req, res, next) => {
 		}
 	};
 
-	// Check various request parts
-	if (req.body) {
-		JSON.stringify(req.body)
-			.split('')
-			.forEach((char, index) => {
-				// Sample check to avoid performance issues
-				if (index % 100 === 0) {
-					checkString(
-						JSON.stringify(req.body).substring(index, index + 100),
-						'request_body',
-					);
-				}
-			});
+	// Check various request parts (with better filtering)
+	if (req.body && Object.keys(req.body).length > 0) {
+		const bodyString = JSON.stringify(req.body);
+		// Only check if body contains actual content beyond empty objects/arrays
+		if (
+			bodyString.length > 10 &&
+			bodyString !== '{}' &&
+			bodyString !== '[]'
+		) {
+			checkString(bodyString, 'request_body');
+		}
 	}
 
 	if (req.query) {
