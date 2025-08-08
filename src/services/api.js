@@ -5,7 +5,8 @@ import {
 	ClientRateLimiter,
 } from '../utils/security.js';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL =
+	import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 // Debug: Log the API URL being used with more details
 console.log('🔗 API Base URL:', API_BASE_URL);
