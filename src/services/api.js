@@ -13,7 +13,7 @@ console.log('🔗 API Base URL:', API_BASE_URL);
 console.log('📊 Environment Variables:', {
 	VITE_API_URL: import.meta.env.VITE_API_URL,
 	NODE_ENV: import.meta.env.NODE_ENV,
-	MODE: import.meta.env.MODE
+	MODE: import.meta.env.MODE,
 });
 
 // Client-side rate limiter
