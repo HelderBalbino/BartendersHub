@@ -5,16 +5,28 @@ import {
 	ClientRateLimiter,
 } from '../utils/security.js';
 
-const API_BASE_URL =
-	import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+// Force production API URL for now - remove this override once environment is working
+const API_BASE_URL = 'https://bartendershub.onrender.com/api';
+// Original line: import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
-// Debug: Log the API URL being used
+// Debug: Log the API URL being used with more details
 console.log('🔗 API Base URL:', API_BASE_URL);
 console.log('📊 Environment Variables:', {
 	VITE_API_URL: import.meta.env.VITE_API_URL,
 	NODE_ENV: import.meta.env.NODE_ENV,
 	MODE: import.meta.env.MODE,
+	DEV: import.meta.env.DEV,
+	PROD: import.meta.env.PROD,
+	SSR: import.meta.env.SSR,
 });
+console.log('🔍 Raw import.meta.env:', import.meta.env);
+
+// Additional check to ensure we're using the right URL
+if (API_BASE_URL.includes('localhost:5001')) {
+	console.error('❌ STILL USING LOCALHOST! Check environment file loading.');
+} else {
+	console.log('✅ Using production backend URL');
+}
 
 // Client-side rate limiter
 const rateLimiter = new ClientRateLimiter(50, 15 * 60 * 1000); // 50 requests per 15 minutes
