@@ -18,22 +18,31 @@ if (redisUrl) {
 				lazyConnect: true,
 			},
 		});
-		
+
 		// Test connection
-		emailQueue.client.ping()
+		emailQueue.client
+			.ping()
 			.then(() => {
 				console.log('✅ Email queue initialized with Redis');
 			})
 			.catch((error) => {
-				console.warn('⚠️ Redis connection failed, email queue disabled:', error.message);
+				console.warn(
+					'⚠️ Redis connection failed, email queue disabled:',
+					error.message,
+				);
 				emailQueue = null;
 			});
 	} catch (error) {
-		console.warn('⚠️ Email queue disabled - Redis not available:', error.message);
+		console.warn(
+			'⚠️ Email queue disabled - Redis not available:',
+			error.message,
+		);
 		emailQueue = null;
 	}
 } else {
-	console.log('✅ Email queue initialized (Redis optional - will process emails directly)');
+	console.log(
+		'✅ Email queue initialized (Redis optional - will process emails directly)',
+	);
 }
 
 // Email transporter
@@ -145,7 +154,7 @@ const sendEmailDirect = async (to, subject, template, data) => {
 
 	try {
 		const emailContent = generateEmailContent(template, data);
-		
+
 		await transporter.sendMail({
 			from: `"BartendersHub" <${process.env.EMAIL_USER}>`,
 			to,
@@ -182,7 +191,7 @@ export const sendWelcomeEmail = async (userData) => {
 			userData.email,
 			'Welcome to BartendersHub! 🥃',
 			'welcome',
-			userData
+			userData,
 		);
 	}
 };
@@ -217,7 +226,7 @@ export const sendPasswordResetEmail = async (userData, resetToken) => {
 			{
 				...userData,
 				resetUrl,
-			}
+			},
 		);
 	}
 };
@@ -252,7 +261,7 @@ export const sendNewFollowerNotification = async (userData, followerData) => {
 				name: userData.name,
 				followerName: followerData.name,
 				followerUsername: followerData.username,
-			}
+			},
 		);
 	}
 };
