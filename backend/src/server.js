@@ -206,10 +206,10 @@ const PORT = process.env.PORT || 5001;
 // Start server (Render and other cloud platforms)
 const server = app.listen(PORT, '0.0.0.0', () => {
 	const isProduction = process.env.NODE_ENV === 'production';
-	const baseUrl = isProduction 
-		? 'https://bartendershub.onrender.com' 
+	const baseUrl = isProduction
+		? 'https://bartendershub.onrender.com'
 		: `http://localhost:${PORT}`;
-	
+
 	console.log(`
 🥃 BartendersHub API Server
 🚀 Server running on port ${PORT}
