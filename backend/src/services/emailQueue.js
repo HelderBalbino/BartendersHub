@@ -2,20 +2,38 @@ import Bull from 'bull';
 import process from 'process';
 import nodemailer from 'nodemailer';
 
-// Initialize email queue (will work without Redis in development)
+// Initialize email queue (only if Redis is available)
 let emailQueue = null;
 
-try {
-	emailQueue = new Bull(
-		'email queue',
-		process.env.REDIS_URL || 'redis://localhost:6379',
-	);
-	console.log('✅ Email queue initialized');
-} catch (error) {
-	console.warn(
-		'⚠️ Email queue disabled - Redis not available:',
-		error.message,
-	);
+// Check if Redis URL is provided
+const redisUrl = process.env.REDIS_URL;
+
+if (redisUrl) {
+	try {
+		emailQueue = new Bull('email queue', redisUrl, {
+			redis: {
+				maxRetriesPerRequest: 1,
+				retryDelayOnFailover: 1000,
+				enableReadyCheck: false,
+				lazyConnect: true,
+			},
+		});
+		
+		// Test connection
+		emailQueue.client.ping()
+			.then(() => {
+				console.log('✅ Email queue initialized with Redis');
+			})
+			.catch((error) => {
+				console.warn('⚠️ Redis connection failed, email queue disabled:', error.message);
+				emailQueue = null;
+			});
+	} catch (error) {
+		console.warn('⚠️ Email queue disabled - Redis not available:', error.message);
+		emailQueue = null;
+	}
+} else {
+	console.log('✅ Email queue initialized (Redis optional - will process emails directly)');
 }
 
 // Email transporter
@@ -118,81 +136,125 @@ const generateEmailContent = (template, data) => {
 };
 
 // Email sending functions
-export const sendWelcomeEmail = (userData) => {
-	if (!emailQueue) {
-		console.warn('Email queue not available - skipping welcome email');
+// Direct email sending function (when Redis is not available)
+const sendEmailDirect = async (to, subject, template, data) => {
+	if (!transporter) {
+		console.warn('⚠️ Email transporter not configured - skipping email');
 		return;
 	}
 
-	emailQueue.add(
-		'welcome',
-		{
-			to: userData.email,
-			subject: 'Welcome to BartendersHub! 🥃',
-			template: 'welcome',
-			data: userData,
-		},
-		{
-			delay: 1000, // Send after 1 second
-			attempts: 3,
-			backoff: 'exponential',
-		},
-	);
+	try {
+		const emailContent = generateEmailContent(template, data);
+		
+		await transporter.sendMail({
+			from: `"BartendersHub" <${process.env.EMAIL_USER}>`,
+			to,
+			subject,
+			html: emailContent,
+		});
+
+		console.log(`📧 Email sent directly to: ${to}`);
+	} catch (error) {
+		console.error('Direct email sending failed:', error.message);
+	}
 };
 
-export const sendPasswordResetEmail = (userData, resetToken) => {
-	if (!emailQueue) {
-		console.warn(
-			'Email queue not available - skipping password reset email',
+export const sendWelcomeEmail = async (userData) => {
+	if (emailQueue) {
+		// Use queue if Redis is available
+		emailQueue.add(
+			'welcome',
+			{
+				to: userData.email,
+				subject: 'Welcome to BartendersHub! 🥃',
+				template: 'welcome',
+				data: userData,
+			},
+			{
+				delay: 1000,
+				attempts: 3,
+				backoff: 'exponential',
+			},
 		);
-		return;
+	} else {
+		// Send directly if no Redis
+		await sendEmailDirect(
+			userData.email,
+			'Welcome to BartendersHub! 🥃',
+			'welcome',
+			userData
+		);
 	}
+};
 
+export const sendPasswordResetEmail = async (userData, resetToken) => {
 	const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-	emailQueue.add(
-		'passwordReset',
-		{
-			to: userData.email,
-			subject: 'Password Reset Request - BartendersHub',
-			template: 'passwordReset',
-			data: {
+	if (emailQueue) {
+		// Use queue if Redis is available
+		emailQueue.add(
+			'passwordReset',
+			{
+				to: userData.email,
+				subject: 'Password Reset Request - BartendersHub',
+				template: 'passwordReset',
+				data: {
+					...userData,
+					resetUrl,
+				},
+			},
+			{
+				attempts: 3,
+				backoff: 'exponential',
+			},
+		);
+	} else {
+		// Send directly if no Redis
+		await sendEmailDirect(
+			userData.email,
+			'Password Reset Request - BartendersHub',
+			'passwordReset',
+			{
 				...userData,
 				resetUrl,
-			},
-		},
-		{
-			attempts: 3,
-			backoff: 'exponential',
-		},
-	);
+			}
+		);
+	}
 };
 
-export const sendNewFollowerNotification = (userData, followerData) => {
-	if (!emailQueue) {
-		console.warn(
-			'Email queue not available - skipping follower notification',
+export const sendNewFollowerNotification = async (userData, followerData) => {
+	if (emailQueue) {
+		// Use queue if Redis is available
+		emailQueue.add(
+			'newFollower',
+			{
+				to: userData.email,
+				subject: `${followerData.name} is now following you! - BartendersHub`,
+				template: 'newFollower',
+				data: {
+					name: userData.name,
+					followerName: followerData.name,
+					followerUsername: followerData.username,
+				},
+			},
+			{
+				delay: 5000,
+				attempts: 2,
+			},
 		);
-		return;
-	}
-
-	emailQueue.add(
-		'newFollower',
-		{
-			to: userData.email,
-			subject: `${followerData.name} is now following you! - BartendersHub`,
-			template: 'newFollower',
-			data: {
+	} else {
+		// Send directly if no Redis
+		await sendEmailDirect(
+			userData.email,
+			`${followerData.name} is now following you! - BartendersHub`,
+			'newFollower',
+			{
 				name: userData.name,
 				followerName: followerData.name,
 				followerUsername: followerData.username,
-			},
-		},
-		{
-			delay: 5000, // Send after 5 seconds
-			attempts: 2,
-		},
-	);
+			}
+		);
+	}
 };
 
 // Queue monitoring (optional)
