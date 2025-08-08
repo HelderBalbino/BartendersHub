@@ -129,8 +129,9 @@ userSchema.virtual('followingCount', {
 });
 
 // Indexes for better search performance
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+// Note: email and username indexes are automatically created by 'unique: true'
 userSchema.index({ createdAt: -1 });
+userSchema.index({ location: 1 }); // For location-based searches
+userSchema.index({ speciality: 1 }); // For speciality searches
 
 export default mongoose.model('User', userSchema);
