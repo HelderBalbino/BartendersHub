@@ -66,7 +66,9 @@ class WebSocketService {
 			timestamp: new Date().toISOString(),
 		});
 
-		console.log(`📢 Broadcasted new member: ${newUser.name} to ${this.connectedClients.size} clients`);
+		console.log(
+			`📢 Broadcasted new member: ${newUser.name} to ${this.connectedClients.size} clients`,
+		);
 	}
 
 	// Broadcast member stats update (when they add cocktails)
