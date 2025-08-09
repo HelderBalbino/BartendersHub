@@ -4,6 +4,7 @@ import path from 'path';
 import {
 	getUsers,
 	getUser,
+	getProfile,
 	updateProfile,
 	toggleFollow,
 	getFollowers,
@@ -62,6 +63,7 @@ const upload = multer({
 
 // Routes
 router.get('/', getUsers);
+router.get('/profile', protect, getProfile);
 router.get('/:id', getUser);
 router.put(
 	'/profile',
