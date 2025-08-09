@@ -47,13 +47,6 @@ class ApiService {
 		const url = `${this.baseURL}${endpoint}`;
 		const token = SecureTokenManager.getToken();
 
-		// Check token expiration
-		if (token && SecureTokenManager.isTokenExpired(token)) {
-			SecureTokenManager.removeToken();
-			window.location.href = '/login';
-			return;
-		}
-
 		const requestId = ++this.requestId;
 
 		const config = {
@@ -88,7 +81,7 @@ class ApiService {
 			if (!response.ok) {
 				// Handle specific error cases
 				if (response.status === 401) {
-					SecureTokenManager.removeToken();
+					// Don't automatically remove token here - let AuthContext handle it
 					throw new Error(
 						'Authentication required. Please log in again.',
 					);
