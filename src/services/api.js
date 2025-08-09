@@ -56,7 +56,7 @@ class ApiService {
 				'X-Request-ID': requestId.toString(),
 				...options.headers,
 			},
-			credentials: 'omit', // Don't send cookies
+			credentials: 'include', // Include cookies and auth headers for CORS
 			...options,
 		};
 

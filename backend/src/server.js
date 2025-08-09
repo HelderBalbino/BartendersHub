@@ -122,13 +122,31 @@ const allowedOrigins = [
 	'http://localhost:5173',
 ];
 
+// Function to check if origin is allowed
+const isOriginAllowed = (origin) => {
+	// Allow requests with no origin (like mobile apps or curl requests)
+	if (!origin) return true;
+	
+	// Check exact matches
+	if (allowedOrigins.includes(origin)) return true;
+	
+	// Allow all Vercel deployment URLs for BartendersHub
+	if (origin.match(/^https:\/\/bartendershub-[a-z0-9]+-helder-balbinos-projects\.vercel\.app$/)) {
+		return true;
+	}
+	
+	// Allow bartendershub.com subdomains
+	if (origin.match(/^https:\/\/.*\.bartendershub\.com$/)) {
+		return true;
+	}
+	
+	return false;
+};
+
 app.use(
 	cors({
 		origin: function (origin, callback) {
-			// Allow requests with no origin (like mobile apps or curl requests)
-			if (!origin) return callback(null, true);
-
-			if (allowedOrigins.indexOf(origin) !== -1) {
+			if (isOriginAllowed(origin)) {
 				callback(null, true);
 			} else {
 				console.warn('🚫 CORS blocked origin:', origin);
