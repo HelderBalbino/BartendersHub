@@ -28,7 +28,7 @@ const CommunitySection = () => {
 
 	// Extract members from API response
 	const initialMembers = communityData?.users || [];
-	
+
 	// Real-time community updates
 	const {
 		members: realtimeMembers,
@@ -111,18 +111,20 @@ const CommunitySection = () => {
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black overflow-hidden py-16 md:py-20'>
 			{/* Real-time New Member Notifications */}
-			<NewMemberNotifications 
+			<NewMemberNotifications
 				recentJoins={recentJoins}
 				onClearJoin={clearRecentJoin}
 			/>
 
 			{/* Connection Status Indicator (optional debug info) */}
 			{import.meta.env.DEV && (
-				<div className={`fixed bottom-4 left-4 z-40 px-3 py-1 rounded-full text-xs font-medium ${
-					isConnected 
-						? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-						: 'bg-red-500/20 text-red-400 border border-red-500/30'
-				}`}>
+				<div
+					className={`fixed bottom-4 left-4 z-40 px-3 py-1 rounded-full text-xs font-medium ${
+						isConnected
+							? 'bg-green-500/20 text-green-400 border border-green-500/30'
+							: 'bg-red-500/20 text-red-400 border border-red-500/30'
+					}`}
+				>
 					{isConnected ? '🟢 Live Updates' : '🔴 Offline'}
 				</div>
 			)}
