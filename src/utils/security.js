@@ -41,7 +41,9 @@ export class SecureTokenManager {
 			// Basic JWT validation
 			const parts = token.split('.');
 			if (parts.length !== 3) {
-				console.warn('🔐 SecureTokenManager: Invalid token format, removing...');
+				console.warn(
+					'🔐 SecureTokenManager: Invalid token format, removing...',
+				);
 				this.removeToken(); // Remove invalid token
 				return null;
 			}
@@ -70,13 +72,15 @@ export class SecureTokenManager {
 			const payload = JSON.parse(atob(token.split('.')[1]));
 			const currentTime = Date.now() / 1000;
 			const isExpired = payload.exp < currentTime;
-			
+
 			console.log('🔐 SecureTokenManager: Token expiration check', {
 				expires: new Date(payload.exp * 1000).toLocaleString(),
 				isExpired,
-				timeLeft: isExpired ? 0 : Math.round((payload.exp - currentTime) / 60) + ' minutes'
+				timeLeft: isExpired
+					? 0
+					: Math.round((payload.exp - currentTime) / 60) + ' minutes',
 			});
-			
+
 			return isExpired;
 		} catch (error) {
 			console.error('Error checking token expiration:', error);
