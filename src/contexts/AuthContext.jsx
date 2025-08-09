@@ -63,22 +63,32 @@ export const AuthProvider = ({ children }) => {
 		// Small delay to ensure localStorage is fully available
 		const checkAuth = () => {
 			const token = SecureTokenManager.getToken();
-			console.log('🔐 AuthContext: Checking stored token on app start', { hasToken: !!token });
-			
+			console.log('🔐 AuthContext: Checking stored token on app start', {
+				hasToken: !!token,
+			});
+
 			if (token && !SecureTokenManager.isTokenExpired(token)) {
-				console.log('🔐 AuthContext: Valid token found, verifying with server...');
+				console.log(
+					'🔐 AuthContext: Valid token found, verifying with server...',
+				);
 				// Verify token validity and get user data
 				apiService
 					.getProfile()
 					.then((data) => {
-						console.log('🔐 AuthContext: Profile verified, user logged in', data.user);
+						console.log(
+							'🔐 AuthContext: Profile verified, user logged in',
+							data.user,
+						);
 						dispatch({
 							type: 'LOGIN_SUCCESS',
 							payload: { user: data.user, token },
 						});
 					})
 					.catch((error) => {
-						console.log('🔐 AuthContext: Profile verification failed, logging out', error.message);
+						console.log(
+							'🔐 AuthContext: Profile verification failed, logging out',
+							error.message,
+						);
 						SecureTokenManager.removeToken();
 						dispatch({ type: 'LOGOUT' });
 					});
@@ -88,7 +98,9 @@ export const AuthProvider = ({ children }) => {
 				SecureTokenManager.removeToken();
 				dispatch({ type: 'LOGOUT' });
 			} else {
-				console.log('🔐 AuthContext: No token found, user not logged in');
+				console.log(
+					'🔐 AuthContext: No token found, user not logged in',
+				);
 			}
 		};
 
