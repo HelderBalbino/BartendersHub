@@ -260,7 +260,7 @@ export const validateSecurityHeaders = (response) => {
 
 	const securityHeaders = [
 		'x-content-type-options',
-		'x-frame-options', 
+		'x-frame-options',
 		'x-xss-protection',
 		'strict-transport-security',
 	];
@@ -272,7 +272,7 @@ export const validateSecurityHeaders = (response) => {
 	if (missingHeaders.length > 0) {
 		console.info('ℹ️ Security headers info:', {
 			missing: missingHeaders,
-			note: 'Headers are enforced by backend security middleware'
+			note: 'Headers are enforced by backend security middleware',
 		});
 		// Don't fail the request, just log info
 	}
