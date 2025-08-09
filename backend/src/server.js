@@ -126,20 +126,24 @@ const allowedOrigins = [
 const isOriginAllowed = (origin) => {
 	// Allow requests with no origin (like mobile apps or curl requests)
 	if (!origin) return true;
-	
+
 	// Check exact matches
 	if (allowedOrigins.includes(origin)) return true;
-	
+
 	// Allow all Vercel deployment URLs for BartendersHub
-	if (origin.match(/^https:\/\/bartendershub-[a-z0-9]+-helder-balbinos-projects\.vercel\.app$/)) {
+	if (
+		origin.match(
+			/^https:\/\/bartendershub-[a-z0-9]+-helder-balbinos-projects\.vercel\.app$/,
+		)
+	) {
 		return true;
 	}
-	
+
 	// Allow bartendershub.com subdomains
 	if (origin.match(/^https:\/\/.*\.bartendershub\.com$/)) {
 		return true;
 	}
-	
+
 	return false;
 };
 
