@@ -14,14 +14,14 @@ const useCommunityRealtime = (initialMembers = []) => {
 	// Handle new member joining
 	const handleNewMember = useCallback((event) => {
 		console.log('🎉 New member joined:', event.data);
-		
+
 		const newMember = event.data;
-		
+
 		// Add to members list
-		setMembers(prev => [newMember, ...prev]);
-		
+		setMembers((prev) => [newMember, ...prev]);
+
 		// Add to recent joins (show notification)
-		setRecentJoins(prev => {
+		setRecentJoins((prev) => {
 			const updated = [newMember, ...prev];
 			// Keep only last 5 recent joins
 			return updated.slice(0, 5);
@@ -29,21 +29,21 @@ const useCommunityRealtime = (initialMembers = []) => {
 
 		// Auto-remove from recent joins after 10 seconds
 		setTimeout(() => {
-			setRecentJoins(prev => prev.filter(m => m.id !== newMember.id));
+			setRecentJoins((prev) => prev.filter((m) => m.id !== newMember.id));
 		}, 10000);
 	}, []);
 
 	// Handle member updates (when they add cocktails, get verified, etc.)
 	const handleMemberUpdate = useCallback((event) => {
 		console.log('📊 Member updated:', event);
-		
+
 		const { userId, data } = event;
-		
-		setMembers(prev => prev.map(member => 
-			member.id === userId 
-				? { ...member, ...data }
-				: member
-		));
+
+		setMembers((prev) =>
+			prev.map((member) =>
+				member.id === userId ? { ...member, ...data } : member,
+			),
+		);
 	}, []);
 
 	// Subscribe to community events
@@ -63,7 +63,15 @@ const useCommunityRealtime = (initialMembers = []) => {
 				leaveRoom('community');
 			};
 		}
-	}, [isConnected, joinRoom, leaveRoom, on, off, handleNewMember, handleMemberUpdate]);
+	}, [
+		isConnected,
+		joinRoom,
+		leaveRoom,
+		on,
+		off,
+		handleNewMember,
+		handleMemberUpdate,
+	]);
 
 	// Update members when initial data changes
 	useEffect(() => {
@@ -72,7 +80,7 @@ const useCommunityRealtime = (initialMembers = []) => {
 
 	// Clear a specific recent join notification
 	const clearRecentJoin = useCallback((memberId) => {
-		setRecentJoins(prev => prev.filter(m => m.id !== memberId));
+		setRecentJoins((prev) => prev.filter((m) => m.id !== memberId));
 	}, []);
 
 	// Clear all recent join notifications
