@@ -198,6 +198,9 @@ app.use('*', (req, res) => {
 	});
 });
 
+// Import WebSocket service
+import websocketService from './services/websocketService.js';
+
 // Error handling middleware
 app.use(errorHandler);
 
@@ -218,6 +221,9 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 🔗 Health check: ${baseUrl}/api/health
   `);
 });
+
+// Initialize WebSocket service
+websocketService.initialize(server);
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {

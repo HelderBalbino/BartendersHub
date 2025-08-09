@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import { generateToken, hashPassword, comparePassword } from '../utils/auth.js';
 import { sendWelcomeEmail } from '../services/emailQueue.js';
+import websocketService from '../services/websocketService.js';
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -41,6 +42,9 @@ export const register = async (req, res) => {
 			email: user.email,
 			username: user.username,
 		});
+
+		// Broadcast new member to community (real-time update)
+		websocketService.broadcastNewMember(user);
 
 		res.status(201).json({
 			success: true,

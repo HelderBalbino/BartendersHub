@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useCommunityMembers } from '../hooks/useCommunity';
+import useCommunityRealtime from '../hooks/useCommunityRealtime';
 import LoadingSpinner from './LoadingSpinner';
 import FeaturedMemberCarousel from './community/FeaturedMemberCarousel';
 import MemberFilters from './community/MemberFilters';
 import MembersGrid from './community/MembersGrid';
 import CommunityStats from './community/CommunityStats';
 import JoinCommunityCTA from './community/JoinCommunityCTA';
+import NewMemberNotifications from './community/NewMemberNotifications';
 
 const CommunitySection = () => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -25,7 +27,18 @@ const CommunitySection = () => {
 	}, []);
 
 	// Extract members from API response
-	const communityMembers = communityData?.users || [];
+	const initialMembers = communityData?.users || [];
+	
+	// Real-time community updates
+	const {
+		members: realtimeMembers,
+		recentJoins,
+		isConnected,
+		clearRecentJoin,
+	} = useCommunityRealtime(initialMembers);
+
+	// Use real-time members instead of static data
+	const communityMembers = realtimeMembers;
 	const featuredMembers = communityMembers
 		.filter((member) => member.isVerified)
 		.slice(0, 3);
@@ -97,6 +110,22 @@ const CommunitySection = () => {
 
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black overflow-hidden py-16 md:py-20'>
+			{/* Real-time New Member Notifications */}
+			<NewMemberNotifications 
+				recentJoins={recentJoins}
+				onClearJoin={clearRecentJoin}
+			/>
+
+			{/* Connection Status Indicator (optional debug info) */}
+			{import.meta.env.DEV && (
+				<div className={`fixed bottom-4 left-4 z-40 px-3 py-1 rounded-full text-xs font-medium ${
+					isConnected 
+						? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+						: 'bg-red-500/20 text-red-400 border border-red-500/30'
+				}`}>
+					{isConnected ? '🟢 Live Updates' : '🔴 Offline'}
+				</div>
+			)}
 			{/* Art Deco Background Pattern */}
 			<div className='absolute inset-0 opacity-5'>
 				<div className='absolute top-0 left-0 w-full h-full bg-gradient-to-br from-yellow-400/10 to-transparent'></div>
