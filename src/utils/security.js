@@ -153,7 +153,7 @@ export const validateURL = (url) => {
 		}
 
 		return true;
-	} catch (error) {
+	} catch {
 		return false;
 	}
 };
