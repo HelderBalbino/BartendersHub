@@ -23,6 +23,7 @@ export class SecureTokenManager {
 
 		try {
 			localStorage.setItem(this.TOKEN_KEY, token);
+			console.log('🔐 SecureTokenManager: Token stored successfully');
 		} catch (error) {
 			console.error('Failed to store auth token:', error);
 			throw new Error('Unable to store authentication token');
@@ -32,15 +33,20 @@ export class SecureTokenManager {
 	static getToken() {
 		try {
 			const token = localStorage.getItem(this.TOKEN_KEY);
-			if (!token) return null;
+			if (!token) {
+				console.log('🔐 SecureTokenManager: No token found in storage');
+				return null;
+			}
 
 			// Basic JWT validation
 			const parts = token.split('.');
 			if (parts.length !== 3) {
+				console.warn('🔐 SecureTokenManager: Invalid token format, removing...');
 				this.removeToken(); // Remove invalid token
 				return null;
 			}
 
+			console.log('🔐 SecureTokenManager: Token retrieved successfully');
 			return token;
 		} catch (error) {
 			console.error('Failed to retrieve auth token:', error);
@@ -51,6 +57,7 @@ export class SecureTokenManager {
 	static removeToken() {
 		try {
 			localStorage.removeItem(this.TOKEN_KEY);
+			console.log('🔐 SecureTokenManager: Token removed successfully');
 		} catch (error) {
 			console.error('Failed to remove auth token:', error);
 		}
@@ -62,7 +69,15 @@ export class SecureTokenManager {
 		try {
 			const payload = JSON.parse(atob(token.split('.')[1]));
 			const currentTime = Date.now() / 1000;
-			return payload.exp < currentTime;
+			const isExpired = payload.exp < currentTime;
+			
+			console.log('🔐 SecureTokenManager: Token expiration check', {
+				expires: new Date(payload.exp * 1000).toLocaleString(),
+				isExpired,
+				timeLeft: isExpired ? 0 : Math.round((payload.exp - currentTime) / 60) + ' minutes'
+			});
+			
+			return isExpired;
 		} catch (error) {
 			console.error('Error checking token expiration:', error);
 			return true;
