@@ -119,7 +119,7 @@ const allowedOrigins = [
 	corsOrigin,
 	'https://bartendershub.com',
 	'http://localhost:3000',
-	'http://localhost:5173'
+	'http://localhost:5173',
 ];
 
 app.use(
@@ -127,7 +127,7 @@ app.use(
 		origin: function (origin, callback) {
 			// Allow requests with no origin (like mobile apps or curl requests)
 			if (!origin) return callback(null, true);
-			
+
 			if (allowedOrigins.indexOf(origin) !== -1) {
 				callback(null, true);
 			} else {
@@ -137,7 +137,12 @@ app.use(
 		},
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-ID'],
+		allowedHeaders: [
+			'Content-Type',
+			'Authorization',
+			'X-Requested-With',
+			'X-Request-ID',
+		],
 	}),
 );
 
