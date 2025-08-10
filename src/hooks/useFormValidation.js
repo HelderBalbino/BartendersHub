@@ -37,17 +37,19 @@ export const useFormValidation = (initialValues, validationRules) => {
 		const { name, value, type, files } = e.target;
 		let newValue = type === 'file' ? files[0] : value;
 
-		// Sanitize text inputs
+		// Only apply basic length limits during typing, not full sanitization
+		// Full sanitization will happen on blur/submit
 		if (
 			type === 'text' ||
 			type === 'email' ||
 			type === 'password' ||
 			type === 'textarea'
 		) {
-			newValue = sanitizeUserInput(newValue, {
-				maxLength: name === 'bio' ? 500 : 100,
-				trimWhitespace: name !== 'password', // Don't trim passwords
-			});
+			// Only enforce max length during typing to prevent extremely long inputs
+			const maxLength = name === 'bio' ? 500 : name === 'description' ? 1000 : 200;
+			if (newValue && newValue.length > maxLength) {
+				newValue = newValue.substring(0, maxLength);
+			}
 		}
 
 		console.log('🔧 useFormValidation.handleChange called:', {
@@ -77,7 +79,30 @@ export const useFormValidation = (initialValues, validationRules) => {
 	};
 
 	const handleBlur = (e) => {
-		const { name } = e.target;
+		const { name, type } = e.target;
+		
+		// Apply full sanitization on blur for text inputs
+		if (
+			type === 'text' ||
+			type === 'email' ||
+			type === 'password' ||
+			type === 'textarea'
+		) {
+			const currentValue = values[name];
+			const sanitizedValue = sanitizeUserInput(currentValue, {
+				maxLength: name === 'bio' ? 500 : name === 'description' ? 1000 : 200,
+				trimWhitespace: name !== 'password', // Don't trim passwords
+			});
+			
+			// Update value with sanitized version if it changed
+			if (sanitizedValue !== currentValue) {
+				setValues((prev) => ({
+					...prev,
+					[name]: sanitizedValue,
+				}));
+			}
+		}
+		
 		setTouched((prev) => ({
 			...prev,
 			[name]: true,
