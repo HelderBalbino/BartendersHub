@@ -40,20 +40,26 @@ const useWebSocket = (url) => {
 	}, [url]);
 
 	// Join a specific room
-	const joinRoom = useCallback((room) => {
-		if (socketRef.current && isConnected) {
-			socketRef.current.emit(`join-${room}`);
-			console.log(`👥 Joined ${room} room`);
-		}
-	}, [isConnected]);
+	const joinRoom = useCallback(
+		(room) => {
+			if (socketRef.current && isConnected) {
+				socketRef.current.emit(`join-${room}`);
+				console.log(`👥 Joined ${room} room`);
+			}
+		},
+		[isConnected],
+	);
 
 	// Leave a specific room
-	const leaveRoom = useCallback((room) => {
-		if (socketRef.current && isConnected) {
-			socketRef.current.emit(`leave-${room}`);
-			console.log(`👋 Left ${room} room`);
-		}
-	}, [isConnected]);
+	const leaveRoom = useCallback(
+		(room) => {
+			if (socketRef.current && isConnected) {
+				socketRef.current.emit(`leave-${room}`);
+				console.log(`👋 Left ${room} room`);
+			}
+		},
+		[isConnected],
+	);
 
 	// Subscribe to events
 	const on = useCallback((event, callback) => {
@@ -70,11 +76,14 @@ const useWebSocket = (url) => {
 	}, []);
 
 	// Emit events
-	const emit = useCallback((event, data) => {
-		if (socketRef.current && isConnected) {
-			socketRef.current.emit(event, data);
-		}
-	}, [isConnected]);
+	const emit = useCallback(
+		(event, data) => {
+			if (socketRef.current && isConnected) {
+				socketRef.current.emit(event, data);
+			}
+		},
+		[isConnected],
+	);
 
 	return {
 		socket: socketRef.current,

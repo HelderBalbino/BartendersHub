@@ -74,8 +74,9 @@ const useCommunityRealtime = (initialMembers = []) => {
 	]);
 
 	// Memoize serialized initial members for stable dependency
-	const serializedInitialMembers = useMemo(() => 
-		JSON.stringify(initialMembers), [initialMembers]
+	const serializedInitialMembers = useMemo(
+		() => JSON.stringify(initialMembers),
+		[initialMembers],
 	);
 
 	// Update members when initial data changes
