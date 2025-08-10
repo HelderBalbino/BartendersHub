@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
 import { validationRules } from '../hooks/useFormValidation';
 import LoadingSpinner from './LoadingSpinner';
+import PasswordInput from './ui/Forms/PasswordInput';
 
 const LogIn = () => {
 	const [searchParams] = useSearchParams();
@@ -390,67 +391,31 @@ const LogIn = () => {
 						</div>
 
 						{/* Password field */}
-						<div>
-							<label className='block text-yellow-400 text-sm font-light tracking-wide uppercase mb-2'>
-								Password
-							</label>
-							<input
-								type='password'
-								name='password'
-								value={formValues.password}
-								onChange={handleFormChange}
-								onBlur={handleFormBlur}
-								className={`w-full bg-black/20 border ${
-									formTouched.password && formErrors.password
-										? 'border-red-400'
-										: 'border-yellow-400/30'
-								} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
-								style={{
-									color: '#ffffff',
-									backgroundColor: 'rgba(0, 0, 0, 0.2)',
-								}}
-								placeholder='Enter your password'
-								required
-							/>
-							{formTouched.password && formErrors.password && (
-								<p className='mt-1 text-red-400 text-xs'>
-									{formErrors.password}
-								</p>
-							)}
-						</div>
+						<PasswordInput
+							name='password'
+							value={formValues.password}
+							onChange={handleFormChange}
+							onBlur={handleFormBlur}
+							label='Password'
+							placeholder='Enter your password'
+							required
+							error={formErrors.password}
+							touched={formTouched.password}
+						/>
 
 						{/* Confirm Password field (only for register) */}
 						{!isLogin && (
-							<div>
-								<label className='block text-yellow-400 text-sm font-light tracking-wide uppercase mb-2'>
-									Confirm Password
-								</label>
-								<input
-									type='password'
-									name='confirmPassword'
-									value={formValues.confirmPassword}
-									onChange={handleFormChange}
-									onBlur={handleFormBlur}
-									className={`w-full bg-black/20 border ${
-										formTouched.confirmPassword &&
-										formErrors.confirmPassword
-											? 'border-red-400'
-											: 'border-yellow-400/30'
-									} text-white caret-white px-4 py-3 focus:border-yellow-400 focus:outline-none transition-colors duration-300 placeholder-gray-400 font-normal`}
-									style={{
-										color: '#ffffff',
-										backgroundColor: 'rgba(0, 0, 0, 0.2)',
-									}}
-									placeholder='Confirm your password'
-									required={!isLogin}
-								/>
-								{formTouched.confirmPassword &&
-									formErrors.confirmPassword && (
-										<p className='mt-1 text-red-400 text-xs'>
-											{formErrors.confirmPassword}
-										</p>
-									)}
-							</div>
+							<PasswordInput
+								name='confirmPassword'
+								value={formValues.confirmPassword}
+								onChange={handleFormChange}
+								onBlur={handleFormBlur}
+								label='Confirm Password'
+								placeholder='Confirm your password'
+								required={!isLogin}
+								error={formErrors.confirmPassword}
+								touched={formTouched.confirmPassword}
+							/>
 						)}
 
 						{/* Submit Button */}
