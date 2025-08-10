@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import useWebSocket from './useWebSocket';
 
 const useCommunityRealtime = (initialMembers = []) => {
@@ -73,10 +73,17 @@ const useCommunityRealtime = (initialMembers = []) => {
 		handleMemberUpdate,
 	]);
 
+	// Memoize serialized initial members for stable dependency
+	const serializedInitialMembers = useMemo(() => 
+		JSON.stringify(initialMembers), [initialMembers]
+	);
+
 	// Update members when initial data changes
 	useEffect(() => {
-		setMembers(initialMembers);
-	}, [initialMembers]);
+		if (initialMembers && initialMembers.length > 0) {
+			setMembers(initialMembers);
+		}
+	}, [serializedInitialMembers, initialMembers]);
 
 	// Clear a specific recent join notification
 	const clearRecentJoin = useCallback((memberId) => {
