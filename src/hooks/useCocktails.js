@@ -20,7 +20,7 @@ export const useCreateCocktail = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: apiService.createCocktail,
+		mutationFn: (cocktailData) => apiService.createCocktail(cocktailData),
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['cocktails'] });
 			toast.success('Cocktail created successfully!');
