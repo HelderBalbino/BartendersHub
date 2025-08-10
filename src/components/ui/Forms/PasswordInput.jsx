@@ -49,13 +49,14 @@ const PasswordInput = ({
 				<button
 					type='button'
 					onClick={togglePasswordVisibility}
-					className='absolute right-3 top-1/2 transform -translate-y-1/2 text-yellow-400/70 hover:text-yellow-400 transition-colors duration-200 focus:outline-none focus:text-yellow-400'
+					className='absolute right-3 top-1/2 transform -translate-y-1/2 text-yellow-400/70 hover:text-yellow-400 transition-all duration-200 focus:outline-none focus:text-yellow-400 focus:ring-2 focus:ring-yellow-400/50 focus:ring-offset-2 focus:ring-offset-black/20 rounded p-1'
 					aria-label={showPassword ? 'Hide password' : 'Show password'}
+					tabIndex={0}
 				>
 					{showPassword ? (
 						// Eye slash icon (hide password)
 						<svg
-							className='w-5 h-5'
+							className='w-5 h-5 transition-transform duration-200 hover:scale-110'
 							fill='none'
 							stroke='currentColor'
 							viewBox='0 0 24 24'
@@ -71,7 +72,7 @@ const PasswordInput = ({
 					) : (
 						// Eye icon (show password)
 						<svg
-							className='w-5 h-5'
+							className='w-5 h-5 transition-transform duration-200 hover:scale-110'
 							fill='none'
 							stroke='currentColor'
 							viewBox='0 0 24 24'
