@@ -46,7 +46,8 @@ export const useFormValidation = (initialValues, validationRules) => {
 			type === 'textarea'
 		) {
 			// Only enforce max length during typing to prevent extremely long inputs
-			const maxLength = name === 'bio' ? 500 : name === 'description' ? 1000 : 200;
+			const maxLength =
+				name === 'bio' ? 500 : name === 'description' ? 1000 : 200;
 			if (newValue && newValue.length > maxLength) {
 				newValue = newValue.substring(0, maxLength);
 			}
@@ -80,7 +81,7 @@ export const useFormValidation = (initialValues, validationRules) => {
 
 	const handleBlur = (e) => {
 		const { name, type } = e.target;
-		
+
 		// Apply full sanitization on blur for text inputs
 		if (
 			type === 'text' ||
@@ -90,10 +91,11 @@ export const useFormValidation = (initialValues, validationRules) => {
 		) {
 			const currentValue = values[name];
 			const sanitizedValue = sanitizeUserInput(currentValue, {
-				maxLength: name === 'bio' ? 500 : name === 'description' ? 1000 : 200,
+				maxLength:
+					name === 'bio' ? 500 : name === 'description' ? 1000 : 200,
 				trimWhitespace: name !== 'password', // Don't trim passwords
 			});
-			
+
 			// Update value with sanitized version if it changed
 			if (sanitizedValue !== currentValue) {
 				setValues((prev) => ({
@@ -102,7 +104,7 @@ export const useFormValidation = (initialValues, validationRules) => {
 				}));
 			}
 		}
-		
+
 		setTouched((prev) => ({
 			...prev,
 			[name]: true,
