@@ -71,10 +71,10 @@ const LogIn = () => {
 			[name]: true,
 		}));
 
-		// Validate field on blur (simplified)
-		setTimeout(() => {
+		// Validate field on blur using microtask
+		queueMicrotask(() => {
 			validateField(name, formValues[name]);
-		}, 0);
+		});
 	};
 
 	const validateField = (name, value) => {
@@ -121,20 +121,6 @@ const LogIn = () => {
 		setFormErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
-
-	// Remove the old useFormValidation hook
-	// const {
-	// 	values,
-	// 	errors,
-	// 	touched,
-	// 	handleChange,
-	// 	handleBlur,
-	// 	validateAll,
-	// 	reset,
-	// } = useFormValidation(
-	// 	initialValues,
-	// 	isLogin ? loginValidation : registerValidation,
-	// );
 
 	// Redirect if already authenticated
 	useEffect(() => {
