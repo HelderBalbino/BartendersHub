@@ -158,18 +158,30 @@ const LogIn = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (!validateAllFields()) {
-			toast.error('Please fix the errors in the form');
-			return;
-		}
+		console.log('🔍 Form submission:', { 
+			isLogin, 
+			email: formValues.email, 
+			password: formValues.password ? '***' : 'empty',
+			formValues 
+		});
+
+		// Temporarily bypass validation for debugging
+		// if (!validateAllFields()) {
+		// 	console.log('❌ Validation failed:', formErrors);
+		// 	toast.error('Please fix the errors in the form');
+		// 	return;
+		// }
+
+		console.log('✅ Attempting login without validation...');
 
 		try {
 			if (isLogin) {
-				await login(
+				const result = await login(
 					formValues.email,
 					formValues.password,
 					false, // remember me option - you can add this later
 				);
+				console.log('✅ Login result:', result);
 				toast.success('Welcome back to the speakeasy!');
 			} else {
 				await register({
