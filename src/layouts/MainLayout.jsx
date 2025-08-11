@@ -1,14 +1,21 @@
+import { memo } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const MainLayout = () => {
+// Memoized layout to prevent unnecessary re-renders
+const MainLayout = memo(() => {
 	return (
 		<>
 			<Navbar />
-			<Outlet />
+			<main className='min-h-screen'>
+				<Outlet />
+			</main>
 			<Footer />
 		</>
 	);
-};
+});
+
+MainLayout.displayName = 'MainLayout';
+
 export default MainLayout;
