@@ -121,6 +121,8 @@ export const AuthProvider = ({ children }) => {
 	const login = useCallback(async (email, password, remember = false) => {
 		dispatch({ type: 'LOGIN_START' });
 
+		console.log('🔍 Login attempt:', { email, password: '***', remember });
+
 		try {
 			const response = await apiService.post('/auth/login', {
 				email,
@@ -140,6 +142,7 @@ export const AuthProvider = ({ children }) => {
 			return { success: true, user };
 		} catch (error) {
 			const errorMessage = error.data?.message || 'Login failed';
+			console.error('🚨 Login error details:', error);
 			dispatch({
 				type: 'LOGIN_FAILURE',
 				payload: errorMessage,
