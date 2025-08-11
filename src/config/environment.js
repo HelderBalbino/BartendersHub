@@ -12,8 +12,10 @@ const config = {
 	},
 
 	cloudinary: {
-		cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '',
-		uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '',
+		cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dxcjxxq6h',
+		uploadPreset:
+			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET ||
+			'bartendershub_uploads',
 	},
 
 	features: {
@@ -35,14 +37,20 @@ const config = {
 };
 
 // Validate required environment variables
-const requiredEnvVars = [
-	'VITE_API_URL',
+const requiredEnvVars = ['VITE_API_URL'];
+
+// Optional environment variables (warn if missing but don't fail)
+const optionalEnvVars = [
 	'VITE_CLOUDINARY_CLOUD_NAME',
 	'VITE_CLOUDINARY_UPLOAD_PRESET',
 ];
 
 const validateEnvironment = () => {
 	const missing = requiredEnvVars.filter(
+		(varName) => !import.meta.env[varName],
+	);
+
+	const missingOptional = optionalEnvVars.filter(
 		(varName) => !import.meta.env[varName],
 	);
 
@@ -54,9 +62,19 @@ const validateEnvironment = () => {
 	}
 
 	if (missing.length > 0) {
-		console.warn(
-			'Missing environment variables (using defaults):',
+		console.info(
+			'Missing required environment variables (using defaults):',
 			missing,
+		);
+	}
+
+	if (missingOptional.length > 0) {
+		console.info(
+			'Optional environment variables not found (features may be limited):',
+			missingOptional,
+		);
+		console.info(
+			'Make sure to restart your development server after adding .env variables',
 		);
 	}
 };
