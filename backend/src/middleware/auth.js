@@ -1,5 +1,10 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import process from 'process';
+
+// Track active sessions (in production, use Redis)
+// const _activeSessions = new Map(); // Reserved for future session management
+const loginAttempts = new Map();
 
 // Protect routes - Authentication middleware
 export const protect = async (req, res, next) => {
@@ -37,13 +42,13 @@ export const protect = async (req, res, next) => {
 			}
 
 			next();
-		} catch (error) {
+		} catch {
 			return res.status(401).json({
 				success: false,
 				message: 'Not authorized to access this route',
 			});
 		}
-	} catch (error) {
+	} catch {
 		return res.status(500).json({
 			success: false,
 			message: 'Server error',
@@ -72,5 +77,65 @@ export const isAdmin = (req, res, next) => {
 			message: 'Admin access required',
 		});
 	}
+	next();
+};
+
+// Enhanced auth functions from enhancedAuth.js
+export const trackLoginAttempts = (req, res, next) => {
+	const ip = req.ip;
+	const maxAttempts = 5;
+	const windowTime = 15 * 60 * 1000; // 15 minutes
+
+	if (!loginAttempts.has(ip)) {
+		loginAttempts.set(ip, { count: 0, lastAttempt: Date.now() });
+	}
+
+	const attempts = loginAttempts.get(ip);
+
+	// Reset if window expired
+	if (Date.now() - attempts.lastAttempt > windowTime) {
+		attempts.count = 0;
+		attempts.lastAttempt = Date.now();
+	}
+
+	// Check if too many attempts
+	if (attempts.count >= maxAttempts) {
+		return res.status(429).json({
+			success: false,
+			message: 'Too many login attempts. Please try again later.',
+		});
+	}
+
+	next();
+};
+
+export const validatePasswordStrength = (req, res, next) => {
+	const { password } = req.body;
+
+	if (!password) {
+		return next();
+	}
+
+	const minLength = 8;
+	const hasUppercase = /[A-Z]/.test(password);
+	const hasLowercase = /[a-z]/.test(password);
+	const hasNumbers = /\d/.test(password);
+	const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+	if (password.length < minLength) {
+		return res.status(400).json({
+			success: false,
+			message: 'Password must be at least 8 characters long',
+		});
+	}
+
+	if (!hasUppercase || !hasLowercase || !hasNumbers || !hasSpecial) {
+		return res.status(400).json({
+			success: false,
+			message:
+				'Password must contain uppercase, lowercase, numbers, and special characters',
+		});
+	}
+
 	next();
 };
