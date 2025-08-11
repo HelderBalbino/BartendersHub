@@ -1,16 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const NewMemberNotification = ({ member, onClose }) => {
 	const [isVisible, setIsVisible] = useState(false);
+	const timeoutRef = useRef(null);
 
 	useEffect(() => {
 		// Slide in animation
-		setTimeout(() => setIsVisible(true), 100);
+		timeoutRef.current = setTimeout(() => setIsVisible(true), 100);
+
+		// Cleanup timeout on unmount
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+			}
+		};
 	}, []);
 
 	const handleClose = () => {
 		setIsVisible(false);
-		setTimeout(onClose, 300); // Wait for animation
+		// Clear any existing timeout
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+		}
+		// Set new timeout for close animation
+		timeoutRef.current = setTimeout(onClose, 300);
 	};
 
 	return (
