@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import process from 'process';
 
 // Generate JWT token
 export const generateToken = (id) => {
