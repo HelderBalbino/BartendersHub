@@ -13,7 +13,7 @@ import { authLimiter } from '../middleware/rateLimiter.js';
 import {
 	trackLoginAttempts,
 	validatePasswordStrength,
-} from '../middleware/enhancedAuth.js';
+} from '../middleware/auth.js';
 
 const router = express.Router();
 
