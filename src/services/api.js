@@ -1,228 +1,273 @@
-// API service layer for backend communication
-import {
-	SecureTokenManager,
-	validateSecurityHeaders,
-	ClientRateLimiter,
-} from '../utils/security.js';
+import axios from 'axios';
+import config from '../config/environment.js';
+import { logError, measurePerformance } from '../utils/errorMonitoring.js';
 
-const API_BASE_URL =
-	import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-
-// Debug: Log the API URL being used with more details
-console.log('🔗 API Base URL:', API_BASE_URL);
-console.log('📊 Environment Variables:', {
-	VITE_API_URL: import.meta.env.VITE_API_URL,
-	NODE_ENV: import.meta.env.NODE_ENV,
-	MODE: import.meta.env.MODE,
-	DEV: import.meta.env.DEV,
-	PROD: import.meta.env.PROD,
-	SSR: import.meta.env.SSR,
-});
-console.log('🔍 Raw import.meta.env:', import.meta.env);
-
-// Additional check to ensure we're using the right URL
-if (API_BASE_URL.includes('localhost:5001')) {
-	console.error('❌ STILL USING LOCALHOST! Check environment file loading.');
-} else {
-	console.log('✅ Using production backend URL');
-}
-
-// Client-side rate limiter
-const rateLimiter = new ClientRateLimiter(50, 15 * 60 * 1000); // 50 requests per 15 minutes
-
+// Enhanced API service with better error handling, caching, and performance monitoring
 class ApiService {
 	constructor() {
-		this.baseURL = API_BASE_URL;
-		this.requestId = 0;
-	}
+		this.baseURL = config.api.baseURL;
+		this.timeout = config.api.timeout;
+		this.cache = new Map();
+		this.pendingRequests = new Map();
 
-	async request(endpoint, options = {}) {
-		// Check client-side rate limiting
-		if (!rateLimiter.isAllowed()) {
-			throw new Error(
-				'Too many requests. Please wait before trying again.',
-			);
-		}
-
-		const url = `${this.baseURL}${endpoint}`;
-		const token = SecureTokenManager.getToken();
-
-		const requestId = ++this.requestId;
-
-		const config = {
+		// Create axios instance with optimized configuration
+		this.client = axios.create({
+			baseURL: this.baseURL,
+			timeout: this.timeout,
 			headers: {
 				'Content-Type': 'application/json',
-				'X-Requested-With': 'XMLHttpRequest',
-				'X-Request-ID': requestId.toString(),
-				...options.headers,
 			},
-			credentials: 'include', // Include cookies and auth headers for CORS
-			...options,
-		};
+		});
 
-		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
-		}
+		this.setupInterceptors();
+		this.setupCacheCleanup();
+	}
 
-		try {
-			console.log(`🔐 API Request [${requestId}]:`, {
-				method: config.method || 'GET',
-				url,
-				hasAuth: !!token,
-			});
+	setupInterceptors() {
+		// Request interceptor for authentication and performance tracking
+		this.client.interceptors.request.use(
+			(config) => {
+				// Add auth token if available
+				const token = this.getAuthToken();
+				if (token) {
+					config.headers.Authorization = `Bearer ${token}`;
+				}
 
-			const response = await fetch(url, config);
+				// Add performance tracking
+				config.metadata = { startTime: Date.now() };
 
-			// Validate security headers
-			validateSecurityHeaders(response);
+				// Add request ID for debugging
+				config.headers['X-Request-ID'] = this.generateRequestId();
 
-			const data = await response.json();
+				return config;
+			},
+			(error) => {
+				logError(error, 'request-interceptor');
+				return Promise.reject(error);
+			},
+		);
 
-			if (!response.ok) {
-				// Handle specific error cases
-				if (response.status === 401) {
-					// Don't automatically remove token here - let AuthContext handle it
-					throw new Error(
-						'Authentication required. Please log in again.',
-					);
-				} else if (response.status === 403) {
-					throw new Error(
-						"Access denied. You don't have permission for this action.",
-					);
-				} else if (response.status === 429) {
-					throw new Error(
-						'Too many requests. Please wait before trying again.',
+		// Response interceptor for error handling and performance tracking
+		this.client.interceptors.response.use(
+			(response) => {
+				// Track response time
+				const duration =
+					Date.now() - response.config.metadata.startTime;
+				if (duration > 3000) {
+					console.warn(
+						`🐌 Slow API request: ${response.config.url} took ${duration}ms`,
 					);
 				}
 
-				throw new Error(
-					data.message ||
-						`Request failed with status ${response.status}`,
-				);
-			}
-
-			console.log(`✅ API Response [${requestId}]:`, {
-				status: response.status,
-				hasData: !!data,
-			});
-
-			return data;
-		} catch (error) {
-			console.error(`❌ API Error [${requestId}]:`, error.message);
-
-			// Handle network errors
-			if (error instanceof TypeError && error.message.includes('fetch')) {
-				throw new Error(
-					'Network error. Please check your connection and try again.',
-				);
-			}
-
-			throw error;
-		}
+				return response;
+			},
+			(error) => {
+				// Enhanced error handling
+				const enhancedError = this.enhanceError(error);
+				logError(enhancedError, 'api-response');
+				return Promise.reject(enhancedError);
+			},
+		);
 	}
 
-	// Auth methods
-	async login(credentials) {
-		return this.request('/auth/login', {
-			method: 'POST',
-			body: JSON.stringify(credentials),
-		});
+	setupCacheCleanup() {
+		// Clear cache every 30 minutes
+		setInterval(() => {
+			this.cache.clear();
+		}, 30 * 60 * 1000);
 	}
 
-	async register(userData) {
-		return this.request('/auth/register', {
-			method: 'POST',
-			body: JSON.stringify(userData),
-		});
-	}
+	enhanceError(error) {
+		const enhanced = {
+			...error,
+			timestamp: new Date().toISOString(),
+			requestId: error.config?.headers?.['X-Request-ID'],
+		};
 
-	async logout() {
-		return this.request('/auth/logout', {
-			method: 'POST',
-		});
-	}
-
-	// Cocktail methods
-	async getCocktails(filters = {}) {
-		const params = new URLSearchParams(filters);
-		return this.request(`/cocktails?${params}`);
-	}
-
-	async createCocktail(cocktailData) {
-		// If image is a URL (from Cloudinary), send as JSON
-		if (cocktailData.image && typeof cocktailData.image === 'string') {
-			return this.request('/cocktails', {
-				method: 'POST',
-				body: JSON.stringify(cocktailData),
-			});
+		if (error.response) {
+			enhanced.status = error.response.status;
+			enhanced.statusText = error.response.statusText;
+			enhanced.data = error.response.data;
+		} else if (error.request) {
+			enhanced.type = 'network';
+			enhanced.message = 'Network error - please check your connection';
+		} else {
+			enhanced.type = 'config';
 		}
 
-		// Handle FormData for file uploads (fallback for direct file uploads)
+		return enhanced;
+	}
+
+	getAuthToken() {
+		// Try multiple storage locations
+		return (
+			localStorage.getItem('token') ||
+			sessionStorage.getItem('token') ||
+			document.cookie
+				.split('; ')
+				.find((row) => row.startsWith('token='))
+				?.split('=')[1]
+		);
+	}
+
+	generateRequestId() {
+		return Date.now().toString(36) + Math.random().toString(36).substr(2);
+	}
+
+	// Generic request method with caching and deduplication
+	async request(method, url, data = null, options = {}) {
+		const cacheKey = `${method}:${url}:${JSON.stringify(data)}`;
+		const {
+			cache = method === 'GET',
+			cacheTTL = 5 * 60 * 1000, // 5 minutes
+			...requestOptions
+		} = options;
+
+		// Check cache for GET requests
+		if (cache && method === 'GET') {
+			const cached = this.cache.get(cacheKey);
+			if (cached && Date.now() - cached.timestamp < cacheTTL) {
+				return cached.data;
+			}
+		}
+
+		// Check for pending identical requests (deduplication)
+		if (this.pendingRequests.has(cacheKey)) {
+			return this.pendingRequests.get(cacheKey);
+		}
+
+		// Create request promise
+		const requestPromise = measurePerformance(
+			`API:${method}:${url}`,
+			async () => {
+				try {
+					const response = await this.client.request({
+						method,
+						url,
+						data,
+						...requestOptions,
+					});
+
+					// Cache successful GET responses
+					if (cache && method === 'GET' && response.status === 200) {
+						this.cache.set(cacheKey, {
+							data: response.data,
+							timestamp: Date.now(),
+						});
+					}
+
+					return response.data;
+				} finally {
+					// Remove from pending requests
+					this.pendingRequests.delete(cacheKey);
+				}
+			},
+		);
+
+		// Store pending request
+		this.pendingRequests.set(cacheKey, requestPromise);
+
+		return requestPromise;
+	}
+
+	// Optimized HTTP methods
+	async get(url, options = {}) {
+		return this.request('GET', url, null, options);
+	}
+
+	async post(url, data, options = {}) {
+		return this.request('POST', url, data, { cache: false, ...options });
+	}
+
+	async put(url, data, options = {}) {
+		return this.request('PUT', url, data, { cache: false, ...options });
+	}
+
+	async patch(url, data, options = {}) {
+		return this.request('PATCH', url, data, { cache: false, ...options });
+	}
+
+	async delete(url, options = {}) {
+		return this.request('DELETE', url, null, { cache: false, ...options });
+	}
+
+	// File upload with progress tracking
+	async uploadFile(url, file, options = {}) {
 		const formData = new FormData();
-		Object.keys(cocktailData).forEach((key) => {
-			if (key === 'ingredients' || key === 'instructions') {
-				formData.append(key, JSON.stringify(cocktailData[key]));
-			} else {
-				formData.append(key, cocktailData[key]);
+		formData.append('file', file);
+
+		const config = {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+			onUploadProgress: options.onProgress,
+			...options,
+		};
+
+		return measurePerformance('API:upload', () =>
+			this.request('POST', url, formData, config),
+		);
+	}
+
+	// Batch requests
+	async batch(requests) {
+		return measurePerformance('API:batch', () =>
+			Promise.allSettled(
+				requests.map(({ method, url, data, options }) =>
+					this.request(method, url, data, options),
+				),
+			),
+		);
+	}
+
+	// Health check
+	async healthCheck() {
+		try {
+			const response = await this.get('/health', { cacheTTL: 30000 }); // Cache for 30 seconds
+			return response.status === 'ok';
+		} catch {
+			return false;
+		}
+	}
+
+	// Clear cache manually
+	clearCache(pattern = null) {
+		if (pattern) {
+			const regex = new RegExp(pattern);
+			for (const key of this.cache.keys()) {
+				if (regex.test(key)) {
+					this.cache.delete(key);
+				}
 			}
-		});
-
-		return this.request('/cocktails', {
-			method: 'POST',
-			headers: {}, // Remove Content-Type to let browser set boundary for FormData
-			body: formData,
-		});
+		} else {
+			this.cache.clear();
+		}
 	}
 
-	async getCocktailById(id) {
-		return this.request(`/cocktails/${id}`);
-	}
-
-	async updateCocktail(id, cocktailData) {
-		return this.request(`/cocktails/${id}`, {
-			method: 'PUT',
-			body: JSON.stringify(cocktailData),
-		});
-	}
-
-	async deleteCocktail(id) {
-		return this.request(`/cocktails/${id}`, {
-			method: 'DELETE',
-		});
-	}
-
-	// User methods
-	async getProfile() {
-		return this.request('/users/profile');
-	}
-
-	async updateProfile(userData) {
-		return this.request('/users/profile', {
-			method: 'PUT',
-			body: JSON.stringify(userData),
-		});
-	}
-
-	async getCommunityMembers(filters = {}) {
-		const params = new URLSearchParams(filters);
-		return this.request(`/users?${params}`);
-	}
-
-	async getUserStats(userId) {
-		return this.request(`/users/${userId}/stats`);
-	}
-
-	async followUser(userId) {
-		return this.request(`/users/${userId}/follow`, {
-			method: 'POST',
-		});
-	}
-
-	async unfollowUser(userId) {
-		return this.request(`/users/${userId}/unfollow`, {
-			method: 'DELETE',
-		});
+	// Get cache stats
+	getCacheStats() {
+		return {
+			size: this.cache.size,
+			keys: Array.from(this.cache.keys()),
+			pendingRequests: this.pendingRequests.size,
+		};
 	}
 }
 
-export default new ApiService();
+// Create singleton instance
+const apiService = new ApiService();
+
+export default apiService;
+
+// Export specific methods for convenience
+export const {
+	get,
+	post,
+	put,
+	patch,
+	delete: del,
+	uploadFile,
+	batch,
+	healthCheck,
+	clearCache,
+} = apiService;
