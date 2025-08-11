@@ -1,15 +1,7 @@
-import {
-	createContext,
-	useReducer,
-	useEffect,
-	useCallback,
-	useMemo,
-} from 'react';
+import { useReducer, useEffect, useCallback, useMemo } from 'react';
+import { AuthContext } from './AuthContextDefinition';
 import { logError } from '../utils/errorMonitoring';
 import apiService from '../services/api';
-
-// Enhanced Auth Context with better performance and security
-export const AuthContext = createContext();
 
 // Enhanced auth reducer with better state management
 const authReducer = (state, action) => {
@@ -301,3 +293,5 @@ export const AuthProvider = ({ children }) => {
 		</AuthContext.Provider>
 	);
 };
+
+export default AuthProvider;
