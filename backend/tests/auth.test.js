@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import request from 'supertest';
 import app from '../src/server.js';
 import User from '../src/models/User.js';
