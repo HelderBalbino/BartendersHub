@@ -122,26 +122,37 @@ export const AuthProvider = ({ children }) => {
 		dispatch({ type: 'LOGIN_START' });
 
 		try {
+			console.log('🔍 Making API request to:', '/auth/login');
+			console.log('🔍 With data:', { email, password: '***' });
+
 			const response = await apiService.post('/auth/login', {
 				email,
 				password,
 			});
 
+			console.log('📡 Raw axios response:', response);
+			console.log('📡 Response status:', response.status);
+			console.log('📡 Response data:', response.data);
+
 			// The API returns: { success: true, message: "...", token: "...", user: {...} }
 			if (!response.data) {
+				console.error('❌ No response.data found');
 				throw new Error('No response data received');
 			}
 
 			// Check if the response indicates success
 			if (!response.data.success) {
+				console.error('❌ API returned success: false');
 				throw new Error(response.data.message || 'Login failed');
 			}
 
 			if (!response.data.token) {
+				console.error('❌ No token in response');
 				throw new Error('No token in response');
 			}
 
 			if (!response.data.user) {
+				console.error('❌ No user in response');
 				throw new Error('No user in response');
 			}
 
@@ -157,6 +168,14 @@ export const AuthProvider = ({ children }) => {
 
 			return { success: true, user };
 		} catch (error) {
+			console.error('🚨 Login error:', error);
+			console.error('🚨 Error details:', {
+				message: error.message,
+				code: error.code,
+				response: error.response,
+				request: error.request,
+			});
+
 			let errorMessage = 'Login failed';
 
 			if (error.response?.data?.message) {
