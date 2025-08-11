@@ -122,63 +122,39 @@ export const AuthProvider = ({ children }) => {
 		dispatch({ type: 'LOGIN_START' });
 
 		try {
-			console.log('🔍 Making API request to:', '/auth/login');
-			console.log('🔍 With data:', { email, password: '***' });
-
-			// Test with raw axios to bypass potential interceptor issues
-			const axios = (await import('axios')).default;
-			const rawResponse = await axios.post(
-				'https://bartendershub.onrender.com/api/auth/login',
-				{
-					email,
-					password,
-				},
-				{
-					timeout: 10000,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				},
-			);
-
-			console.log('📡 Raw axios response:', rawResponse);
-			console.log('📡 Response status:', rawResponse.status);
-			console.log('📡 Response data:', rawResponse.data);
+			const response = await apiService.post('/auth/login', {
+				email,
+				password,
+			});
 
 			// Handle different response structures
 			// Sometimes the response is the data itself, sometimes it's nested under .data
 			let responseData;
-			if (rawResponse.data) {
+			if (response.data) {
 				// Standard axios response structure
-				responseData = rawResponse.data;
-			} else if (rawResponse.success !== undefined) {
+				responseData = response.data;
+			} else if (response.success !== undefined) {
 				// Response is the data itself
-				responseData = rawResponse;
+				responseData = response;
 			} else {
 				throw new Error('No valid response data found');
 			}
 
-			console.log('📡 Processed response data:', responseData);
-
 			// The API returns: { success: true, message: "...", token: "...", user: {...} }
 			if (!responseData) {
-				console.error('❌ No responseData found');
 				throw new Error('No response data received');
 			}
 
 			// Check if the response indicates success
 			if (!responseData.success) {
-				console.error('❌ API returned success: false');
 				throw new Error(responseData.message || 'Login failed');
 			}
 
 			if (!responseData.token) {
-				console.error('❌ No token in response');
 				throw new Error('No token in response');
 			}
 
 			if (!responseData.user) {
-				console.error('❌ No user in response');
 				throw new Error('No user in response');
 			}
 
@@ -194,14 +170,6 @@ export const AuthProvider = ({ children }) => {
 
 			return { success: true, user };
 		} catch (error) {
-			console.error('🚨 Login error:', error);
-			console.error('🚨 Error details:', {
-				message: error.message,
-				code: error.code,
-				response: error.response,
-				request: error.request,
-			});
-
 			let errorMessage = 'Login failed';
 
 			if (error.response?.data?.message) {
