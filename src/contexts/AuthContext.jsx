@@ -62,7 +62,7 @@ const initialState = {
 	isAuthenticated: false,
 	user: null,
 	token: null,
-	loading: true,
+	loading: false, // Start with false to avoid infinite loading
 	error: null,
 	lastLogin: null,
 };
@@ -239,6 +239,7 @@ export const AuthProvider = ({ children }) => {
 				payload: { token, user },
 			});
 		} catch (error) {
+			// If the token is invalid or expired, logout
 			TokenManager.remove();
 			dispatch({ type: 'LOGOUT' });
 			logError(error, 'auth-check');
