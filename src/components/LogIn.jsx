@@ -158,21 +158,10 @@ const LogIn = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		console.log('🔍 Form submission:', {
-			isLogin,
-			email: formValues.email,
-			password: formValues.password ? '***' : 'empty',
-			emailLength: formValues.email?.length,
-			passwordLength: formValues.password?.length,
-		});
-
 		if (!validateAllFields()) {
-			console.log('❌ Validation failed:', formErrors);
 			toast.error('Please fix the errors in the form');
 			return;
 		}
-
-		console.log('✅ Validation passed, attempting login...');
 
 		try {
 			if (isLogin) {
@@ -181,7 +170,6 @@ const LogIn = () => {
 					formValues.password,
 					false, // remember me option - you can add this later
 				);
-				console.log('✅ Login result:', result);
 
 				if (result.success) {
 					toast.success('Welcome back to the speakeasy!');
