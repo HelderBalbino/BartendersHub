@@ -158,21 +158,21 @@ const LogIn = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		console.log('🔍 Form submission:', { 
-			isLogin, 
-			email: formValues.email, 
+		console.log('🔍 Form submission:', {
+			isLogin,
+			email: formValues.email,
 			password: formValues.password ? '***' : 'empty',
-			formValues 
+			emailLength: formValues.email?.length,
+			passwordLength: formValues.password?.length,
 		});
 
-		// Temporarily bypass validation for debugging
-		// if (!validateAllFields()) {
-		// 	console.log('❌ Validation failed:', formErrors);
-		// 	toast.error('Please fix the errors in the form');
-		// 	return;
-		// }
+		if (!validateAllFields()) {
+			console.log('❌ Validation failed:', formErrors);
+			toast.error('Please fix the errors in the form');
+			return;
+		}
 
-		console.log('✅ Attempting login without validation...');
+		console.log('✅ Validation passed, attempting login...');
 
 		try {
 			if (isLogin) {
@@ -182,19 +182,30 @@ const LogIn = () => {
 					false, // remember me option - you can add this later
 				);
 				console.log('✅ Login result:', result);
-				toast.success('Welcome back to the speakeasy!');
+
+				if (result.success) {
+					toast.success('Welcome back to the speakeasy!');
+					// Navigation will be handled by the auth context useEffect
+				} else {
+					toast.error(result.error || 'Login failed');
+				}
 			} else {
-				await register({
+				const result = await register({
 					name: formValues.name,
 					username: formValues.username,
 					email: formValues.email,
 					password: formValues.password,
 				});
-				toast.success('Welcome to BartendersHub!');
+
+				if (result.success) {
+					toast.success('Welcome to BartendersHub!');
+				} else {
+					toast.error(result.error || 'Registration failed');
+				}
 			}
 		} catch (error) {
-			// Error is handled by the auth context and displayed via toast
 			console.error('Authentication error:', error);
+			toast.error('An unexpected error occurred');
 		}
 	};
 
