@@ -145,32 +145,44 @@ export const AuthProvider = ({ children }) => {
 			console.log('📡 Response status:', rawResponse.status);
 			console.log('📡 Response data:', rawResponse.data);
 
-			// Use the raw response instead of apiService
-			const response = rawResponse;
+			// Handle different response structures
+			// Sometimes the response is the data itself, sometimes it's nested under .data
+			let responseData;
+			if (rawResponse.data) {
+				// Standard axios response structure
+				responseData = rawResponse.data;
+			} else if (rawResponse.success !== undefined) {
+				// Response is the data itself
+				responseData = rawResponse;
+			} else {
+				throw new Error('No valid response data found');
+			}
+
+			console.log('📡 Processed response data:', responseData);
 
 			// The API returns: { success: true, message: "...", token: "...", user: {...} }
-			if (!response.data) {
-				console.error('❌ No response.data found');
+			if (!responseData) {
+				console.error('❌ No responseData found');
 				throw new Error('No response data received');
 			}
 
 			// Check if the response indicates success
-			if (!response.data.success) {
+			if (!responseData.success) {
 				console.error('❌ API returned success: false');
-				throw new Error(response.data.message || 'Login failed');
+				throw new Error(responseData.message || 'Login failed');
 			}
 
-			if (!response.data.token) {
+			if (!responseData.token) {
 				console.error('❌ No token in response');
 				throw new Error('No token in response');
 			}
 
-			if (!response.data.user) {
+			if (!responseData.user) {
 				console.error('❌ No user in response');
 				throw new Error('No user in response');
 			}
 
-			const { token, user } = response.data;
+			const { token, user } = responseData;
 
 			// Store token with preference
 			TokenManager.set(token, remember);
