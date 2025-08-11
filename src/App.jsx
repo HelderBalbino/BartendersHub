@@ -1,3 +1,4 @@
+import { Suspense, lazy, useMemo } from 'react';
 import {
 	Route,
 	createBrowserRouter,
@@ -11,59 +12,148 @@ import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './layouts/MainLayout';
-import HomePage from './pages/HomePage';
-import CocktailsPage from './pages/CocktailsPage';
-import CommunityPage from './pages/CommunityPage';
-import AboutPage from './pages/AboutPage';
-import LoginPage from './pages/LoginPage';
-import AddCocktailPage from './pages/AddCocktailPage';
+import LoadingSpinner from './components/LoadingSpinner';
+import config from './config/environment.js';
 
-// Create a client for React Query
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			retry: 2,
-			staleTime: 5 * 60 * 1000, // 5 minutes
-			gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime in v5)
-		},
-	},
-});
+// Lazy load pages for better performance
+const HomePage = lazy(() => import('./pages/HomePage'));
+const CocktailsPage = lazy(() => import('./pages/CocktailsPage'));
+const CommunityPage = lazy(() => import('./pages/CommunityPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AddCocktailPage = lazy(() => import('./pages/AddCocktailPage'));
 
-const router = createBrowserRouter(
-	createRoutesFromElements(
-		<Route path='/' element={<MainLayout />}>
-			<Route index element={<HomePage />} />
-			<Route path='/cocktails' element={<CocktailsPage />} />
-			<Route path='/about' element={<AboutPage />} />
-			<Route path='/login' element={<LoginPage />} />
-
-			{/* Protected Routes */}
-			<Route element={<ProtectedRoute />}>
-				<Route path='/community' element={<CommunityPage />} />
-				<Route path='/addCocktail' element={<AddCocktailPage />} />
-			</Route>
-		</Route>,
-	),
+// Enhanced loading component
+const PageLoader = () => (
+	<div className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+		<LoadingSpinner />
+	</div>
 );
 
 const App = () => {
+	// Memoize query client to prevent recreation on re-renders
+	const queryClient = useMemo(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						retry: 2,
+						staleTime: 5 * 60 * 1000, // 5 minutes
+						gcTime: 10 * 60 * 1000, // 10 minutes
+						refetchOnWindowFocus: false, // Disable refetch on window focus for better performance
+						refetchOnReconnect: true,
+					},
+					mutations: {
+						retry: 1,
+					},
+				},
+			}),
+		[],
+	);
+
+	// Memoize router to prevent recreation
+	const router = useMemo(
+		() =>
+			createBrowserRouter(
+				createRoutesFromElements(
+					<Route path='/' element={<MainLayout />}>
+						<Route
+							index
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<HomePage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path='/cocktails'
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<CocktailsPage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path='/about'
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<AboutPage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path='/login'
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<LoginPage />
+								</Suspense>
+							}
+						/>
+
+						{/* Protected Routes */}
+						<Route element={<ProtectedRoute />}>
+							<Route
+								path='/community'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<CommunityPage />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='/addCocktail'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<AddCocktailPage />
+									</Suspense>
+								}
+							/>
+						</Route>
+					</Route>,
+				),
+			),
+		[],
+	);
+
+	// Memoize toast configuration
+	const toasterConfig = useMemo(
+		() => ({
+			position: 'top-right',
+			toastOptions: {
+				duration: 4000,
+				style: {
+					background: '#000',
+					color: '#fbbf24',
+					border: '1px solid #fbbf24',
+					borderRadius: '0',
+				},
+				success: {
+					iconTheme: {
+						primary: '#fbbf24',
+						secondary: '#000',
+					},
+				},
+				error: {
+					iconTheme: {
+						primary: '#ef4444',
+						secondary: '#000',
+					},
+				},
+			},
+		}),
+		[],
+	);
+
 	return (
 		<ErrorBoundary>
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<RouterProvider router={router} />
-					<Toaster
-						position='top-right'
-						toastOptions={{
-							duration: 4000,
-							style: {
-								background: '#000',
-								color: '#fbbf24',
-								border: '1px solid #fbbf24',
-							},
-						}}
-					/>
-					{import.meta.env.DEV && <ReactQueryDevtools />}
+					<Toaster {...toasterConfig} />
+					{/* Only show React Query DevTools in development */}
+					{config.features.enableDevtools && (
+						<ReactQueryDevtools initialIsOpen={false} />
+					)}
 				</AuthProvider>
 			</QueryClientProvider>
 		</ErrorBoundary>
