@@ -11,6 +11,7 @@ const PasswordInput = ({
 	touched,
 	label,
 	className = '',
+	autocomplete = 'current-password',
 	...props
 }) => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -33,6 +34,7 @@ const PasswordInput = ({
 					value={value}
 					onChange={onChange}
 					onBlur={onBlur}
+					autoComplete={autocomplete}
 					className={`w-full bg-black/20 border ${
 						touched && error
 							? 'border-red-400'
