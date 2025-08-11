@@ -121,31 +121,20 @@ export const AuthProvider = ({ children }) => {
 	const login = useCallback(async (email, password, remember = false) => {
 		dispatch({ type: 'LOGIN_START' });
 
-		console.log('🔍 Login attempt:', { email, password: '***', remember });
-
 		try {
 			const response = await apiService.post('/auth/login', {
 				email,
 				password,
 			});
 
-			console.log('📡 API Response full object:', response);
-			console.log('📡 API Response data:', response.data);
-			console.log(
-				'📡 API Response data keys:',
-				Object.keys(response.data || {}),
-			);
-			console.log('📡 Has token?', !!response.data?.token);
-			console.log('📡 Has user?', !!response.data?.user);
-			console.log(
-				'📡 Token value:',
-				response.data?.token?.substring(0, 20) + '...',
-			);
-			console.log('📡 User value:', response.data?.user);
-
 			// The API returns: { success: true, message: "...", token: "...", user: {...} }
 			if (!response.data) {
 				throw new Error('No response data received');
+			}
+
+			// Check if the response indicates success
+			if (!response.data.success) {
+				throw new Error(response.data.message || 'Login failed');
 			}
 
 			if (!response.data.token) {
@@ -168,10 +157,6 @@ export const AuthProvider = ({ children }) => {
 
 			return { success: true, user };
 		} catch (error) {
-			console.error('🚨 Login error details:', error);
-			console.error('🚨 Error response:', error.response);
-			console.error('🚨 Error data:', error.response?.data);
-
 			let errorMessage = 'Login failed';
 
 			if (error.response?.data?.message) {
