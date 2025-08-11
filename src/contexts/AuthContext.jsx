@@ -129,11 +129,31 @@ export const AuthProvider = ({ children }) => {
 				password,
 			});
 
-			console.log('📡 API Response:', response);
+			console.log('📡 API Response full object:', response);
+			console.log('📡 API Response data:', response.data);
+			console.log(
+				'📡 API Response data keys:',
+				Object.keys(response.data || {}),
+			);
+			console.log('📡 Has token?', !!response.data?.token);
+			console.log('📡 Has user?', !!response.data?.user);
+			console.log(
+				'📡 Token value:',
+				response.data?.token?.substring(0, 20) + '...',
+			);
+			console.log('📡 User value:', response.data?.user);
 
 			// The API returns: { success: true, message: "...", token: "...", user: {...} }
-			if (!response.data || !response.data.token || !response.data.user) {
-				throw new Error('Invalid response format from server');
+			if (!response.data) {
+				throw new Error('No response data received');
+			}
+
+			if (!response.data.token) {
+				throw new Error('No token in response');
+			}
+
+			if (!response.data.user) {
+				throw new Error('No user in response');
 			}
 
 			const { token, user } = response.data;
