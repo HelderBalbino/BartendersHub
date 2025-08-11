@@ -129,6 +129,13 @@ export const AuthProvider = ({ children }) => {
 				password,
 			});
 
+			console.log('📡 API Response:', response);
+
+			// The API returns: { success: true, message: "...", token: "...", user: {...} }
+			if (!response.data || !response.data.token || !response.data.user) {
+				throw new Error('Invalid response format from server');
+			}
+
 			const { token, user } = response.data;
 
 			// Store token with preference
@@ -141,8 +148,18 @@ export const AuthProvider = ({ children }) => {
 
 			return { success: true, user };
 		} catch (error) {
-			const errorMessage = error.data?.message || 'Login failed';
 			console.error('🚨 Login error details:', error);
+			console.error('🚨 Error response:', error.response);
+			console.error('🚨 Error data:', error.response?.data);
+
+			let errorMessage = 'Login failed';
+
+			if (error.response?.data?.message) {
+				errorMessage = error.response.data.message;
+			} else if (error.message) {
+				errorMessage = error.message;
+			}
+
 			dispatch({
 				type: 'LOGIN_FAILURE',
 				payload: errorMessage,
