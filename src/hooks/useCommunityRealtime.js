@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import useWebSocket from './useWebSocket';
 
 const useCommunityRealtime = (initialMembers = []) => {
 	const [members, setMembers] = useState(initialMembers);
 	const [recentJoins, setRecentJoins] = useState([]);
+	const timeoutRefs = useRef(new Map()); // Track timeouts for cleanup
 
 	// Get API base URL for WebSocket connection
 	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -28,9 +29,12 @@ const useCommunityRealtime = (initialMembers = []) => {
 		});
 
 		// Auto-remove from recent joins after 10 seconds
-		setTimeout(() => {
+		const timeoutId = setTimeout(() => {
 			setRecentJoins((prev) => prev.filter((m) => m.id !== newMember.id));
 		}, 10000);
+
+		// Store timeout reference for cleanup
+		timeoutRefs.current.set(newMember.id, timeoutId);
 	}, []);
 
 	// Handle member updates (when they add cocktails, get verified, etc.)
@@ -88,12 +92,30 @@ const useCommunityRealtime = (initialMembers = []) => {
 
 	// Clear a specific recent join notification
 	const clearRecentJoin = useCallback((memberId) => {
+		// Clear timeout if exists
+		const timeoutId = timeoutRefs.current.get(memberId);
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+			timeoutRefs.current.delete(memberId);
+		}
 		setRecentJoins((prev) => prev.filter((m) => m.id !== memberId));
 	}, []);
 
 	// Clear all recent join notifications
 	const clearAllRecentJoins = useCallback(() => {
+		// Clear all timeouts
+		timeoutRefs.current.forEach((timeoutId) => clearTimeout(timeoutId));
+		timeoutRefs.current.clear();
 		setRecentJoins([]);
+	}, []);
+
+	// Cleanup timeouts on unmount
+	useEffect(() => {
+		const currentTimeouts = timeoutRefs.current;
+		return () => {
+			currentTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
+			currentTimeouts.clear();
+		};
 	}, []);
 
 	return {
