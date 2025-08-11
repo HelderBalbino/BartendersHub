@@ -125,14 +125,28 @@ export const AuthProvider = ({ children }) => {
 			console.log('🔍 Making API request to:', '/auth/login');
 			console.log('🔍 With data:', { email, password: '***' });
 
-			const response = await apiService.post('/auth/login', {
-				email,
-				password,
-			});
+			// Test with raw axios to bypass potential interceptor issues
+			const axios = (await import('axios')).default;
+			const rawResponse = await axios.post(
+				'https://bartendershub.onrender.com/api/auth/login',
+				{
+					email,
+					password,
+				},
+				{
+					timeout: 10000,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				},
+			);
 
-			console.log('📡 Raw axios response:', response);
-			console.log('📡 Response status:', response.status);
-			console.log('📡 Response data:', response.data);
+			console.log('📡 Raw axios response:', rawResponse);
+			console.log('📡 Response status:', rawResponse.status);
+			console.log('📡 Response data:', rawResponse.data);
+
+			// Use the raw response instead of apiService
+			const response = rawResponse;
 
 			// The API returns: { success: true, message: "...", token: "...", user: {...} }
 			if (!response.data) {
