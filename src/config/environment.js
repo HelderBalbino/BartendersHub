@@ -50,10 +50,6 @@ const validateEnvironment = () => {
 		(varName) => !import.meta.env[varName],
 	);
 
-	const missingOptional = optionalEnvVars.filter(
-		(varName) => !import.meta.env[varName],
-	);
-
 	if (missing.length > 0 && config.app.environment === 'production') {
 		console.error('Missing required environment variables:', missing);
 		throw new Error(
@@ -68,14 +64,18 @@ const validateEnvironment = () => {
 		);
 	}
 
-	if (missingOptional.length > 0) {
-		console.info(
-			'Optional environment variables not found (features may be limited):',
-			missingOptional,
+	// Don't show optional variable warnings in development since we have defaults
+	if (config.app.environment === 'production') {
+		const missingOptional = optionalEnvVars.filter(
+			(varName) => !import.meta.env[varName],
 		);
-		console.info(
-			'Make sure to restart your development server after adding .env variables',
-		);
+
+		if (missingOptional.length > 0) {
+			console.warn(
+				'Optional environment variables not found (features may be limited):',
+				missingOptional,
+			);
+		}
 	}
 };
 
