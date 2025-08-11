@@ -165,10 +165,11 @@ const LogIn = () => {
 
 		try {
 			if (isLogin) {
-				await login({
-					email: formValues.email,
-					password: formValues.password,
-				});
+				await login(
+					formValues.email,
+					formValues.password,
+					false, // remember me option - you can add this later
+				);
 				toast.success('Welcome back to the speakeasy!');
 			} else {
 				await register({
@@ -292,6 +293,7 @@ const LogIn = () => {
 									value={formValues.name}
 									onChange={handleFormChange}
 									onBlur={handleFormBlur}
+									autoComplete='name'
 									className={`w-full bg-black/20 border ${
 										formTouched.name && formErrors.name
 											? 'border-red-400'
@@ -324,6 +326,7 @@ const LogIn = () => {
 									value={formValues.username}
 									onChange={handleFormChange}
 									onBlur={handleFormBlur}
+									autoComplete='username'
 									className={`w-full bg-black/20 border ${
 										formTouched.username &&
 										formErrors.username
@@ -357,6 +360,7 @@ const LogIn = () => {
 								value={formValues.email}
 								onChange={handleFormChange}
 								onBlur={handleFormBlur}
+								autoComplete='email'
 								className={`w-full bg-black/20 border ${
 									formTouched.email && formErrors.email
 										? 'border-red-400'
@@ -387,6 +391,9 @@ const LogIn = () => {
 							required
 							error={formErrors.password}
 							touched={formTouched.password}
+							autocomplete={
+								isLogin ? 'current-password' : 'new-password'
+							}
 						/>
 
 						{/* Confirm Password field (only for register) */}
@@ -401,6 +408,7 @@ const LogIn = () => {
 								required={!isLogin}
 								error={formErrors.confirmPassword}
 								touched={formTouched.confirmPassword}
+								autocomplete='new-password'
 							/>
 						)}
 
