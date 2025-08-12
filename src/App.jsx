@@ -67,7 +67,7 @@ const App = () => {
 							}
 						/>
 						<Route
-							path='/cocktails'
+							path='cocktails'
 							element={
 								<Suspense fallback={<PageLoader />}>
 									<CocktailsPage />
@@ -75,7 +75,7 @@ const App = () => {
 							}
 						/>
 						<Route
-							path='/about'
+							path='about'
 							element={
 								<Suspense fallback={<PageLoader />}>
 									<AboutPage />
@@ -83,7 +83,7 @@ const App = () => {
 							}
 						/>
 						<Route
-							path='/login'
+							path='login'
 							element={
 								<Suspense fallback={<PageLoader />}>
 									<LoginPage />
@@ -94,7 +94,7 @@ const App = () => {
 						{/* Protected Routes */}
 						<Route element={<ProtectedRoute />}>
 							<Route
-								path='/community'
+								path='community'
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<CommunityPage />
@@ -102,15 +102,16 @@ const App = () => {
 								}
 							/>
 							<Route
-								path='/addCocktail'
+								path='addCocktail'
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<AddCocktailPage />
 									</Suspense>
 								}
 							/>
+							{/* Profile routes - order matters */}
 							<Route
-								path='/profile'
+								path='profile'
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
@@ -118,7 +119,7 @@ const App = () => {
 								}
 							/>
 							<Route
-								path='/profile/:userId'
+								path='profile/:userId'
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
