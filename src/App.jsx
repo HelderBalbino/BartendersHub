@@ -92,41 +92,46 @@ const App = () => {
 						/>
 
 						{/* Protected Routes */}
-						<Route element={<ProtectedRoute />}>
-							<Route
-								path='community'
-								element={
+						<Route
+							path='community'
+							element={
+								<ProtectedRoute>
 									<Suspense fallback={<PageLoader />}>
 										<CommunityPage />
 									</Suspense>
-								}
-							/>
-							<Route
-								path='addCocktail'
-								element={
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='addCocktail'
+							element={
+								<ProtectedRoute>
 									<Suspense fallback={<PageLoader />}>
 										<AddCocktailPage />
 									</Suspense>
-								}
-							/>
-							{/* Profile routes - order matters */}
-							<Route
-								path='profile'
-								element={
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='profile'
+							element={
+								<ProtectedRoute>
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
 									</Suspense>
-								}
-							/>
-							<Route
-								path='profile/:userId'
-								element={
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='profile/:userId'
+							element={
+								<ProtectedRoute>
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
 									</Suspense>
-								}
-							/>
-						</Route>
+								</ProtectedRoute>
+							}
+						/>
 					</Route>,
 				),
 			),
