@@ -110,7 +110,7 @@ const App = () => {
 								}
 							/>
 							<Route
-								path='/profile/:userId'
+								path='/profile'
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
@@ -118,7 +118,7 @@ const App = () => {
 								}
 							/>
 							<Route
-								path='/profile'
+								path='/profile/:userId'
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
