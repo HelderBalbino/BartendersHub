@@ -3,7 +3,7 @@ import apiService from '../services/api';
 import { toast } from 'react-hot-toast';
 
 // Hook for fetching user profile by ID
-export const useUserProfileById = (userId) => {
+export const useUserProfileById = (userId, options = {}) => {
 	return useQuery({
 		queryKey: ['user', 'profile', userId],
 		queryFn: async () => {
@@ -21,7 +21,7 @@ export const useUserProfileById = (userId) => {
 
 			return responseData;
 		},
-		enabled: !!userId,
+		enabled: options.enabled !== undefined ? options.enabled : !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		retry: (failureCount, error) => {
 			// Don't retry on 404 errors
@@ -58,7 +58,7 @@ export const useUserCocktails = (userId, options = {}) => {
 
 			return responseData;
 		},
-		enabled: !!userId,
+		enabled: options.enabled !== undefined ? options.enabled : !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		retry: (failureCount, error) => {
 			if (error?.response?.status === 404) {
@@ -95,7 +95,7 @@ export const useUserFavorites = (userId, options = {}) => {
 
 			return responseData;
 		},
-		enabled: !!userId,
+		enabled: options.enabled !== undefined ? options.enabled : !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		retry: (failureCount, error) => {
 			// Don't retry for favorites if endpoint doesn't exist
@@ -132,7 +132,7 @@ export const useUserFollowers = (userId, options = {}) => {
 
 			return responseData;
 		},
-		enabled: !!userId,
+		enabled: options.enabled !== undefined ? options.enabled : !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		retry: (failureCount, error) => {
 			if (error?.response?.status === 404) {
@@ -168,7 +168,7 @@ export const useUserFollowing = (userId, options = {}) => {
 
 			return responseData;
 		},
-		enabled: !!userId,
+		enabled: options.enabled !== undefined ? options.enabled : !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		retry: (failureCount, error) => {
 			if (error?.response?.status === 404) {
