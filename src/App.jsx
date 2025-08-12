@@ -22,6 +22,7 @@ const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const AddCocktailPage = lazy(() => import('./pages/AddCocktailPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 
 // Enhanced loading component
 const PageLoader = () => (
@@ -105,6 +106,22 @@ const App = () => {
 								element={
 									<Suspense fallback={<PageLoader />}>
 										<AddCocktailPage />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='/profile/:userId'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<ProfilePage />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='/profile'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<ProfilePage />
 									</Suspense>
 								}
 							/>
