@@ -32,6 +32,7 @@ const Navbar = () => {
 		? [
 				{ name: 'Add a cocktail', to: '/addCocktail' },
 				{ name: 'Community', to: '/community' },
+				{ name: 'Profile', to: '/profile' },
 				...navLinks,
 		  ]
 		: navLinks;
