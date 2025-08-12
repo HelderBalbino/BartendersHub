@@ -21,29 +21,29 @@ const UserProfile = ({ userId }) => {
 	// Determine if this is the current user's profile
 	const isOwnProfile = currentUser?.id === userId;
 
-	// Fetch user data
+	// Fetch user data - disable queries if no userId
 	const {
 		data: userProfile,
 		isLoading: profileLoading,
 		error: profileError,
-	} = useUserProfileById(userId);
+	} = useUserProfileById(userId, { enabled: !!userId });
 	const {
 		data: userCocktails,
 		isLoading: cocktailsLoading,
 		error: cocktailsError,
-	} = useUserCocktails(userId, { limit: 12 });
+	} = useUserCocktails(userId, { limit: 12, enabled: !!userId });
 	const {
 		data: userFavorites,
 		isLoading: favoritesLoading,
 		error: favoritesError,
-	} = useUserFavorites(userId, { limit: 12 });
+	} = useUserFavorites(userId, { limit: 12, enabled: !!userId });
 	const { data: followers, error: followersError } = useUserFollowers(
 		userId,
-		{ limit: 100 },
+		{ limit: 100, enabled: !!userId },
 	);
 	const { data: following, error: followingError } = useUserFollowing(
 		userId,
-		{ limit: 100 },
+		{ limit: 100, enabled: !!userId },
 	);
 
 	// Handle errors with toast notifications
