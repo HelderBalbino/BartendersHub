@@ -23,8 +23,12 @@ export const useUserProfileById = (userId) => {
 		},
 		enabled: !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
-		onError: (error) => {
-			toast.error(error.message || 'Failed to fetch user profile');
+		retry: (failureCount, error) => {
+			// Don't retry on 404 errors
+			if (error?.response?.status === 404) {
+				return false;
+			}
+			return failureCount < 2;
 		},
 	});
 };
@@ -56,8 +60,11 @@ export const useUserCocktails = (userId, options = {}) => {
 		},
 		enabled: !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
-		onError: (error) => {
-			toast.error(error.message || 'Failed to fetch user cocktails');
+		retry: (failureCount, error) => {
+			if (error?.response?.status === 404) {
+				return false;
+			}
+			return failureCount < 2;
 		},
 	});
 };
@@ -90,9 +97,12 @@ export const useUserFavorites = (userId, options = {}) => {
 		},
 		enabled: !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
-		onError: (error) => {
-			console.warn('Favorites endpoint not available:', error.message);
-			// Don't show toast for this since favorites might not be implemented yet
+		retry: (failureCount, error) => {
+			// Don't retry for favorites if endpoint doesn't exist
+			if (error?.response?.status === 404) {
+				return false;
+			}
+			return failureCount < 1;
 		},
 	});
 };
@@ -124,8 +134,11 @@ export const useUserFollowers = (userId, options = {}) => {
 		},
 		enabled: !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
-		onError: (error) => {
-			toast.error(error.message || 'Failed to fetch followers');
+		retry: (failureCount, error) => {
+			if (error?.response?.status === 404) {
+				return false;
+			}
+			return failureCount < 2;
 		},
 	});
 };
@@ -157,8 +170,11 @@ export const useUserFollowing = (userId, options = {}) => {
 		},
 		enabled: !!userId,
 		staleTime: 5 * 60 * 1000, // 5 minutes
-		onError: (error) => {
-			toast.error(error.message || 'Failed to fetch following list');
+		retry: (failureCount, error) => {
+			if (error?.response?.status === 404) {
+				return false;
+			}
+			return failureCount < 2;
 		},
 	});
 };
