@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import {
 	useUserProfileById,
@@ -8,6 +8,7 @@ import {
 	useUserFollowing,
 } from '../hooks/useProfile';
 import { useFollowUser } from '../hooks/useCommunity';
+import { toast } from 'react-hot-toast';
 import LoadingSpinner from './LoadingSpinner';
 import CocktailCard from './CocktailCard';
 import ArtDecoSection from './ui/ArtDecoSection';
@@ -26,12 +27,50 @@ const UserProfile = ({ userId }) => {
 		isLoading: profileLoading,
 		error: profileError,
 	} = useUserProfileById(userId);
-	const { data: userCocktails, isLoading: cocktailsLoading } =
-		useUserCocktails(userId, { limit: 12 });
-	const { data: userFavorites, isLoading: favoritesLoading } =
-		useUserFavorites(userId, { limit: 12 });
-	const { data: followers } = useUserFollowers(userId, { limit: 100 });
-	const { data: following } = useUserFollowing(userId, { limit: 100 });
+	const {
+		data: userCocktails,
+		isLoading: cocktailsLoading,
+		error: cocktailsError,
+	} = useUserCocktails(userId, { limit: 12 });
+	const {
+		data: userFavorites,
+		isLoading: favoritesLoading,
+		error: favoritesError,
+	} = useUserFavorites(userId, { limit: 12 });
+	const { data: followers, error: followersError } = useUserFollowers(
+		userId,
+		{ limit: 100 },
+	);
+	const { data: following, error: followingError } = useUserFollowing(
+		userId,
+		{ limit: 100 },
+	);
+
+	// Handle errors with toast notifications
+	useEffect(() => {
+		if (profileError) {
+			toast.error('Failed to load user profile');
+		}
+		if (cocktailsError) {
+			toast.error('Failed to load user cocktails');
+		}
+		if (followersError) {
+			toast.error('Failed to load followers');
+		}
+		if (followingError) {
+			toast.error('Failed to load following list');
+		}
+		// Don't show error for favorites since that endpoint might not exist yet
+		if (favoritesError && !favoritesError.message?.includes('404')) {
+			console.warn('Favorites error:', favoritesError);
+		}
+	}, [
+		profileError,
+		cocktailsError,
+		favoritesError,
+		followersError,
+		followingError,
+	]);
 
 	// Follow/unfollow functionality
 	const {
@@ -39,6 +78,20 @@ const UserProfile = ({ userId }) => {
 		unfollowUser,
 		isLoading: followLoading,
 	} = useFollowUser();
+
+	// Early return if no userId is provided (after all hooks)
+	if (!userId) {
+		return (
+			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+				<div className='text-center text-white'>
+					<h2 className='text-2xl mb-4'>No user specified</h2>
+					<p className='text-gray-400'>
+						Please provide a user ID to view the profile
+					</p>
+				</div>
+			</section>
+		);
+	}
 
 	// Show loading state
 	if (profileLoading) {
