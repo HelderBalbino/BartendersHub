@@ -1,8 +1,8 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from './LoadingSpinner';
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ children }) => {
 	const { isAuthenticated, loading } = useAuth();
 	const location = useLocation();
 
@@ -23,7 +23,7 @@ const ProtectedRoute = () => {
 		);
 	}
 
-	return <Outlet />;
+	return children;
 };
 
 export default ProtectedRoute;
