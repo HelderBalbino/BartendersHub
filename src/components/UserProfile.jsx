@@ -81,13 +81,23 @@ const UserProfile = ({ userId }) => {
 
 	// Early return if no userId is provided (after all hooks)
 	if (!userId) {
+		console.log('UserProfile: No userId provided, debugging auth state...');
+		console.log('currentUser:', currentUser);
+		console.log(
+			'currentUser keys:',
+			currentUser ? Object.keys(currentUser) : 'No user',
+		);
+		console.log('currentUser.id:', currentUser?.id);
+		console.log('currentUser._id:', currentUser?._id);
+
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
 				<div className='text-center text-white'>
-					<h2 className='text-2xl mb-4'>No user specified</h2>
-					<p className='text-gray-400'>
-						Please provide a user ID to view the profile
+					<h2 className='text-2xl mb-4'>Profile Loading...</h2>
+					<p className='text-gray-400 mb-4'>
+						Getting your profile ready...
 					</p>
+					<LoadingSpinner />
 				</div>
 			</section>
 		);
