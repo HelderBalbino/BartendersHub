@@ -7,16 +7,6 @@ const ProfilePage = () => {
 	const { userId } = useParams();
 	const { user: currentUser, loading } = useAuth();
 
-	// Debug logging
-	console.log('ProfilePage Debug:', {
-		userId: userId,
-		currentUser: currentUser,
-		currentUserKeys: currentUser ? Object.keys(currentUser) : 'No user',
-		'currentUser.id': currentUser?.id,
-		'currentUser._id': currentUser?._id,
-		loading: loading,
-	});
-
 	// If no userId from URL and auth is still loading, show loading
 	if (!userId && loading) {
 		return (
@@ -30,6 +20,17 @@ const ProfilePage = () => {
 	// Try multiple possible ID fields
 	const profileUserId =
 		userId || currentUser?.id || currentUser?._id || currentUser?.userId;
+
+	// Debug logging
+	console.log('ProfilePage Debug:', {
+		userId: userId,
+		currentUser: currentUser,
+		currentUserKeys: currentUser ? Object.keys(currentUser) : 'No user',
+		'currentUser.id': currentUser?.id,
+		'currentUser._id': currentUser?._id,
+		loading: loading,
+		profileUserId: profileUserId,
+	});
 
 	return (
 		<>
