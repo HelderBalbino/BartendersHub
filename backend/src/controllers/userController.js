@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Cocktail from '../models/Cocktail.js';
 import Follow from '../models/Follow.js';
+import Favorite from '../models/Favorite.js';
 import { uploadAvatar, deleteImage } from '../utils/cloudinary.js';
 
 // @desc    Get all users
@@ -349,6 +350,52 @@ export const getUserCocktails = async (req, res) => {
 			page,
 			pages: Math.ceil(total / limit),
 			data: cocktails,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Server error',
+			error: error.message,
+		});
+	}
+};
+
+// @desc    Get user's favorite cocktails
+// @route   GET /api/users/:id/favorites
+// @access  Public
+export const getUserFavorites = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 12;
+		const skip = (page - 1) * limit;
+
+		// Find favorites for the user
+		const favorites = await Favorite.find({ user: id })
+			.populate({
+				path: 'cocktail',
+				populate: {
+					path: 'createdBy',
+					select: 'name username avatar',
+				},
+			})
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit);
+
+		// Extract cocktails from favorites
+		const cocktails = favorites
+			.map((favorite) => favorite.cocktail)
+			.filter((cocktail) => cocktail);
+
+		const total = await Favorite.countDocuments({ user: id });
+
+		res.json({
+			success: true,
+			total: total,
+			page: page,
+			pages: Math.ceil(total / limit),
+			favorites: cocktails,
 		});
 	} catch (error) {
 		res.status(500).json({
