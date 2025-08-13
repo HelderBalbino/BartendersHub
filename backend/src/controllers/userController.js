@@ -71,11 +71,22 @@ export const getUsers = async (req, res) => {
 // @access  Public
 export const getUser = async (req, res) => {
 	try {
-		const user = await User.findById(req.params.id)
-			.populate('cocktailsCount')
-			.populate('followersCount')
-			.populate('followingCount')
-			.select('-password');
+		// Use parallel queries for better performance
+		const [user, cocktails] = await Promise.all([
+			User.findById(req.params.id)
+				.populate('cocktailsCount')
+				.populate('followersCount')
+				.populate('followingCount')
+				.select('-password')
+				.lean(),
+			Cocktail.find({
+				createdBy: req.params.id,
+				isApproved: true,
+			})
+				.sort({ createdAt: -1 })
+				.limit(6)
+				.lean(),
+		]);
 
 		if (!user) {
 			return res.status(404).json({
@@ -84,20 +95,10 @@ export const getUser = async (req, res) => {
 			});
 		}
 
-		// Get user's cocktails
-		const cocktails = await Cocktail.find({
-			createdBy: req.params.id,
-			isApproved: true,
-		})
-			.sort({ createdAt: -1 })
-			.limit(6);
-
 		res.status(200).json({
 			success: true,
-			data: {
-				user,
-				cocktails,
-			},
+			user: user,
+			cocktails: cocktails,
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -261,13 +262,20 @@ export const getFollowers = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 		const skip = (page - 1) * limit;
 
-		const followers = await Follow.find({ following: req.params.id })
-			.populate('follower', 'name username avatar isVerified')
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limit);
+		// Use parallel queries and lean() for better performance
+		const [follows, total] = await Promise.all([
+			Follow.find({ following: req.params.id })
+				.populate('follower', 'name username avatar isVerified')
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			Follow.countDocuments({ following: req.params.id }),
+		]);
 
-		const total = await Follow.countDocuments({ following: req.params.id });
+		const followers = follows
+			.map((follow) => follow.follower)
+			.filter(Boolean);
 
 		res.status(200).json({
 			success: true,
@@ -275,7 +283,7 @@ export const getFollowers = async (req, res) => {
 			total,
 			page,
 			pages: Math.ceil(total / limit),
-			data: followers.map((follow) => follow.follower),
+			followers: followers,
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -295,13 +303,20 @@ export const getFollowing = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 		const skip = (page - 1) * limit;
 
-		const following = await Follow.find({ follower: req.params.id })
-			.populate('following', 'name username avatar isVerified')
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limit);
+		// Use parallel queries and lean() for better performance
+		const [follows, total] = await Promise.all([
+			Follow.find({ follower: req.params.id })
+				.populate('following', 'name username avatar isVerified')
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			Follow.countDocuments({ follower: req.params.id }),
+		]);
 
-		const total = await Follow.countDocuments({ follower: req.params.id });
+		const following = follows
+			.map((follow) => follow.following)
+			.filter(Boolean);
 
 		res.status(200).json({
 			success: true,
@@ -309,7 +324,7 @@ export const getFollowing = async (req, res) => {
 			total,
 			page,
 			pages: Math.ceil(total / limit),
-			data: following.map((follow) => follow.following),
+			following: following,
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -329,19 +344,22 @@ export const getUserCocktails = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 		const skip = (page - 1) * limit;
 
-		const cocktails = await Cocktail.find({
-			createdBy: req.params.id,
-			isApproved: true,
-		})
-			.populate('createdBy', 'name username avatar isVerified')
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limit);
-
-		const total = await Cocktail.countDocuments({
-			createdBy: req.params.id,
-			isApproved: true,
-		});
+		// Use lean() for better performance and parallel queries
+		const [cocktails, total] = await Promise.all([
+			Cocktail.find({
+				createdBy: req.params.id,
+				isApproved: true,
+			})
+				.populate('createdBy', 'name username avatar isVerified')
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			Cocktail.countDocuments({
+				createdBy: req.params.id,
+				isApproved: true,
+			}),
+		]);
 
 		res.status(200).json({
 			success: true,
@@ -349,7 +367,7 @@ export const getUserCocktails = async (req, res) => {
 			total,
 			page,
 			pages: Math.ceil(total / limit),
-			data: cocktails,
+			cocktails: cocktails,
 		});
 	} catch (error) {
 		res.status(500).json({
@@ -370,28 +388,31 @@ export const getUserFavorites = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 12;
 		const skip = (page - 1) * limit;
 
-		// Find favorites for the user
-		const favorites = await Favorite.find({ user: id })
-			.populate({
-				path: 'cocktail',
-				populate: {
-					path: 'createdBy',
-					select: 'name username avatar',
-				},
-			})
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limit);
+		// Use parallel queries and lean() for better performance
+		const [favorites, total] = await Promise.all([
+			Favorite.find({ user: id })
+				.populate({
+					path: 'cocktail',
+					populate: {
+						path: 'createdBy',
+						select: 'name username avatar',
+					},
+				})
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			Favorite.countDocuments({ user: id }),
+		]);
 
-		// Extract cocktails from favorites
+		// Extract cocktails from favorites and filter out null values
 		const cocktails = favorites
 			.map((favorite) => favorite.cocktail)
 			.filter((cocktail) => cocktail);
 
-		const total = await Favorite.countDocuments({ user: id });
-
 		res.json({
 			success: true,
+			count: cocktails.length,
 			total: total,
 			page: page,
 			pages: Math.ceil(total / limit),
