@@ -10,6 +10,7 @@ import {
 	getFollowers,
 	getFollowing,
 	getUserCocktails,
+	getUserFavorites,
 } from '../controllers/userController.js';
 import { protect } from '../middleware/auth.js';
 import { uploadLimiter } from '../middleware/rateLimiter.js';
@@ -77,5 +78,6 @@ router.put('/:id/follow', protect, toggleFollow);
 router.get('/:id/followers', getFollowers);
 router.get('/:id/following', getFollowing);
 router.get('/:id/cocktails', getUserCocktails);
+router.get('/:id/favorites', getUserFavorites);
 
 export default router;
