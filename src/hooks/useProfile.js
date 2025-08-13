@@ -48,7 +48,7 @@ export const useUserCocktails = (userId, options = {}) => {
 
 			// Handle response structure - updated to match backend response
 			let responseData;
-			if (response.data?.cocktails) {
+			if (response.data && 'cocktails' in response.data) {
 				responseData = {
 					cocktails: response.data.cocktails,
 					count: response.data.total,
@@ -90,7 +90,7 @@ export const useUserFavorites = (userId, options = {}) => {
 
 			// Handle response structure - updated to match backend response
 			let responseData;
-			if (response.data?.favorites) {
+			if (response.data && 'favorites' in response.data) {
 				responseData = {
 					favorites: response.data.favorites,
 					count: response.data.total,
@@ -133,7 +133,7 @@ export const useUserFollowers = (userId, options = {}) => {
 
 			// Handle response structure - updated to match backend response
 			let responseData;
-			if (response.data?.followers) {
+			if (response.data && 'followers' in response.data) {
 				responseData = {
 					followers: response.data.followers,
 					count: response.data.total,
@@ -175,7 +175,7 @@ export const useUserFollowing = (userId, options = {}) => {
 
 			// Handle response structure - updated to match backend response
 			let responseData;
-			if (response.data?.following) {
+			if (response.data && 'following' in response.data) {
 				responseData = {
 					following: response.data.following,
 					count: response.data.total,
