@@ -271,13 +271,37 @@ export const AuthProvider = ({ children }) => {
 				cache: true,
 				cacheTTL: 60000,
 			});
-			const user = response.data.user;
+
+			// Debug logging
+			console.log('Auth /me response:', response);
+			console.log('Auth /me response.data:', response.data);
+
+			// Handle different response structures safely
+			let user;
+			if (response.data?.user) {
+				user = response.data.user;
+			} else if (response.data) {
+				// Fallback if response.data is the user object itself
+				user = response.data;
+			} else if (response.user) {
+				// Another possible structure
+				user = response.user;
+			} else {
+				throw new Error('No user data found in response');
+			}
+
+			if (!user) {
+				throw new Error('User data is null or undefined');
+			}
+
+			console.log('Extracted user:', user);
 
 			dispatch({
 				type: 'LOGIN_SUCCESS',
 				payload: { token, user },
 			});
 		} catch (error) {
+			console.error('Auth check error:', error);
 			// If the token is invalid or expired, logout
 			TokenManager.remove();
 			dispatch({ type: 'LOGOUT' });
