@@ -272,10 +272,6 @@ export const AuthProvider = ({ children }) => {
 				cacheTTL: 60000,
 			});
 
-			// Debug logging
-			console.log('Auth /me response:', response);
-			console.log('Auth /me response.data:', response.data);
-
 			// Handle different response structures safely
 			let user;
 			if (response.data?.user) {
@@ -293,8 +289,6 @@ export const AuthProvider = ({ children }) => {
 			if (!user) {
 				throw new Error('User data is null or undefined');
 			}
-
-			console.log('Extracted user:', user);
 
 			dispatch({
 				type: 'LOGIN_SUCCESS',
