@@ -32,7 +32,6 @@ const Navbar = () => {
 		? [
 				{ name: 'Add a cocktail', to: '/addCocktail' },
 				{ name: 'Community', to: '/community' },
-				{ name: 'Profile', to: '/profile' },
 				...navLinks,
 		  ]
 		: navLinks;
@@ -92,11 +91,33 @@ const Navbar = () => {
 							{isAuthenticated ? (
 								/* Authenticated User Menu */
 								<div className='flex items-center gap-4'>
-									<div className='text-gray-300 text-sm'>
-										Welcome,{' '}
-										<span className='text-yellow-400'>
-											{user?.name || user?.username}
-										</span>
+									<div className='flex items-center gap-3'>
+										<div className='text-gray-300 text-sm'>
+											Welcome,{' '}
+											<span className='text-yellow-400'>
+												{user?.name || user?.username}
+											</span>
+										</div>
+										{/* Profile Circle */}
+										<Link
+											to='/profile'
+											className='group relative'
+											title='View Profile'
+										>
+											<div className='w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-yellow-400/25 border-2 border-yellow-400/20 hover:border-yellow-400/60'>
+												<span className='text-black font-semibold text-sm uppercase'>
+													{(
+														user?.name ||
+														user?.username ||
+														'U'
+													).charAt(0)}
+												</span>
+											</div>
+											{/* Hover tooltip */}
+											<div className='absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-black/90 text-yellow-400 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-yellow-400/30'>
+												View Profile
+											</div>
+										</Link>
 									</div>
 									<button
 										onClick={logout}
@@ -198,11 +219,30 @@ const Navbar = () => {
 							{isAuthenticated ? (
 								/* Authenticated User Menu */
 								<>
-									<div className='text-center text-gray-300 text-sm px-4 py-2'>
-										Welcome,{' '}
-										<span className='text-yellow-400'>
-											{user?.name || user?.username}
-										</span>
+									<div className='flex items-center justify-center gap-3 px-4 py-2'>
+										<div className='text-center text-gray-300 text-sm'>
+											Welcome,{' '}
+											<span className='text-yellow-400'>
+												{user?.name || user?.username}
+											</span>
+										</div>
+										{/* Mobile Profile Circle */}
+										<Link
+											to='/profile'
+											onClick={() => setIsOpen(false)}
+											className='group relative'
+											title='View Profile'
+										>
+											<div className='w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center transition-all duration-300 hover:scale-110 border-2 border-yellow-400/20 hover:border-yellow-400/60'>
+												<span className='text-black font-semibold text-sm uppercase'>
+													{(
+														user?.name ||
+														user?.username ||
+														'U'
+													).charAt(0)}
+												</span>
+											</div>
+										</Link>
 									</div>
 									<button
 										onClick={() => {
