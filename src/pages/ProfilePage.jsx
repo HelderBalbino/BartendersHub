@@ -5,19 +5,21 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProfilePage = () => {
 	const { userId } = useParams();
-	const { user: currentUser, loading } = useAuth();
+	const { user: currentUser } = useAuth();
 
-	// If auth is loading and no userId from params, show loading
-	if (loading && !userId) {
+	// If no userId in params, use current user's ID
+	// Since this is a protected route, currentUser should be available
+	const profileUserId = userId || currentUser?.id;
+
+	// If we still don't have a profileUserId, show loading
+	// This handles the brief moment when auth context is still initializing
+	if (!profileUserId) {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
 				<LoadingSpinner />
 			</section>
 		);
 	}
-
-	// If no userId in params, show current user's profile
-	const profileUserId = userId || currentUser?.id;
 
 	return (
 		<>
