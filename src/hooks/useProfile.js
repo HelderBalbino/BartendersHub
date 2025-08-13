@@ -9,7 +9,7 @@ export const useUserProfileById = (userId, options = {}) => {
 		queryFn: async () => {
 			const response = await apiService.get(`/users/${userId}`);
 
-			// Handle response structure
+			// Handle response structure - updated to match backend response
 			let responseData;
 			if (response.data?.user) {
 				responseData = response.data.user;
@@ -46,10 +46,16 @@ export const useUserCocktails = (userId, options = {}) => {
 				`/users/${userId}/cocktails?${params.toString()}`,
 			);
 
-			// Handle response structure
+			// Handle response structure - updated to match backend response
 			let responseData;
 			if (response.data?.cocktails) {
-				responseData = response.data;
+				responseData = {
+					cocktails: response.data.cocktails,
+					count: response.data.total,
+					total: response.data.total,
+					page: response.data.page,
+					pages: response.data.pages,
+				};
 			} else if (response.data) {
 				responseData = response.data;
 			} else {
@@ -78,15 +84,20 @@ export const useUserFavorites = (userId, options = {}) => {
 			if (options.limit) params.append('limit', options.limit);
 			if (options.page) params.append('page', options.page);
 
-			// Note: This assumes there's a favorites endpoint, if not we'll need to adjust
 			const response = await apiService.get(
 				`/users/${userId}/favorites?${params.toString()}`,
 			);
 
-			// Handle response structure
+			// Handle response structure - updated to match backend response
 			let responseData;
 			if (response.data?.favorites) {
-				responseData = response.data;
+				responseData = {
+					favorites: response.data.favorites,
+					count: response.data.total,
+					total: response.data.total,
+					page: response.data.page,
+					pages: response.data.pages,
+				};
 			} else if (response.data) {
 				responseData = response.data;
 			} else {
@@ -120,10 +131,16 @@ export const useUserFollowers = (userId, options = {}) => {
 				`/users/${userId}/followers?${params.toString()}`,
 			);
 
-			// Handle response structure
+			// Handle response structure - updated to match backend response
 			let responseData;
 			if (response.data?.followers) {
-				responseData = response.data;
+				responseData = {
+					followers: response.data.followers,
+					count: response.data.total,
+					total: response.data.total,
+					page: response.data.page,
+					pages: response.data.pages,
+				};
 			} else if (response.data) {
 				responseData = response.data;
 			} else {
@@ -156,10 +173,16 @@ export const useUserFollowing = (userId, options = {}) => {
 				`/users/${userId}/following?${params.toString()}`,
 			);
 
-			// Handle response structure
+			// Handle response structure - updated to match backend response
 			let responseData;
 			if (response.data?.following) {
-				responseData = response.data;
+				responseData = {
+					following: response.data.following,
+					count: response.data.total,
+					total: response.data.total,
+					page: response.data.page,
+					pages: response.data.pages,
+				};
 			} else if (response.data) {
 				responseData = response.data;
 			} else {
