@@ -21,17 +21,6 @@ const ProfilePage = () => {
 	const profileUserId =
 		userId || currentUser?.id || currentUser?._id || currentUser?.userId;
 
-	// Debug logging
-	console.log('ProfilePage Debug:', {
-		userId: userId,
-		currentUser: currentUser,
-		currentUserKeys: currentUser ? Object.keys(currentUser) : 'No user',
-		'currentUser.id': currentUser?.id,
-		'currentUser._id': currentUser?._id,
-		loading: loading,
-		profileUserId: profileUserId,
-	});
-
 	return (
 		<>
 			<UserProfile userId={profileUserId} />
