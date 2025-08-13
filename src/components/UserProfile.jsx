@@ -60,10 +60,7 @@ const UserProfile = ({ userId }) => {
 		if (followingError) {
 			toast.error('Failed to load following list');
 		}
-		// Don't show error for favorites since that endpoint might not exist yet
-		if (favoritesError && !favoritesError.message?.includes('404')) {
-			console.warn('Favorites error:', favoritesError);
-		}
+		// Note: Favorites errors are handled silently since the endpoint might not exist yet
 	}, [
 		profileError,
 		cocktailsError,
@@ -81,15 +78,6 @@ const UserProfile = ({ userId }) => {
 
 	// Early return if no userId is provided (after all hooks)
 	if (!userId) {
-		console.log('UserProfile: No userId provided, debugging auth state...');
-		console.log('currentUser:', currentUser);
-		console.log(
-			'currentUser keys:',
-			currentUser ? Object.keys(currentUser) : 'No user',
-		);
-		console.log('currentUser.id:', currentUser?.id);
-		console.log('currentUser._id:', currentUser?._id);
-
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
 				<div className='text-center text-white'>
