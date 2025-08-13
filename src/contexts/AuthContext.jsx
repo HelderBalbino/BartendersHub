@@ -261,6 +261,7 @@ export const AuthProvider = ({ children }) => {
 		if (!token || TokenManager.isExpired(token)) {
 			TokenManager.remove();
 			dispatch({ type: 'LOGOUT' });
+			dispatch({ type: 'SET_LOADING', payload: false });
 			return;
 		}
 
