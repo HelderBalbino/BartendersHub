@@ -21,4 +21,7 @@ const favoriteSchema = new mongoose.Schema(
 // Compound index to prevent duplicate favorites
 favoriteSchema.index({ user: 1, cocktail: 1 }, { unique: true });
 
+// Index for optimizing user favorites query
+favoriteSchema.index({ user: 1, createdAt: -1 }); // For getting user's favorites list
+
 export default mongoose.model('Favorite', favoriteSchema);
