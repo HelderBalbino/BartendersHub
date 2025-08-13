@@ -18,6 +18,17 @@ const UserProfile = ({ userId }) => {
 	const { user: currentUser } = useAuth();
 	const [activeTab, setActiveTab] = useState('cocktails');
 
+	// Temporary debugging
+	console.log('UserProfile Debug:', {
+		userId,
+		currentUser,
+		userIdExists: !!userId,
+		userIdType: typeof userId,
+		userIdLength: userId ? userId.length : 0,
+		currentUserIdField: currentUser?.id,
+		currentUserIdType: typeof currentUser?.id,
+	});
+
 	// Determine if this is the current user's profile
 	const isOwnProfile = currentUser?.id === userId;
 
@@ -49,18 +60,41 @@ const UserProfile = ({ userId }) => {
 	// Handle errors with toast notifications
 	useEffect(() => {
 		if (profileError) {
-			toast.error('Failed to load user profile');
+			console.error('Profile error:', profileError);
+			toast.error(
+				`Failed to load user profile: ${
+					profileError.message || 'Unknown error'
+				}`,
+			);
 		}
 		if (cocktailsError) {
-			toast.error('Failed to load user cocktails');
+			console.error('Cocktails error:', cocktailsError);
+			toast.error(
+				`Failed to load user cocktails: ${
+					cocktailsError.message || 'Unknown error'
+				}`,
+			);
 		}
 		if (followersError) {
-			toast.error('Failed to load followers');
+			console.error('Followers error:', followersError);
+			toast.error(
+				`Failed to load followers: ${
+					followersError.message || 'Unknown error'
+				}`,
+			);
 		}
 		if (followingError) {
-			toast.error('Failed to load following list');
+			console.error('Following error:', followingError);
+			toast.error(
+				`Failed to load following list: ${
+					followingError.message || 'Unknown error'
+				}`,
+			);
 		}
 		// Note: Favorites errors are handled silently since the endpoint might not exist yet
+		if (favoritesError) {
+			console.error('Favorites error:', favoritesError);
+		}
 	}, [
 		profileError,
 		cocktailsError,
@@ -81,9 +115,13 @@ const UserProfile = ({ userId }) => {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
 				<div className='text-center text-white'>
-					<h2 className='text-2xl mb-4'>Profile Loading...</h2>
+					<h2 className='text-2xl mb-4'>No User ID</h2>
 					<p className='text-gray-400 mb-4'>
-						Getting your profile ready...
+						Unable to load profile - missing user ID
+					</p>
+					<p className='text-gray-400 text-sm'>
+						Debug: userId={JSON.stringify(userId)}, currentUser=
+						{JSON.stringify(currentUser)}
 					</p>
 					<LoadingSpinner />
 				</div>
