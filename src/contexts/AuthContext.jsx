@@ -62,7 +62,7 @@ const initialState = {
 	isAuthenticated: false,
 	user: null,
 	token: null,
-	loading: false, // Start with false to avoid infinite loading
+	loading: true, // Start with true so we show loading while checking auth
 	error: null,
 	lastLogin: null,
 };
