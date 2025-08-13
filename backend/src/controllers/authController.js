@@ -130,7 +130,15 @@ export const getMe = async (req, res) => {
 
 		res.status(200).json({
 			success: true,
-			data: user,
+			user: {
+				id: user._id,
+				name: user.name,
+				email: user.email,
+				username: user.username,
+				avatar: user.avatar,
+				isVerified: user.isVerified,
+				isAdmin: user.isAdmin,
+			},
 		});
 	} catch (error) {
 		res.status(500).json({
