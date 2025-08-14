@@ -7,27 +7,18 @@ export const useUserProfileById = (userId, options = {}) => {
 	return useQuery({
 		queryKey: ['user', 'profile', userId],
 		queryFn: async () => {
-			const response = await apiService.get(`/users/${userId}`);
-
-			// Handle response structure - updated to match backend response
-			let responseData;
-			if (response.data?.user) {
-				responseData = response.data.user;
-			} else if (response.data) {
-				responseData = response.data;
-			} else {
-				throw new Error('No valid response data found');
-			}
-
-			return responseData;
+			// apiService already returns the JSON payload (not an axios response object)
+			const data = await apiService.get(`/users/${userId}`);
+			if (data?.user) return data.user; // expected shape { success, user }
+			if (data?.data) return data.data; // fallback
+			if (!data) throw new Error('No valid user data received');
+			return data; // last resort (maybe the user object directly)
 		},
 		enabled: options.enabled !== undefined ? options.enabled : !!userId,
-		staleTime: 5 * 60 * 1000, // 5 minutes
+		staleTime: 5 * 60 * 1000,
 		retry: (failureCount, error) => {
-			// Don't retry on 404 errors
-			if (error?.response?.status === 404) {
+			if (error?.response?.status === 404 || error?.status === 404)
 				return false;
-			}
 			return failureCount < 2;
 		},
 	});
@@ -42,34 +33,29 @@ export const useUserCocktails = (userId, options = {}) => {
 			if (options.limit) params.append('limit', options.limit);
 			if (options.page) params.append('page', options.page);
 
-			const response = await apiService.get(
+			const data = await apiService.get(
 				`/users/${userId}/cocktails?${params.toString()}`,
 			);
 
-			// Handle response structure - updated to match backend response
-			let responseData;
-			if (response.data && 'cocktails' in response.data) {
-				responseData = {
-					cocktails: response.data.cocktails,
-					count: response.data.total,
-					total: response.data.total,
-					page: response.data.page,
-					pages: response.data.pages,
+			if (data && 'cocktails' in data) {
+				return {
+					cocktails: data.cocktails,
+					count:
+						data.total ?? data.count ?? data.cocktails?.length ?? 0,
+					total:
+						data.total ?? data.count ?? data.cocktails?.length ?? 0,
+					page: data.page ?? 1,
+					pages: data.pages ?? 1,
 				};
-			} else if (response.data) {
-				responseData = response.data;
-			} else {
-				throw new Error('No valid response data found');
 			}
-
-			return responseData;
+			if (data) return data;
+			throw new Error('No valid cocktails data received');
 		},
 		enabled: options.enabled !== undefined ? options.enabled : !!userId,
-		staleTime: 5 * 60 * 1000, // 5 minutes
+		staleTime: 5 * 60 * 1000,
 		retry: (failureCount, error) => {
-			if (error?.response?.status === 404) {
+			if (error?.response?.status === 404 || error?.status === 404)
 				return false;
-			}
 			return failureCount < 2;
 		},
 	});
@@ -84,36 +70,30 @@ export const useUserFavorites = (userId, options = {}) => {
 			if (options.limit) params.append('limit', options.limit);
 			if (options.page) params.append('page', options.page);
 
-			const response = await apiService.get(
+			const data = await apiService.get(
 				`/users/${userId}/favorites?${params.toString()}`,
 			);
 
-			// Handle response structure - updated to match backend response
-			let responseData;
-			if (response.data && 'favorites' in response.data) {
-				responseData = {
-					favorites: response.data.favorites,
-					count: response.data.total,
-					total: response.data.total,
-					page: response.data.page,
-					pages: response.data.pages,
+			if (data && 'favorites' in data) {
+				return {
+					favorites: data.favorites,
+					count:
+						data.total ?? data.count ?? data.favorites?.length ?? 0,
+					total:
+						data.total ?? data.count ?? data.favorites?.length ?? 0,
+					page: data.page ?? 1,
+					pages: data.pages ?? 1,
 				};
-			} else if (response.data) {
-				responseData = response.data;
-			} else {
-				throw new Error('No valid response data found');
 			}
-
-			return responseData;
+			if (data) return data;
+			throw new Error('No valid favorites data received');
 		},
 		enabled: options.enabled !== undefined ? options.enabled : !!userId,
-		staleTime: 5 * 60 * 1000, // 5 minutes
+		staleTime: 5 * 60 * 1000,
 		retry: (failureCount, error) => {
-			// Don't retry for favorites if endpoint doesn't exist
-			if (error?.response?.status === 404) {
+			if (error?.response?.status === 404 || error?.status === 404)
 				return false;
-			}
-			return failureCount < 1;
+			return failureCount < 1; // fewer retries for favorites
 		},
 	});
 };
@@ -127,34 +107,29 @@ export const useUserFollowers = (userId, options = {}) => {
 			if (options.limit) params.append('limit', options.limit);
 			if (options.page) params.append('page', options.page);
 
-			const response = await apiService.get(
+			const data = await apiService.get(
 				`/users/${userId}/followers?${params.toString()}`,
 			);
 
-			// Handle response structure - updated to match backend response
-			let responseData;
-			if (response.data && 'followers' in response.data) {
-				responseData = {
-					followers: response.data.followers,
-					count: response.data.total,
-					total: response.data.total,
-					page: response.data.page,
-					pages: response.data.pages,
+			if (data && 'followers' in data) {
+				return {
+					followers: data.followers,
+					count:
+						data.total ?? data.count ?? data.followers?.length ?? 0,
+					total:
+						data.total ?? data.count ?? data.followers?.length ?? 0,
+					page: data.page ?? 1,
+					pages: data.pages ?? 1,
 				};
-			} else if (response.data) {
-				responseData = response.data;
-			} else {
-				throw new Error('No valid response data found');
 			}
-
-			return responseData;
+			if (data) return data;
+			throw new Error('No valid followers data received');
 		},
 		enabled: options.enabled !== undefined ? options.enabled : !!userId,
-		staleTime: 5 * 60 * 1000, // 5 minutes
+		staleTime: 5 * 60 * 1000,
 		retry: (failureCount, error) => {
-			if (error?.response?.status === 404) {
+			if (error?.response?.status === 404 || error?.status === 404)
 				return false;
-			}
 			return failureCount < 2;
 		},
 	});
@@ -169,34 +144,29 @@ export const useUserFollowing = (userId, options = {}) => {
 			if (options.limit) params.append('limit', options.limit);
 			if (options.page) params.append('page', options.page);
 
-			const response = await apiService.get(
+			const data = await apiService.get(
 				`/users/${userId}/following?${params.toString()}`,
 			);
 
-			// Handle response structure - updated to match backend response
-			let responseData;
-			if (response.data && 'following' in response.data) {
-				responseData = {
-					following: response.data.following,
-					count: response.data.total,
-					total: response.data.total,
-					page: response.data.page,
-					pages: response.data.pages,
+			if (data && 'following' in data) {
+				return {
+					following: data.following,
+					count:
+						data.total ?? data.count ?? data.following?.length ?? 0,
+					total:
+						data.total ?? data.count ?? data.following?.length ?? 0,
+					page: data.page ?? 1,
+					pages: data.pages ?? 1,
 				};
-			} else if (response.data) {
-				responseData = response.data;
-			} else {
-				throw new Error('No valid response data found');
 			}
-
-			return responseData;
+			if (data) return data;
+			throw new Error('No valid following data received');
 		},
 		enabled: options.enabled !== undefined ? options.enabled : !!userId,
-		staleTime: 5 * 60 * 1000, // 5 minutes
+		staleTime: 5 * 60 * 1000,
 		retry: (failureCount, error) => {
-			if (error?.response?.status === 404) {
+			if (error?.response?.status === 404 || error?.status === 404)
 				return false;
-			}
 			return failureCount < 2;
 		},
 	});
@@ -208,22 +178,10 @@ export const useUpdateProfile = () => {
 
 	return useMutation({
 		mutationFn: async (profileData) => {
-			const response = await apiService.put(
-				'/users/profile',
-				profileData,
-			);
-
-			// Handle response structure
-			let responseData;
-			if (response.data?.user) {
-				responseData = response.data;
-			} else if (response.data) {
-				responseData = response.data;
-			} else {
-				throw new Error('No valid response data found');
-			}
-
-			return responseData;
+			const data = await apiService.put('/users/profile', profileData);
+			if (data?.user) return data;
+			if (data?.data) return data;
+			throw new Error('No valid profile update response');
 		},
 		onSuccess: () => {
 			// Invalidate and refetch profile queries
