@@ -17,16 +17,7 @@ const UserProfile = ({ userId }) => {
 	const { user: currentUser } = useAuth();
 	const [activeTab, setActiveTab] = useState('cocktails');
 
-	// Temporary debugging
-	console.log('UserProfile Debug:', {
-		userId,
-		currentUser,
-		userIdExists: !!userId,
-		userIdType: typeof userId,
-		userIdLength: userId ? userId.length : 0,
-		currentUserIdField: currentUser?.id,
-		currentUserIdType: typeof currentUser?.id,
-	});
+	// (Removed verbose debug logging)
 
 	// Determine if this is the current user's profile
 	const isOwnProfile = currentUser?.id === userId;
@@ -56,52 +47,18 @@ const UserProfile = ({ userId }) => {
 		{ limit: 100, enabled: !!userId },
 	);
 
-	// Handle errors with detailed logging for debugging
+	// Minimal consolidated error logging (dev only)
 	useEffect(() => {
-		if (profileError) {
-			console.error('Profile error details:', {
-				error: profileError,
-				message: profileError?.message,
-				status: profileError?.status,
-				response: profileError?.response,
-				data: profileError?.data,
-			});
-		}
-		if (cocktailsError) {
-			console.error('Cocktails error details:', {
-				error: cocktailsError,
-				message: cocktailsError?.message,
-				status: cocktailsError?.status,
-				response: cocktailsError?.response,
-				data: cocktailsError?.data,
-			});
-		}
-		if (followersError) {
-			console.error('Followers error details:', {
-				error: followersError,
-				message: followersError?.message,
-				status: followersError?.status,
-				response: followersError?.response,
-				data: followersError?.data,
-			});
-		}
-		if (followingError) {
-			console.error('Following error details:', {
-				error: followingError,
-				message: followingError?.message,
-				status: followingError?.status,
-				response: followingError?.response,
-				data: followingError?.data,
-			});
-		}
-		if (favoritesError) {
-			console.error('Favorites error details:', {
-				error: favoritesError,
-				message: favoritesError?.message,
-				status: favoritesError?.status,
-				response: favoritesError?.response,
-				data: favoritesError?.data,
-			});
+		if (import.meta.env.DEV) {
+			const firstError =
+				profileError ||
+				cocktailsError ||
+				favoritesError ||
+				followersError ||
+				followingError;
+			if (firstError) {
+				console.error('UserProfile data fetch error:', firstError);
+			}
 		}
 	}, [
 		profileError,
@@ -126,10 +83,6 @@ const UserProfile = ({ userId }) => {
 					<h2 className='text-2xl mb-4'>No User ID</h2>
 					<p className='text-gray-400 mb-4'>
 						Unable to load profile - missing user ID
-					</p>
-					<p className='text-gray-400 text-sm'>
-						Debug: userId={JSON.stringify(userId)}, currentUser=
-						{JSON.stringify(currentUser)}
 					</p>
 					<LoadingSpinner />
 				</div>
