@@ -23,20 +23,6 @@ const ProfilePage = () => {
 
 	console.log('ProfilePage Debug:', debugInfo);
 
-	// Show debug info on screen temporarily
-	if (!userId && !loading) {
-		return (
-			<div className='flex justify-center items-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-black'>
-				<div className='text-center text-white max-w-4xl p-8'>
-					<h2 className='text-2xl mb-4'>Profile Debug Information</h2>
-					<pre className='text-left bg-gray-800 p-4 rounded text-sm overflow-auto'>
-						{JSON.stringify(debugInfo, null, 2)}
-					</pre>
-				</div>
-			</div>
-		);
-	}
-
 	// If no userId from URL and auth is still loading, show loading
 	if (!userId && loading) {
 		return (
