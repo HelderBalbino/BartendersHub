@@ -7,21 +7,7 @@ const ProfilePage = () => {
 	const { userId } = useParams();
 	const { user: currentUser, loading, isAuthenticated } = useAuth();
 
-	// Temporary debugging
-	const debugInfo = {
-		userId,
-		currentUser,
-		profileUserId:
-			userId ||
-			currentUser?.id ||
-			currentUser?._id ||
-			currentUser?.userId,
-		loading,
-		isAuthenticated,
-		currentUserKeys: currentUser ? Object.keys(currentUser) : null,
-	};
-
-	console.log('ProfilePage Debug:', debugInfo);
+	// (Removed verbose debug logging)
 
 	// If no userId from URL and auth is still loading, show loading
 	if (!userId && loading) {
