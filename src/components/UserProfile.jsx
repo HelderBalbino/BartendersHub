@@ -8,7 +8,6 @@ import {
 	useUserFollowing,
 } from '../hooks/useProfile';
 import { useFollowUser } from '../hooks/useCommunity';
-import { toast } from 'react-hot-toast';
 import LoadingSpinner from './LoadingSpinner';
 import CocktailCard from './CocktailCard';
 import ArtDecoSection from './ui/ArtDecoSection';
@@ -57,43 +56,52 @@ const UserProfile = ({ userId }) => {
 		{ limit: 100, enabled: !!userId },
 	);
 
-	// Handle errors with toast notifications
+	// Handle errors with detailed logging for debugging
 	useEffect(() => {
 		if (profileError) {
-			console.error('Profile error:', profileError);
-			toast.error(
-				`Failed to load user profile: ${
-					profileError.message || 'Unknown error'
-				}`,
-			);
+			console.error('Profile error details:', {
+				error: profileError,
+				message: profileError?.message,
+				status: profileError?.status,
+				response: profileError?.response,
+				data: profileError?.data,
+			});
 		}
 		if (cocktailsError) {
-			console.error('Cocktails error:', cocktailsError);
-			toast.error(
-				`Failed to load user cocktails: ${
-					cocktailsError.message || 'Unknown error'
-				}`,
-			);
+			console.error('Cocktails error details:', {
+				error: cocktailsError,
+				message: cocktailsError?.message,
+				status: cocktailsError?.status,
+				response: cocktailsError?.response,
+				data: cocktailsError?.data,
+			});
 		}
 		if (followersError) {
-			console.error('Followers error:', followersError);
-			toast.error(
-				`Failed to load followers: ${
-					followersError.message || 'Unknown error'
-				}`,
-			);
+			console.error('Followers error details:', {
+				error: followersError,
+				message: followersError?.message,
+				status: followersError?.status,
+				response: followersError?.response,
+				data: followersError?.data,
+			});
 		}
 		if (followingError) {
-			console.error('Following error:', followingError);
-			toast.error(
-				`Failed to load following list: ${
-					followingError.message || 'Unknown error'
-				}`,
-			);
+			console.error('Following error details:', {
+				error: followingError,
+				message: followingError?.message,
+				status: followingError?.status,
+				response: followingError?.response,
+				data: followingError?.data,
+			});
 		}
-		// Note: Favorites errors are handled silently since the endpoint might not exist yet
 		if (favoritesError) {
-			console.error('Favorites error:', favoritesError);
+			console.error('Favorites error details:', {
+				error: favoritesError,
+				message: favoritesError?.message,
+				status: favoritesError?.status,
+				response: favoritesError?.response,
+				data: favoritesError?.data,
+			});
 		}
 	}, [
 		profileError,
