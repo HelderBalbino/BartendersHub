@@ -168,6 +168,13 @@ export const AuthProvider = ({ children }) => {
 				payload: { token, user },
 			});
 
+			// Persist current user id for optimistic UI helpers
+			try {
+				localStorage.setItem('currentUserId', user.id || user._id || user.userId || '');
+			} catch {
+				// ignore storage errors
+			}
+
 			return { success: true, user };
 		} catch (error) {
 			let errorMessage = 'Login failed';
@@ -202,6 +209,11 @@ export const AuthProvider = ({ children }) => {
 				type: 'LOGIN_SUCCESS',
 				payload: { token, user },
 			});
+			try {
+				localStorage.setItem('currentUserId', user.id || user._id || user.userId || '');
+			} catch {
+				// ignore storage errors
+			}
 
 			return { success: true, user };
 		} catch (error) {
@@ -294,6 +306,11 @@ export const AuthProvider = ({ children }) => {
 				type: 'LOGIN_SUCCESS',
 				payload: { token, user },
 			});
+			try {
+				localStorage.setItem('currentUserId', user.id || user._id || user.userId || '');
+			} catch {
+				// ignore storage errors
+			}
 		} catch (error) {
 			console.error('Auth check error:', error);
 			// If the token is invalid or expired, logout
