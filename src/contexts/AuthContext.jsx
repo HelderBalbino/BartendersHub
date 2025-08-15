@@ -170,7 +170,10 @@ export const AuthProvider = ({ children }) => {
 
 			// Persist current user id for optimistic UI helpers
 			try {
-				localStorage.setItem('currentUserId', user.id || user._id || user.userId || '');
+				localStorage.setItem(
+					'currentUserId',
+					user.id || user._id || user.userId || '',
+				);
 			} catch {
 				// ignore storage errors
 			}
@@ -210,7 +213,10 @@ export const AuthProvider = ({ children }) => {
 				payload: { token, user },
 			});
 			try {
-				localStorage.setItem('currentUserId', user.id || user._id || user.userId || '');
+				localStorage.setItem(
+					'currentUserId',
+					user.id || user._id || user.userId || '',
+				);
 			} catch {
 				// ignore storage errors
 			}
@@ -307,7 +313,10 @@ export const AuthProvider = ({ children }) => {
 				payload: { token, user },
 			});
 			try {
-				localStorage.setItem('currentUserId', user.id || user._id || user.userId || '');
+				localStorage.setItem(
+					'currentUserId',
+					user.id || user._id || user.userId || '',
+				);
 			} catch {
 				// ignore storage errors
 			}
