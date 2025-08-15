@@ -2,8 +2,15 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as profileHooks from '../hooks/useProfile';
 import apiService from '../services/api';
+import { vi, describe, it, expect, afterEach } from 'vitest';
 
-jest.mock('../services/api');
+vi.mock('../services/api', () => {
+	return {
+		default: {
+			get: vi.fn(),
+		},
+	};
+});
 
 const wrapper = ({ children }) => {
 	const client = new QueryClient();
@@ -13,6 +20,9 @@ const wrapper = ({ children }) => {
 };
 
 describe('useUserProfileById', () => {
+	afterEach(() => {
+		apiService.get.mockReset();
+	});
 	it('returns user data from apiService (user field)', async () => {
 		apiService.get.mockResolvedValueOnce({
 			success: true,
