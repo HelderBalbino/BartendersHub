@@ -169,9 +169,24 @@ const AddCocktailSection = () => {
 				image: values.imageUrl, // Send Cloudinary URL instead of file
 			};
 
-			await createCocktailMutation.mutateAsync(cocktailData);
+			const result = await createCocktailMutation.mutateAsync(
+				cocktailData,
+			);
+			// Expect backend shape { success, data: {...} } or { success, cocktail }
+			let created = null;
+			if (result?.data) created = result.data;
+			else if (result?.cocktail) created = result.cocktail;
+			else if (result?.id || result?._id) created = result;
+
+			if (!created) {
+				toast.error('Cocktail created but response missing data');
+				return navigate('/cocktails');
+			}
+
 			toast.success('Cocktail recipe created successfully!');
-			navigate('/cocktails');
+			const newId = created.slug || created._id || created.id;
+			if (newId) navigate(`/cocktails/${newId}`);
+			else navigate('/cocktails');
 		} catch (error) {
 			console.error('Failed to create cocktail:', error);
 		}
