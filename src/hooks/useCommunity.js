@@ -7,51 +7,22 @@ export const useCommunityMembers = (filters = {}) => {
 	return useQuery({
 		queryKey: ['community', 'members', filters],
 		queryFn: async () => {
-			// Build query parameters based on filters
 			const params = new URLSearchParams();
-
-			if (filters.limit) {
-				params.append('limit', filters.limit);
-			}
-
+			if (filters.limit) params.append('limit', filters.limit);
 			if (filters.filter) {
-				switch (filters.filter) {
-					case 'verified':
-						params.append('verified', 'true');
-						break;
-					case 'top':
-						params.append('sortBy', 'cocktails');
-						break;
-					case 'new':
-						params.append('sortBy', 'createdAt');
-						break;
-					default:
-						// 'all' - no specific filter
-						break;
-				}
+				if (filters.filter === 'verified')
+					params.append('verified', 'true');
+				else if (filters.filter === 'top')
+					params.append('sortBy', 'cocktails');
+				else if (filters.filter === 'new')
+					params.append('sortBy', 'createdAt');
 			}
-
-			// Call the users endpoint with proper response handling
-			const response = await apiService.get(
-				`/users?${params.toString()}`,
-			);
-
-			// Handle different response structures (applying the lesson learned from login)
-			let responseData;
-			if (response.data?.data) {
-				// Backend returns: { success: true, data: [...], count: x, total: x }
-				responseData = { users: response.data.data, ...response.data };
-			} else if (response.data) {
-				// Standard axios response structure
-				responseData = response.data;
-			} else if (response.users !== undefined) {
-				// Response is the data itself
-				responseData = response;
-			} else {
-				throw new Error('No valid response data found');
-			}
-
-			return responseData;
+			const data = await apiService.get(`/users?${params.toString()}`);
+			// Expected backend shape: { success, data: [...], total, page, ... }
+			if (data?.data) return { users: data.data, ...data };
+			if (Array.isArray(data?.users)) return data;
+			if (Array.isArray(data)) return { users: data, success: true };
+			throw new Error('Invalid community members response');
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		onError: (error) => {
@@ -65,20 +36,11 @@ export const useUserStats = (userId) => {
 	return useQuery({
 		queryKey: ['user', 'stats', userId],
 		queryFn: async () => {
-			// Get user cocktails to calculate stats
-			const response = await apiService.get(`/users/${userId}/cocktails`);
-
-			// Handle response structure
-			let responseData;
-			if (response.data) {
-				responseData = response.data;
-			} else if (response.cocktails !== undefined) {
-				responseData = response;
-			} else {
-				throw new Error('No valid response data found');
-			}
-
-			return responseData;
+			const data = await apiService.get(`/users/${userId}/cocktails`);
+			if (data?.cocktails) return data;
+			if (Array.isArray(data))
+				return { cocktails: data, count: data.length };
+			throw new Error('Invalid user stats response');
 		},
 		enabled: !!userId,
 		staleTime: 2 * 60 * 1000, // 2 minutes
@@ -94,31 +56,25 @@ export const useFollowUser = () => {
 
 	const followMutation = useMutation({
 		mutationFn: async ({ userId }) => {
-			const response = await apiService.put(`/users/${userId}/follow`);
-
-			// Handle response structure
-			let responseData;
-			if (response.data) {
-				responseData = response.data;
-			} else if (response.message !== undefined) {
-				responseData = response;
-			} else {
-				throw new Error('No valid response data found');
-			}
-
-			return responseData;
+			// toggle follow on backend
+			const data = await apiService.put(`/users/${userId}/follow`);
+			if (data?.message) return data;
+			throw new Error('Invalid follow response');
 		},
-		onSuccess: (data, variables) => {
-			const action = variables.action;
+		onSuccess: (_data, variables) => {
+			// Invalidate related caches (followers/following lists and profiles)
 			queryClient.invalidateQueries({
 				queryKey: ['community', 'members'],
 			});
-			queryClient.invalidateQueries({ queryKey: ['user', 'stats'] });
-			toast.success(
-				action === 'follow'
-					? 'Successfully followed user!'
-					: 'Successfully unfollowed user!',
-			);
+			queryClient.invalidateQueries({
+				queryKey: ['user', 'followers', variables.userId],
+			});
+			queryClient.invalidateQueries({ queryKey: ['user', 'following'] });
+			queryClient.invalidateQueries({
+				queryKey: ['user', 'profile', variables.userId],
+			});
+			queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+			toast.success('Follow status updated');
 		},
 		onError: (error) => {
 			toast.error(error.message || 'Failed to update follow status');
@@ -126,10 +82,9 @@ export const useFollowUser = () => {
 	});
 
 	return {
-		followUser: (userId) =>
-			followMutation.mutate({ userId, action: 'follow' }),
-		unfollowUser: (userId) =>
-			followMutation.mutate({ userId, action: 'unfollow' }),
+		// Single toggle (backend determines final state)
+		followUser: (userId) => followMutation.mutate({ userId }),
+		unfollowUser: (userId) => followMutation.mutate({ userId }),
 		isLoading: followMutation.isPending,
 	};
 };
@@ -139,19 +94,11 @@ export const useUserProfile = () => {
 	return useQuery({
 		queryKey: ['user', 'profile'],
 		queryFn: async () => {
-			const response = await apiService.get('/users/profile');
-
-			// Handle response structure
-			let responseData;
-			if (response.data) {
-				responseData = response.data;
-			} else if (response.user !== undefined) {
-				responseData = response;
-			} else {
-				throw new Error('No valid response data found');
-			}
-
-			return responseData;
+			const data = await apiService.get('/users/profile');
+			if (data?.user) return data.user;
+			if (data?.data) return data.data;
+			if (data?.id || data?._id) return data; // user object directly
+			throw new Error('Invalid profile response');
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		onError: (error) => {
