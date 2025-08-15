@@ -69,13 +69,25 @@ const UserProfile = ({ userId }) => {
 	]);
 
 	// Follow/unfollow functionality
-	const {
-		followUser,
-		unfollowUser,
-		isLoading: followLoading,
-	} = useFollowUser();
+	const { followUser, isLoading: followLoading } = useFollowUser();
 
-	// Early return if no userId is provided (after all hooks)
+	const derivedIsFollowing = !!followers?.followers?.some(
+		(f) => (f._id || f.id) === currentUser?.id,
+	);
+	const [optimisticFollowing, setOptimisticFollowing] =
+		useState(derivedIsFollowing);
+	// Keep optimistic state in sync when backend data changes
+	useEffect(() => {
+		if (!followLoading) setOptimisticFollowing(derivedIsFollowing);
+	}, [derivedIsFollowing, followLoading]);
+
+	const handleFollowToggle = () => {
+		if (!userProfile || followLoading) return;
+		setOptimisticFollowing((prev) => !prev);
+		followUser(userId);
+	};
+
+	// Early returns (after all hooks & derived state)
 	if (!userId) {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
@@ -90,7 +102,6 @@ const UserProfile = ({ userId }) => {
 		);
 	}
 
-	// Show loading state
 	if (profileLoading) {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
@@ -99,7 +110,6 @@ const UserProfile = ({ userId }) => {
 		);
 	}
 
-	// Show error state
 	if (profileError) {
 		return (
 			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
@@ -112,19 +122,6 @@ const UserProfile = ({ userId }) => {
 			</section>
 		);
 	}
-
-	const handleFollowToggle = () => {
-		if (!userProfile) return;
-
-		// Check if currently following (this would need to be determined from backend data)
-		const isFollowing = false; // You'll need to implement this logic based on your data structure
-
-		if (isFollowing) {
-			unfollowUser(userId);
-		} else {
-			followUser(userId);
-		}
-	};
 
 	const tabs = [
 		{
@@ -366,6 +363,8 @@ const UserProfile = ({ userId }) => {
 									>
 										{followLoading
 											? 'Loading...'
+											: optimisticFollowing
+											? 'Unfollow'
 											: 'Follow'}
 									</ArtDecoButton>
 								)}
