@@ -252,6 +252,27 @@ class ApiService {
 			pendingRequests: this.pendingRequests.size,
 		};
 	}
+
+	// Domain-specific convenience methods (cocktails, favorites)
+	async getCocktails(filters = {}) {
+		const params = new URLSearchParams();
+		Object.entries(filters).forEach(([k, v]) => {
+			if (v !== undefined && v !== null && v !== '') params.append(k, v);
+		});
+		return this.get(`/cocktails?${params.toString()}`);
+	}
+
+	async createCocktail(data) {
+		return this.post('/cocktails', data);
+	}
+
+	async addFavorite(cocktailId) {
+		return this.post(`/cocktails/${cocktailId}/favorite`);
+	}
+
+	async removeFavorite(cocktailId) {
+		return this.delete(`/cocktails/${cocktailId}/favorite`);
+	}
 }
 
 // Create singleton instance
