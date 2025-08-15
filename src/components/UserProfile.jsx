@@ -9,6 +9,7 @@ import {
 } from '../hooks/useProfile';
 import { useFollowUser } from '../hooks/useCommunity';
 import LoadingSpinner from './LoadingSpinner';
+import SkeletonGrid from './ui/SkeletonGrid';
 import CocktailCard from './CocktailCard';
 import ArtDecoSection from './ui/ArtDecoSection';
 import ArtDecoButton from './ui/ArtDecoButton';
@@ -141,7 +142,7 @@ const UserProfile = ({ userId }) => {
 	const renderTabContent = () => {
 		switch (activeTab) {
 			case 'cocktails': {
-				if (cocktailsLoading) return <LoadingSpinner size='sm' />;
+				if (cocktailsLoading) return <SkeletonGrid />;
 
 				const cocktails =
 					userCocktails?.cocktails || userCocktails?.data || [];
@@ -172,7 +173,7 @@ const UserProfile = ({ userId }) => {
 			}
 
 			case 'favorites': {
-				if (favoritesLoading) return <LoadingSpinner size='sm' />;
+				if (favoritesLoading) return <SkeletonGrid />;
 
 				const favorites =
 					userFavorites?.favorites || userFavorites?.data || [];
