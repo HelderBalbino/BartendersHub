@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
+import countries from '../utils/countries';
 import { validationRules } from '../hooks/useFormValidation';
 import LoadingSpinner from './LoadingSpinner';
 import PasswordInput from './ui/Forms/PasswordInput';
@@ -25,6 +26,7 @@ const LogIn = () => {
 		name: '',
 		username: '',
 		confirmPassword: '',
+		country: '',
 	});
 
 	const [formErrors, setFormErrors] = useState({});
@@ -45,6 +47,7 @@ const LogIn = () => {
 			validationRules.required,
 			validationRules.confirmPassword,
 		],
+		country: [validationRules.required, validationRules.minLength(2)],
 	};
 
 	// Simple form handlers
@@ -147,6 +150,7 @@ const LogIn = () => {
 			name: '',
 			username: '',
 			confirmPassword: '',
+			country: '',
 		});
 		setFormErrors({});
 		setFormTouched({});
@@ -183,6 +187,7 @@ const LogIn = () => {
 					username: formValues.username,
 					email: formValues.email,
 					password: formValues.password,
+					country: formValues.country,
 				});
 
 				if (result.success) {
@@ -421,6 +426,47 @@ const LogIn = () => {
 								touched={formTouched.confirmPassword}
 								autocomplete='new-password'
 							/>
+						)}
+
+						{/* Country field (only for register) */}
+						{!isLogin && (
+							<div>
+								<label className='block text-yellow-400 text-sm font-light tracking-wide uppercase mb-2'>
+									Country
+								</label>
+								<div className='relative'>
+									<select
+										name='country'
+										value={formValues.country}
+										onChange={handleFormChange}
+										onBlur={handleFormBlur}
+										className={`w-full bg-black/20 border ${
+											formTouched.country &&
+											formErrors.country
+												? 'border-red-400'
+												: 'border-yellow-400/30'
+										} text-white caret-white px-4 py-3 pr-10 focus:border-yellow-400 focus:outline-none transition-colors duration-300 font-normal appearance-none`}
+										required={!isLogin}
+									>
+										<option value='' disabled>
+											Select your country
+										</option>
+										{countries.map((c) => (
+											<option value={c.name} key={c.code}>
+												{c.flag} {c.name}
+											</option>
+										))}
+									</select>
+									<div className='pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-yellow-400'>
+										▼
+									</div>
+								</div>
+								{formTouched.country && formErrors.country && (
+									<p className='mt-1 text-red-400 text-xs'>
+										{formErrors.country}
+									</p>
+								)}
+							</div>
 						)}
 
 						{/* Submit Button */}
