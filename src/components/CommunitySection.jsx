@@ -7,6 +7,7 @@ import MemberFilters from './community/MemberFilters';
 import MembersGrid from './community/MembersGrid';
 import CommunityStats from './community/CommunityStats';
 import CountryBreakdown from './community/CountryBreakdown';
+import { findCountry } from '../utils/countries';
 import JoinCommunityCTA from './community/JoinCommunityCTA';
 import NewMemberNotifications from './community/NewMemberNotifications';
 
@@ -196,14 +197,15 @@ const CommunitySection = () => {
 								value: Array.from(
 									new Set(
 										communityMembers
-											.map(
-												(m) =>
-													m.country ||
-													m.location ||
-													'',
-											)
+											.map((m) => {
+												const raw = m.country || m.location || '';
+												if (!raw) return '';
+												if (/^[A-Z]{2}$/i.test(raw)) return raw.toUpperCase();
+												const found = findCountry(raw);
+												return found ? found.code : raw; // fallback legacy
+											})
 											.filter(Boolean),
-									),
+										),
 								).length,
 								label: 'Countries',
 							},
