@@ -59,6 +59,11 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			maxlength: [100, 'Location cannot exceed 100 characters'],
 		},
+		country: {
+			type: String,
+			maxlength: [100, 'Country name cannot exceed 100 characters'],
+			index: true,
+		},
 		isVerified: {
 			type: Boolean,
 			default: false,
