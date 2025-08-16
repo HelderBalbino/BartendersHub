@@ -6,6 +6,7 @@ import FeaturedMemberCarousel from './community/FeaturedMemberCarousel';
 import MemberFilters from './community/MemberFilters';
 import MembersGrid from './community/MembersGrid';
 import CommunityStats from './community/CommunityStats';
+import CountryBreakdown from './community/CountryBreakdown';
 import JoinCommunityCTA from './community/JoinCommunityCTA';
 import NewMemberNotifications from './community/NewMemberNotifications';
 
@@ -191,9 +192,24 @@ const CommunitySection = () => {
 								).length,
 								label: 'Verified',
 							},
-							{ value: '50+', label: 'Countries' },
+							{
+								value: Array.from(
+									new Set(
+										communityMembers
+											.map(
+												(m) =>
+													m.country ||
+													m.location ||
+													'',
+											)
+											.filter(Boolean),
+									),
+								).length,
+								label: 'Countries',
+							},
 						]}
 					/>
+					<CountryBreakdown members={communityMembers} />
 				</div>
 
 				{/* Featured Member Spotlight */}
