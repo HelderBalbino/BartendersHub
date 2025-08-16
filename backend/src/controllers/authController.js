@@ -8,7 +8,7 @@ import websocketService from '../services/websocketService.js';
 // @access  Public
 export const register = async (req, res) => {
 	try {
-		const { name, email, password, username, country } = req.body;
+		const { name, email, password, username, country } = req.body; // country expected as ISO code
 
 		// Check if user exists
 		const userExists = await User.findOne({
@@ -31,7 +31,7 @@ export const register = async (req, res) => {
 			email,
 			password: hashedPassword,
 			username,
-			country,
+			country: country?.toUpperCase(),
 		});
 
 		// Generate token
@@ -58,7 +58,7 @@ export const register = async (req, res) => {
 				username: user.username,
 				avatar: user.avatar,
 				isVerified: user.isVerified,
-				country: user.country || null,
+				country: user.country || null, // ISO code
 			},
 		});
 	} catch (error) {
@@ -163,8 +163,11 @@ export const updateDetails = async (req, res) => {
 			bio: req.body.bio,
 			speciality: req.body.speciality,
 			location: req.body.location,
-			country: req.body.country,
 		};
+
+		if (req.body.country) {
+			fieldsToUpdate.country = req.body.country.toUpperCase();
+		}
 
 		const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
 			new: true,
