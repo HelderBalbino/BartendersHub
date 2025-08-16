@@ -204,7 +204,7 @@ export const AuthProvider = ({ children }) => {
 
 		try {
 			const response = await apiService.post('/auth/register', userData);
-			const { token, user } = response.data;
+			const { token, user } = response.token ? response : response.data;
 
 			TokenManager.set(token, false); // Default to session storage for new users
 
