@@ -198,14 +198,18 @@ const CommunitySection = () => {
 									new Set(
 										communityMembers
 											.map((m) => {
-												const raw = m.country || m.location || '';
+												const raw =
+													m.country ||
+													m.location ||
+													'';
 												if (!raw) return '';
-												if (/^[A-Z]{2}$/i.test(raw)) return raw.toUpperCase();
+												if (/^[A-Z]{2}$/i.test(raw))
+													return raw.toUpperCase();
 												const found = findCountry(raw);
 												return found ? found.code : raw; // fallback legacy
 											})
 											.filter(Boolean),
-										),
+									),
 								).length,
 								label: 'Countries',
 							},
