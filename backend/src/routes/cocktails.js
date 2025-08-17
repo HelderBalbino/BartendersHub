@@ -77,6 +77,54 @@ const createCocktailValidation = [
 		.withMessage('Description is required')
 		.isLength({ max: 500 })
 		.withMessage('Description cannot exceed 500 characters'),
+	body('ingredients')
+		.custom((value) => {
+			if (typeof value === 'string') {
+				try {
+					value = JSON.parse(value);
+				} catch {
+					throw new Error('Ingredients must be valid JSON');
+				}
+			}
+			if (!Array.isArray(value) || value.length === 0) {
+				throw new Error('Ingredients must be a non-empty array');
+			}
+			for (const item of value) {
+				if (!item.name || !item.amount || !item.unit) {
+					throw new Error(
+						'Each ingredient requires name, amount, and unit',
+					);
+				}
+			}
+			return true;
+		})
+		.withMessage('Invalid ingredients array'),
+	body('instructions')
+		.custom((value) => {
+			if (typeof value === 'string') {
+				try {
+					value = JSON.parse(value);
+				} catch {
+					throw new Error('Instructions must be valid JSON');
+				}
+			}
+			if (!Array.isArray(value) || value.length === 0) {
+				throw new Error('Instructions must be a non-empty array');
+			}
+			for (const step of value) {
+				if (
+					typeof step.step !== 'number' ||
+					step.step < 1 ||
+					!step.description
+				) {
+					throw new Error(
+						'Each instruction requires a numeric step and description',
+					);
+				}
+			}
+			return true;
+		})
+		.withMessage('Invalid instructions array'),
 	body('prepTime')
 		.isInt({ min: 1 })
 		.withMessage('Preparation time must be at least 1 minute'),
