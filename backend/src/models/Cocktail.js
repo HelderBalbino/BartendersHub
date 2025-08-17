@@ -223,5 +223,7 @@ cocktailSchema.index({ 'ratings.rating': -1 });
 // Compound indexes for common queries
 cocktailSchema.index({ createdBy: 1, createdAt: -1 });
 cocktailSchema.index({ category: 1, isApproved: 1 });
+// New performance indexes for high-traffic sorts/filters
+cocktailSchema.index({ views: -1, isApproved: 1, createdAt: -1 });
 
 export default mongoose.model('Cocktail', cocktailSchema);
