@@ -8,7 +8,6 @@ const CocktailCard = memo(
 		size = 'medium',
 		onCardClick,
 		className = '',
-		hideDifficulty = false,
 	}) => {
 		const [isHovered, setIsHovered] = useState(false);
 		const [imageError, setImageError] = useState(false);
@@ -21,19 +20,9 @@ const CocktailCard = memo(
 			onCardClick?.(cocktailData);
 		}, [onCardClick, cocktailData]);
 
-		const getDifficultyIcon = useCallback((difficulty) => {
-			switch (difficulty?.toLowerCase()) {
-				case 'beginner':
-					return '◆';
-				case 'intermediate':
-					return '◆◆';
-				case 'advanced':
-					return '◆◆◆';
-				case 'expert':
-					return '◆◆◆◆';
-				default:
-					return '◆';
-			}
+		const getCategoryLabel = useCallback((category) => {
+			if (!category) return 'Signature';
+			return category.replace(/-/g, ' ');
 		}, []);
 
 		const getSizeClasses = useCallback(() => {
@@ -88,10 +77,10 @@ const CocktailCard = memo(
 						}`}
 					></div>
 
-					{/* Difficulty Badge (optional) */}
-					{!hideDifficulty && (
-						<div className='absolute top-3 left-3 bg-black/60 text-yellow-400 px-3 py-1 text-xs font-bold tracking-wider uppercase backdrop-blur-sm border border-yellow-400/30'>
-							{getDifficultyIcon(cocktailData.difficulty)}
+					{/* Category Badge */}
+					{cocktailData.category && (
+						<div className='absolute top-3 left-3 bg-black/60 text-yellow-400 px-3 py-1 text-[10px] sm:text-xs font-bold tracking-wider uppercase backdrop-blur-sm border border-yellow-400/30'>
+							{getCategoryLabel(cocktailData.category)}
 						</div>
 					)}
 
@@ -126,27 +115,21 @@ const CocktailCard = memo(
 					</p>
 
 					{/* Metadata with better organization */}
-					<div
-						className={`grid ${
-							hideDifficulty ? 'grid-cols-1' : 'grid-cols-2'
-						} gap-3 text-xs sm:text-sm text-gray-400`}
-					>
+					<div className='grid grid-cols-2 gap-3 text-xs sm:text-sm text-gray-400'>
 						<div className='text-center'>
 							<span className='block text-yellow-400 font-semibold'>
 								Prep Time
 							</span>
 							<span>{cocktailData.prepTime || 5} min</span>
 						</div>
-						{!hideDifficulty && (
-							<div className='text-center'>
-								<span className='block text-yellow-400 font-semibold'>
-									Difficulty
-								</span>
-								<span className='capitalize'>
-									{cocktailData.difficulty || 'intermediate'}
-								</span>
-							</div>
-						)}
+						<div className='text-center'>
+							<span className='block text-yellow-400 font-semibold'>
+								Category
+							</span>
+							<span className='capitalize'>
+								{getCategoryLabel(cocktailData.category)}
+							</span>
+						</div>
 					</div>
 
 					{/* Tags with improved display */}
@@ -187,7 +170,7 @@ CocktailCard.propTypes = {
 		name: PropTypes.string.isRequired,
 		description: PropTypes.string,
 		image: PropTypes.string,
-		difficulty: PropTypes.string,
+		category: PropTypes.string,
 		prepTime: PropTypes.number,
 		tags: PropTypes.arrayOf(PropTypes.string),
 	}).isRequired,
