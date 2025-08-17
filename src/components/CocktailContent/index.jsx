@@ -65,7 +65,7 @@ const CocktailContent = () => {
 	useEffect(() => {
 		setCocktailsList([]);
 		setPage(1);
-	}, [activeCategory, debouncedSearch, sortBy, isAuthenticated, user?.id]);
+	}, [activeCategory, debouncedSearch, sortBy]);
 
 	// Append new page cocktails
 	useEffect(() => {
@@ -213,14 +213,13 @@ const CocktailContent = () => {
 										cocktail.image ||
 										cocktail.imageUrl,
 									imageAlt: `${cocktail.name} cocktail`,
-									difficulty: cocktail.difficulty,
+									category: cocktail.category,
 									prepTime: cocktail.prepTime,
 									description: cocktail.description,
 									rating: cocktail.averageRating,
 									tags: cocktail.tags,
 								}}
 								onCardClick={handleCardClick}
-								hideDifficulty
 							/>
 						))}
 					</div>
