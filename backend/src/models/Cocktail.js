@@ -49,12 +49,6 @@ const cocktailSchema = new mongoose.Schema(
 				},
 			},
 		],
-		difficulty: {
-			type: String,
-			required: [true, 'Difficulty level is required'],
-			enum: ['beginner', 'intermediate', 'advanced', 'expert'],
-			default: 'beginner',
-		},
 		prepTime: {
 			type: Number,
 			required: [true, 'Preparation time is required'],
@@ -216,7 +210,6 @@ cocktailSchema.virtual('commentsCount').get(function () {
 // Indexes for better search performance
 cocktailSchema.index({ name: 'text', description: 'text' });
 cocktailSchema.index({ category: 1 });
-cocktailSchema.index({ difficulty: 1 });
 cocktailSchema.index({ createdBy: 1 });
 cocktailSchema.index({ createdAt: -1 });
 cocktailSchema.index({ isApproved: 1 });
@@ -229,7 +222,6 @@ cocktailSchema.index({ 'ratings.rating': -1 });
 
 // Compound indexes for common queries
 cocktailSchema.index({ createdBy: 1, createdAt: -1 });
-cocktailSchema.index({ difficulty: 1, 'ratings.rating': -1 });
 cocktailSchema.index({ category: 1, isApproved: 1 });
 
 export default mongoose.model('Cocktail', cocktailSchema);
