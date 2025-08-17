@@ -12,18 +12,23 @@ import ArtDecoSeparator from '../ui/ArtDeco/ArtDecoSeparator';
 
 // Hooks
 import { useCocktails } from '../../hooks/useCocktails';
+import { useAuth } from '../../hooks/useAuth';
+import useDebounce from '../../hooks/useDebounce';
 
 const CocktailContent = () => {
 	const [activeCategory, setActiveCategory] = useState('all');
+	const [searchTerm, setSearchTerm] = useState('');
+	const debouncedSearch = useDebounce(searchTerm, 400);
+	const { user, isAuthenticated } = useAuth();
 
-	// Categories for filtering
-	const categories = [
-		{ id: 'all', name: 'All Cocktails', emoji: '🍸' },
-		{ id: 'beginner', name: 'Beginner', emoji: '🟢' },
-		{ id: 'intermediate', name: 'Intermediate', emoji: '🟡' },
-		{ id: 'advanced', name: 'Advanced', emoji: '🟠' },
-		{ id: 'expert', name: 'Expert', emoji: '🔴' },
+	// New simplified filters
+	const baseCategories = [
+		{ id: 'all', name: 'All', emoji: '🍸' },
+		{ id: 'classics', name: 'Classics', emoji: '�' },
 	];
+	const categories = isAuthenticated
+		? [...baseCategories, { id: 'mine', name: 'My Cocktails', emoji: '⭐' }]
+		: baseCategories;
 
 	// Fetch cocktails from API
 	const {
@@ -31,15 +36,16 @@ const CocktailContent = () => {
 		isLoading,
 		error,
 	} = useCocktails({
-		difficulty: activeCategory !== 'all' ? activeCategory : undefined,
+		category: activeCategory === 'classics' ? 'classics' : undefined,
+		createdBy:
+			activeCategory === 'mine' && isAuthenticated
+				? user?.id || user?._id
+				: undefined,
+		search: debouncedSearch || undefined,
 		limit: 12,
 	});
 
 	const cocktails = cocktailsData?.cocktails || [];
-
-	const handleCategoryChange = (category) => {
-		setActiveCategory(category);
-	};
 
 	const handleCardClick = (cocktail) => {
 		// Navigate to cocktail detail page or show modal
@@ -53,7 +59,14 @@ const CocktailContent = () => {
 
 	const handleShowAll = () => {
 		setActiveCategory('all');
+		setSearchTerm('');
 	};
+
+	const handleSearchChange = (e) => {
+		setSearchTerm(e.target.value);
+	};
+
+	const handleClearSearch = () => setSearchTerm('');
 
 	if (error) {
 		return (
@@ -83,12 +96,36 @@ const CocktailContent = () => {
 				{/* Header */}
 				<SectionHeader />
 
-				{/* Category Filter */}
-				<CategoryFilter
-					categories={categories}
-					activeCategory={activeCategory}
-					onCategoryChange={handleCategoryChange}
-				/>
+				{/* Filters & Search */}
+				<div className='space-y-6'>
+					<CategoryFilter
+						categories={categories}
+						activeCategory={activeCategory}
+						onCategoryChange={(id) => {
+							setActiveCategory(id);
+						}}
+					/>
+					<div className='flex justify-center'>
+						<div className='relative w-full max-w-md'>
+							<input
+								type='text'
+								value={searchTerm}
+								onChange={handleSearchChange}
+								placeholder='Search cocktails...'
+								className='w-full bg-black/30 border border-yellow-400/30 focus:border-yellow-400 text-white px-4 py-3 pr-10 placeholder-gray-500 outline-none transition-colors'
+							/>
+							{searchTerm && (
+								<button
+									type='button'
+									onClick={handleClearSearch}
+									className='absolute top-1/2 right-3 -translate-y-1/2 text-yellow-400 hover:text-white transition-colors'
+								>
+									×
+								</button>
+							)}
+						</div>
+					</div>
+				</div>
 
 				{/* Loading State */}
 				{isLoading && (
@@ -107,18 +144,24 @@ const CocktailContent = () => {
 				{!isLoading && cocktails.length === 0 && (
 					<EmptyState
 						title='No Cocktails Found'
-						message={
-							activeCategory === 'all'
-								? 'No cocktails available at the moment.'
-								: `No ${activeCategory} cocktails found. Try a different category.`
-						}
+						message={(() => {
+							if (searchTerm)
+								return 'No cocktails match your search.';
+							if (activeCategory === 'classics')
+								return 'No classic cocktails found.';
+							if (activeCategory === 'mine')
+								return 'You have not added any cocktails yet.';
+							return 'No cocktails available at the moment.';
+						})()}
 						actionText={
-							activeCategory !== 'all'
+							activeCategory !== 'all' || searchTerm
 								? 'Show All Cocktails'
 								: undefined
 						}
 						onAction={
-							activeCategory !== 'all' ? handleShowAll : undefined
+							activeCategory !== 'all' || searchTerm
+								? handleShowAll
+								: undefined
 						}
 					/>
 				)}
