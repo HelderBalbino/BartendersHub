@@ -34,19 +34,6 @@ const BasicInfoForm = ({ values, errors, touched, onChange, onBlur }) => {
 
 			<FormSection variant='grid'>
 				<FormField
-					label='Difficulty'
-					name='difficulty'
-					type='select'
-					value={values.difficulty}
-					onChange={onChange}
-				>
-					<option value='beginner'>Beginner</option>
-					<option value='intermediate'>Intermediate</option>
-					<option value='advanced'>Advanced</option>
-					<option value='expert'>Expert</option>
-				</FormField>
-
-				<FormField
 					label='Prep Time'
 					name='prepTime'
 					value={values.prepTime}
