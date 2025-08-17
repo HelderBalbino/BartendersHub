@@ -187,6 +187,9 @@ export const getCocktail = async (req, res) => {
 			success: true,
 			data: cocktail,
 		});
+
+		// Invalidate cache after update
+		invalidateCocktailCache();
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -351,6 +354,9 @@ export const deleteCocktail = async (req, res) => {
 			success: true,
 			message: 'Cocktail deleted successfully',
 		});
+
+		// Invalidate cache after deletion
+		invalidateCocktailCache();
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -395,6 +401,8 @@ export const toggleLike = async (req, res) => {
 				likesCount: cocktail.likes.length,
 			},
 		});
+
+		invalidateCocktailCache();
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -436,6 +444,8 @@ export const addComment = async (req, res) => {
 			success: true,
 			data: cocktail.comments[cocktail.comments.length - 1],
 		});
+
+		invalidateCocktailCache();
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -483,6 +493,8 @@ export const rateCocktail = async (req, res) => {
 				ratingsCount: cocktail.ratings.length,
 			},
 		});
+
+		invalidateCocktailCache();
 	} catch (error) {
 		res.status(500).json({
 			success: false,
