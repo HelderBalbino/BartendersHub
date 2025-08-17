@@ -19,11 +19,6 @@ export const getCocktails = async (req, res) => {
 			query.category = req.query.category;
 		}
 
-		// Filter by difficulty
-		if (req.query.difficulty) {
-			query.difficulty = req.query.difficulty;
-		}
-
 		// Filter by alcohol content
 		if (req.query.alcoholContent) {
 			query.alcoholContent = req.query.alcoholContent;
