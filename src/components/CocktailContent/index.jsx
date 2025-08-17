@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
 import SectionHeader from './CocktailHeader/SectionHeader';
 import CategoryFilter from './CocktailHeader/CategoryFilter';
-import CarouselContainer from './CocktailCarousel/CarouselContainer';
+// import CarouselContainer from './CocktailCarousel/CarouselContainer'; // Replaced by grid view with pagination
+import CocktailCard from '../CocktailCard';
 import LoadingState from '../ui/States/LoadingState';
 import ErrorState from '../ui/States/ErrorState';
 import EmptyState from '../ui/States/EmptyState';
@@ -18,6 +19,9 @@ import useDebounce from '../../hooks/useDebounce';
 const CocktailContent = () => {
 	const [activeCategory, setActiveCategory] = useState('all');
 	const [searchTerm, setSearchTerm] = useState('');
+	const [sortBy, setSortBy] = useState('newest');
+	const [page, setPage] = useState(1);
+	const [cocktailsList, setCocktailsList] = useState([]);
 	const debouncedSearch = useDebounce(searchTerm, 400);
 	const { user, isAuthenticated } = useAuth();
 
@@ -34,6 +38,7 @@ const CocktailContent = () => {
 	const {
 		data: cocktailsData,
 		isLoading,
+		isFetching,
 		error,
 	} = useCocktails({
 		category: activeCategory === 'classics' ? 'classics' : undefined,
@@ -42,10 +47,51 @@ const CocktailContent = () => {
 				? user?.id || user?._id
 				: undefined,
 		search: debouncedSearch || undefined,
+		sortBy: sortBy !== 'newest' ? sortBy : undefined,
+		page,
 		limit: 12,
 	});
 
-	const cocktails = cocktailsData?.cocktails || [];
+	const currentPageCocktails = useMemo(
+		() =>
+			cocktailsData?.data ||
+			cocktailsData?.cocktails ||
+			cocktailsData?.results ||
+			[],
+		[cocktailsData],
+	);
+
+	// Reset list when filters/search/sort change
+	useEffect(() => {
+		setCocktailsList([]);
+		setPage(1);
+	}, [activeCategory, debouncedSearch, sortBy, isAuthenticated, user?.id]);
+
+	// Append new page cocktails
+	useEffect(() => {
+		if (currentPageCocktails?.length) {
+			setCocktailsList((prev) => {
+				// Avoid duplicates when page resets
+				const ids = new Set(prev.map((c) => c._id || c.id));
+				const fresh = currentPageCocktails.filter(
+					(c) => !ids.has(c._id || c.id),
+				);
+				return [...prev, ...fresh];
+			});
+		}
+	}, [currentPageCocktails, page]);
+
+	const total =
+		cocktailsData?.total ?? cocktailsData?.count ?? cocktailsList.length;
+	const hasNext = Boolean(
+		cocktailsData?.pagination?.hasNext ||
+			page <
+				(cocktailsData?.pages || cocktailsData?.pagination?.total || 1),
+	);
+
+	const loadMore = () => {
+		if (hasNext && !isFetching) setPage((p) => p + 1);
+	};
 
 	const handleCardClick = (cocktail) => {
 		// Navigate to cocktail detail page or show modal
@@ -60,6 +106,7 @@ const CocktailContent = () => {
 	const handleShowAll = () => {
 		setActiveCategory('all');
 		setSearchTerm('');
+		setSortBy('newest');
 	};
 
 	const handleSearchChange = (e) => {
@@ -105,7 +152,7 @@ const CocktailContent = () => {
 							setActiveCategory(id);
 						}}
 					/>
-					<div className='flex justify-center'>
+					<div className='flex flex-col items-center gap-4 md:flex-row md:justify-center md:gap-6'>
 						<div className='relative w-full max-w-md'>
 							<input
 								type='text'
@@ -124,6 +171,26 @@ const CocktailContent = () => {
 								</button>
 							)}
 						</div>
+						<div className='flex items-center gap-3'>
+							<label className='text-yellow-400 text-xs tracking-widest uppercase'>
+								Sort
+							</label>
+							<select
+								value={sortBy}
+								onChange={(e) => setSortBy(e.target.value)}
+								className='bg-black/30 border border-yellow-400/30 focus:border-yellow-400 text-white px-3 py-2 text-sm outline-none'
+							>
+								<option value='newest'>Newest</option>
+								<option value='rating'>Top Rated</option>
+								<option value='views'>Most Viewed</option>
+								<option value='likes'>Most Liked</option>
+							</select>
+						</div>
+						<div className='text-yellow-400 text-sm font-light tracking-wide'>
+							{isLoading && page === 1
+								? 'Loading...'
+								: `${total} result${total === 1 ? '' : 's'}`}
+						</div>
 					</div>
 				</div>
 
@@ -132,16 +199,48 @@ const CocktailContent = () => {
 					<LoadingState size='large' text='Loading cocktails...' />
 				)}
 
-				{/* Cocktails Carousel */}
-				{!isLoading && cocktails.length > 0 && (
-					<CarouselContainer
-						cocktails={cocktails}
-						onCardClick={handleCardClick}
-					/>
+				{/* Cocktails Grid */}
+				{cocktailsList.length > 0 && (
+					<div className='mt-8 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
+						{cocktailsList.map((cocktail) => (
+							<CocktailCard
+								key={cocktail._id || cocktail.id}
+								cocktailData={{
+									id: cocktail._id || cocktail.id,
+									name: cocktail.name,
+									image:
+										cocktail.image?.url ||
+										cocktail.image ||
+										cocktail.imageUrl,
+									imageAlt: `${cocktail.name} cocktail`,
+									difficulty: cocktail.difficulty,
+									prepTime: cocktail.prepTime,
+									description: cocktail.description,
+									rating: cocktail.averageRating,
+									tags: cocktail.tags,
+								}}
+								onCardClick={handleCardClick}
+								hideDifficulty
+							/>
+						))}
+					</div>
+				)}
+
+				{/* Load More */}
+				{cocktailsList.length > 0 && hasNext && (
+					<div className='mt-10 flex justify-center'>
+						<button
+							onClick={loadMore}
+							disabled={isFetching}
+							className='px-8 py-3 border border-yellow-400/50 text-yellow-400 uppercase tracking-wider text-sm hover:bg-yellow-400/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+						>
+							{isFetching ? 'Loading...' : 'Load More'}
+						</button>
+					</div>
 				)}
 
 				{/* Empty State */}
-				{!isLoading && cocktails.length === 0 && (
+				{!isLoading && cocktailsList.length === 0 && (
 					<EmptyState
 						title='No Cocktails Found'
 						message={(() => {
