@@ -29,6 +29,11 @@ export const getCocktails = async (req, res) => {
 			query.alcoholContent = req.query.alcoholContent;
 		}
 
+		// Filter by creator (for "My Cocktails" view)
+		if (req.query.createdBy) {
+			query.createdBy = req.query.createdBy;
+		}
+
 		// Search by name or description
 		if (req.query.search) {
 			query.$text = { $search: req.query.search };
