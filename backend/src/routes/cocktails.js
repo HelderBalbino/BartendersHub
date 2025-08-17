@@ -78,6 +78,7 @@ const createCocktailValidation = [
 		.isLength({ max: 500 })
 		.withMessage('Description cannot exceed 500 characters'),
 	body('difficulty')
+		.optional()
 		.isIn(['beginner', 'intermediate', 'advanced', 'expert'])
 		.withMessage('Invalid difficulty level'),
 	body('prepTime')
