@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import ArtDecoCorners from './ui/ArtDecoCorners';
 
 const CocktailCard = memo(
-	({
-		cocktailData,
-		size = 'medium',
-		onCardClick,
-		className = '',
-	}) => {
+	({ cocktailData, size = 'medium', onCardClick, className = '' }) => {
 		const [isHovered, setIsHovered] = useState(false);
 		const [imageError, setImageError] = useState(false);
 
