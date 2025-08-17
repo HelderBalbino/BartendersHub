@@ -1,0 +1,87 @@
+name: Backend Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-backend:
+    name: Run Backend Test Suite (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20]
+
+    services:
+      mongo:
+        image: mongo:6
+        ports: [ '27017:27017' ]
+        options: >-
+          --health-cmd='mongosh --eval "db.adminCommand(\'ping\')"' \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports: [ '6379:6379' ]
+        options: >-
+          --health-cmd "redis-cli ping" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      MONGODB_URI: mongodb://localhost:27017/bartendershub_test
+      JWT_SECRET: test_jwt_secret
+      FRONTEND_URL: http://localhost:5173
+      MAX_FILE_SIZE: 5000000
+      REDIS_URL: redis://localhost:6379
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+      node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run tests with coverage
+        working-directory: backend
+        run: npm test -- --runInBand --coverage
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "### Test Summary (Node ${{ matrix.node }})" >> $GITHUB_STEP_SUMMARY
+          if [ -f backend/coverage/lcov.info ]; then
+            lines=$(grep -m1 -Po 'LF:\K\d+' backend/coverage/lcov.info || echo 0)
+            covered=$(grep -m1 -Po 'LH:\K\d+' backend/coverage/lcov.info || echo 0)
+            echo "Lines covered: $covered / $lines" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload jest results (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-results
+          path: backend/jest-results*
+          if-no-files-found: ignore
+
+      - name: Upload coverage (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: backend/coverage
+          if-no-files-found: ignore
