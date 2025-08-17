@@ -10,7 +10,8 @@
 		"build": "echo 'No build step required for Node.js'",
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"seed": "node src/utils/seedDatabase.js"
+		"seed": "node src/utils/seedDatabase.js",
+		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
 	},
 	"keywords": [
 		"cocktails",
