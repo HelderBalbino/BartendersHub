@@ -375,7 +375,7 @@ BartendersHub/
 -   [ ] **Backend Integration** - Connect forms to MongoDB backend
 -   [ ] **User Authentication** - Complete login/register system
 -   [ ] **Real-time Features** - Live updates for community interactions
--   [ ] **Advanced Search** - Filter by ingredients, difficulty, etc.
+-   [ ] **Advanced Search** - Filter by ingredients, tags, alcohol content, etc.
 -   [ ] **Favorites System** - Save favorite cocktails
 -   [ ] **Rating & Reviews** - Community-driven recipe ratings
 -   [ ] **Mobile App** - React Native version
