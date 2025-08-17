@@ -50,7 +50,6 @@ const AddCocktailSection = () => {
 		description: '',
 		ingredients: [''],
 		instructions: [''],
-		difficulty: 'beginner',
 		prepTime: '',
 		servings: '1',
 		glassType: '',
