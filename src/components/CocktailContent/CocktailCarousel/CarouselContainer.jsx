@@ -95,7 +95,7 @@ const CarouselContainer = ({
 									name: cocktail.name,
 									image: cocktail.image || cocktail.imageUrl,
 									imageAlt: `${cocktail.name} cocktail`,
-									difficulty: cocktail.difficulty,
+										category: cocktail.category,
 									prepTime: cocktail.prepTime,
 									description: cocktail.description,
 									rating: cocktail.rating || 4.5,
