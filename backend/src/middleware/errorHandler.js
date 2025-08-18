@@ -18,9 +18,11 @@ export const handleValidationErrors = (req, res, next) => {
 };
 
 // Enhanced global error handler with better logging and monitoring
-export const errorHandler = (err, req, res) => {
+export const errorHandler = (err, req, res, next) => {
 	let error = { ...err };
 	error.message = err.message;
+	// Reference next param subtly so it's not flagged as unused (express error handlers need 4 args)
+	void typeof next;
 
 	// Enhanced error logging with request context
 	const errorContext = {

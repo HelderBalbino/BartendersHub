@@ -192,9 +192,10 @@ const cocktailSchema = new mongoose.Schema(
 
 // Virtual for average rating
 cocktailSchema.virtual('averageRating').get(function () {
-	if (this.ratings.length === 0) return 0;
+	if (!this.ratings || this.ratings.length === 0) return 0;
 	const sum = this.ratings.reduce((acc, rating) => acc + rating.rating, 0);
-	return (sum / this.ratings.length).toFixed(1);
+	// Return numeric value rounded to 1 decimal place (not a string)
+	return Math.round((sum / this.ratings.length) * 10) / 10;
 });
 
 // Virtual for likes count
