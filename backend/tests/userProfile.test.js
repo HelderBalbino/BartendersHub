@@ -20,7 +20,7 @@ describe('GET /api/users/:id', () => {
 			name: 'Test User',
 			username: 'testuser',
 			email: 'test@example.com',
-			password: 'hashedpassword',
+			password: 'Password1!', // satisfies validator (hashing not needed for shape test)
 		});
 	});
 
