@@ -11,7 +11,8 @@ export const connectDB = async () => {
 		console.log('Test database connected');
 	} catch (error) {
 		console.error('Test database connection error:', error);
-		process.exit(1);
+		// Throw instead of exiting so Jest can report properly
+		throw error;
 	}
 };
 
