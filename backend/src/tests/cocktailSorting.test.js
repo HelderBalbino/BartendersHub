@@ -1,9 +1,9 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../src/server.js';
-import Cocktail from '../src/models/Cocktail.js';
-import User from '../src/models/User.js';
-import { hashPassword } from '../src/utils/auth.js';
+import app from '../server.js';
+import Cocktail from '../models/Cocktail.js';
+import User from '../models/User.js';
+import { hashPassword } from '../utils/auth.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
