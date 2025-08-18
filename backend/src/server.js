@@ -13,6 +13,7 @@ dotenv.config();
 
 // Validate environment variables
 import { validateEnvironmentVariables } from './config/validateEnv.js';
+import config from './config/appConfig.js';
 validateEnvironmentVariables();
 
 // Import middleware
@@ -111,16 +112,7 @@ app.use((req, res, next) => {
 });
 
 // CORS configuration
-const corsOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
-console.log('🌐 CORS configured for origin:', corsOrigin);
-
-// Support multiple origins for development and production
-const allowedOrigins = [
-	corsOrigin,
-	'https://bartendershub.com',
-	'http://localhost:3000',
-	'http://localhost:5173',
-];
+console.log('🌐 Allowed CORS origins:', config.cors.allowedOrigins);
 
 // Function to check if origin is allowed
 const isOriginAllowed = (origin) => {
@@ -128,7 +120,7 @@ const isOriginAllowed = (origin) => {
 	if (!origin) return true;
 
 	// Check exact matches
-	if (allowedOrigins.includes(origin)) return true;
+	if (config.cors.allowedOrigins.includes(origin)) return true;
 
 	// Allow all Vercel deployment URLs for BartendersHub
 	if (
