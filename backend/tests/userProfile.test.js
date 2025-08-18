@@ -13,9 +13,12 @@ describe('GET /api/users/:id', () => {
 			console.warn('Skipping userProfile.test.js (no MONGODB_URI set)');
 			return;
 		}
-		await mongoose.connect(process.env.MONGODB_URI, {
-			dbName: 'bartendershub_test',
-		});
+		// Use dedicated test URI or fallback to local test DB to avoid prod connection
+		const uri =
+			process.env.MONGODB_URI_TEST ||
+			process.env.MONGODB_URI ||
+			'mongodb://localhost:27017/bartendershub_test';
+		await mongoose.connect(uri, { dbName: 'bartendershub_test' });
 		user = await User.create({
 			name: 'Test User',
 			username: 'testuser',
