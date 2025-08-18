@@ -2,7 +2,8 @@ import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 import path from 'path';
-import process from 'process';
+// process retained in case future logic needs env access (central config now covers most cases)
+import config from '../config/appConfig.js';
 import {
 	getCocktails,
 	getCocktail,
@@ -36,7 +37,7 @@ const storage = multer.diskStorage({
 const upload = multer({
 	storage: storage,
 	limits: {
-		fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5000000, // 5MB default
+		fileSize: config.uploads.maxFileSize,
 		files: 1, // Only one file
 	},
 	fileFilter: function (req, file, cb) {
