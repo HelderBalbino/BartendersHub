@@ -8,7 +8,7 @@
 		"start": "node src/server.js",
 		"dev": "nodemon src/server.js",
 		"build": "echo 'No build step required for Node.js'",
-		"test": "NODE_ENV=test USE_IN_MEMORY_DB=true NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
+		"test": "NODE_ENV=test USE_IN_MEMORY_DB=true DISABLE_REDIS=true NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
 		"test:watch": "jest --watch",
 		"seed": "node src/utils/seedDatabase.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
