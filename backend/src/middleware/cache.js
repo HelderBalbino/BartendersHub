@@ -1,31 +1,45 @@
 import Redis from 'ioredis';
 import process from 'process';
 
-// Initialize Redis client (will gracefully handle if Redis is not available)
+// Allow disabling Redis during tests or via explicit flag to avoid noisy logs
+const redisDisabled =
+	process.env.NODE_ENV === 'test' || process.env.DISABLE_REDIS === 'true';
+
+// Initialize Redis client only when not disabled
 let redis = null;
+if (!redisDisabled) {
+	try {
+		redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+			retryDelayOnFailover: 100,
+			maxRetriesPerRequest: 3,
+			lazyConnect: true, // don't auto-connect until a command is issued
+		});
 
-try {
-	redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-		retryDelayOnFailover: 100,
-		maxRetriesPerRequest: 3,
-		lazyConnect: true,
-	});
+		redis.on('error', (err) => {
+			// Use debug-style prefix to make filtering easier; suppress if tests ended
+			if (process.env.NODE_ENV !== 'test') {
+				console.warn('Redis connection error:', err.message);
+			}
+			redis = null; // Disable caching if Redis is unavailable
+		});
 
-	redis.on('error', (err) => {
-		console.warn('Redis connection error:', err.message);
-		redis = null; // Disable caching if Redis is unavailable
-	});
-
-	redis.on('connect', () => {
-		console.log('✅ Redis cache connected');
-	});
-} catch (error) {
-	console.warn('Redis initialization failed:', error.message);
-	redis = null;
+		redis.on('connect', () => {
+			console.log('✅ Redis cache connected');
+		});
+	} catch (error) {
+		if (process.env.NODE_ENV !== 'test') {
+			console.warn('Redis initialization failed:', error.message);
+		}
+		redis = null;
+	}
 }
 
 // Cache middleware
 export const cacheMiddleware = (duration = 300) => {
+	// No-op middleware when redis disabled
+	if (redisDisabled) {
+		return (req, res, next) => next();
+	}
 	return async (req, res, next) => {
 		// Skip caching if Redis is not available
 		if (!redis) {
@@ -71,23 +85,16 @@ export const cacheMiddleware = (duration = 300) => {
 
 // Cache invalidation helpers
 export const invalidateCache = (pattern = '*') => {
-	if (!redis) return;
-
+	if (redisDisabled || !redis) return Promise.resolve();
 	return new Promise((resolve) => {
-		const stream = redis.scanStream({
-			match: `cache:${pattern}`,
-		});
-
+		const stream = redis.scanStream({ match: `cache:${pattern}` });
 		stream.on('data', (keys) => {
 			if (keys.length) {
 				redis.del(...keys);
 				console.log(`🗑️ Invalidated cache keys: ${keys.length}`);
 			}
 		});
-
-		stream.on('end', () => {
-			resolve();
-		});
+		stream.on('end', resolve);
 	});
 };
 
@@ -101,3 +108,15 @@ export const invalidateUserCache = () => {
 };
 
 export default redis;
+
+// Graceful shutdown helper (used in global test teardown or process shutdown)
+export const closeRedis = async () => {
+	if (redis) {
+		try {
+			await redis.quit();
+			console.log('🛑 Redis connection closed');
+		} catch (err) {
+			console.warn('Redis close error:', err.message);
+		}
+	}
+};
