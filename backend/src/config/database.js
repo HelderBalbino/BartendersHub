@@ -6,7 +6,14 @@ const connectDB = async () => {
 		// Mongoose security settings
 		mongoose.set('strictQuery', true);
 
-		const conn = await mongoose.connect(process.env.MONGODB_URI, {
+		// Choose DB URI (prefer explicit test URI when in test environment)
+		const isTest = process.env.NODE_ENV === 'test';
+		const dbUri = isTest
+			? process.env.MONGODB_URI_TEST ||
+			  'mongodb://localhost:27017/bartendershub_test'
+			: process.env.MONGODB_URI;
+
+		const conn = await mongoose.connect(dbUri, {
 			// Security and performance options
 			maxPoolSize: 10, // Maintain up to 10 socket connections
 			serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
@@ -34,7 +41,12 @@ const connectDB = async () => {
 		});
 	} catch (error) {
 		console.error(`❌ Database connection error: ${error.message}`);
-		process.exit(1);
+		if (process.env.NODE_ENV === 'test') {
+			// Throw to let Jest fail gracefully instead of exiting the process
+			throw error;
+		} else {
+			process.exit(1);
+		}
 	}
 };
 
