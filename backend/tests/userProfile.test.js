@@ -1,6 +1,6 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../src/server.js';
+import app from '../src/app.js';
 import User from '../src/models/User.js';
 
 // Lightweight integration-ish test ensuring GET /api/users/:id returns expected shape
