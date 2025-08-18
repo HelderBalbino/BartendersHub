@@ -22,7 +22,7 @@ describe('Auth Endpoints', () => {
 			const userData = {
 				name: 'Test User',
 				email: 'test@example.com',
-				password: 'password123',
+				password: 'Password1!', // meets strong password policy
 				username: 'testuser',
 			};
 
@@ -40,7 +40,7 @@ describe('Auth Endpoints', () => {
 			const userData = {
 				name: 'Test User',
 				email: 'test@example.com',
-				password: 'password123',
+				password: 'Password1!',
 				username: 'testuser',
 			};
 
@@ -62,7 +62,7 @@ describe('Auth Endpoints', () => {
 			const userData = {
 				name: 'Test User',
 				email: 'test@example.com',
-				password: 'password123',
+				password: 'Password1!',
 				username: 'testuser',
 			};
 
