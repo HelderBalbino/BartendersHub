@@ -1,6 +1,6 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../server.js';
+import app from '../app.js';
 import Cocktail from '../models/Cocktail.js';
 import User from '../models/User.js';
 import { hashPassword } from '../utils/auth.js';
