@@ -1,3 +1,39 @@
+import process from 'process';
+import connectDB from './config/database.js';
+import app from './app.js';
+
+const PORT = process.env.PORT || 5001;
+const isTest = process.env.NODE_ENV === 'test';
+let server;
+
+if (!isTest) {
+	(async () => {
+		await connectDB();
+		server = app.listen(PORT, '0.0.0.0', () => {
+			const isProduction = process.env.NODE_ENV === 'production';
+			const baseUrl = isProduction
+				? 'https://bartendershub.onrender.com'
+				: `http://localhost:${PORT}`;
+			console.log(
+				`\n🥃 BartendersHub API Server\n🚀 Port ${PORT}\n🌍 Env: ${process.env.NODE_ENV}\n🔗 Health: ${baseUrl}/api/health\n`,
+			);
+			import('./services/websocketService.js').then(({ default: ws }) =>
+				ws.initialize(server),
+			);
+		});
+	})();
+
+	process.on('unhandledRejection', (err) => {
+		console.error('Unhandled Promise Rejection:', err);
+		server?.close(() => process.exit(1));
+	});
+	process.on('uncaughtException', (err) => {
+		console.error('Uncaught Exception:', err);
+		process.exit(1);
+	});
+}
+
+export { app, server };
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
