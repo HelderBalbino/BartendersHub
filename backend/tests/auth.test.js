@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import request from 'supertest';
-import app from '../src/server.js';
+import app from '../src/app.js';
 import User from '../src/models/User.js';
 import { connectDB, closeDB, clearDB } from './helpers/database.js';
 
