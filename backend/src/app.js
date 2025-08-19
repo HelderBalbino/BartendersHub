@@ -33,41 +33,46 @@ const app = express();
 
 // Security middleware (helmet)
 app.use(
-	helmet({
-		contentSecurityPolicy: {
-			directives: {
-				defaultSrc: ["'self'"],
-				styleSrc: [
-					"'self'",
-					"'unsafe-inline'",
-					'https://fonts.googleapis.com',
-				],
-				fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-				imgSrc: [
-					"'self'",
-					'data:',
-					'https://res.cloudinary.com',
-					'https://images.unsplash.com',
-				],
-				scriptSrc: ["'self'", "'unsafe-eval'"],
-				connectSrc: ["'self'", 'https://api.cloudinary.com'],
-				frameSrc: ["'none'"],
-				objectSrc: ["'none'"],
-				mediaSrc: ["'self'"],
-				manifestSrc: ["'self'"],
+	helmet(() => {
+		const isProd = process.env.NODE_ENV === 'production';
+		const scriptSrc = ["'self'"];
+		if (!isProd) scriptSrc.push("'unsafe-eval'"); // needed for Vite dev
+		return {
+			contentSecurityPolicy: {
+				directives: {
+					defaultSrc: ["'self'"],
+					styleSrc: [
+						"'self'",
+						"'unsafe-inline'",
+						'https://fonts.googleapis.com',
+					],
+					fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+					imgSrc: [
+						"'self'",
+						'data:',
+						'https://res.cloudinary.com',
+						'https://images.unsplash.com',
+					],
+					scriptSrc,
+					connectSrc: ["'self'", 'https://api.cloudinary.com'],
+					frameSrc: ["'none'"],
+					objectSrc: ["'none'"],
+					mediaSrc: ["'self'"],
+					manifestSrc: ["'self'"],
+				},
 			},
-		},
-		crossOriginEmbedderPolicy: false,
-		crossOriginResourcePolicy: { policy: 'cross-origin' },
-		hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-		noSniff: true,
-		frameguard: { action: 'deny' },
-		xssFilter: true,
-		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-		hidePoweredBy: true,
-		ieNoOpen: true,
-		dnsPrefetchControl: { allow: false },
-		permittedCrossDomainPolicies: false,
+			crossOriginEmbedderPolicy: false,
+			crossOriginResourcePolicy: { policy: 'cross-origin' },
+			hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+			noSniff: true,
+			frameguard: { action: 'deny' },
+			xssFilter: true,
+			referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+			hidePoweredBy: true,
+			ieNoOpen: true,
+			dnsPrefetchControl: { allow: false },
+			permittedCrossDomainPolicies: false,
+		};
 	}),
 );
 
