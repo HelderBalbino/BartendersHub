@@ -182,6 +182,9 @@ const cocktailSchema = new mongoose.Schema(
 				},
 			},
 		],
+		// Denormalized performance fields
+		averageRating: { type: Number, default: 0, min: 0, max: 5 },
+		likesCount: { type: Number, default: 0, min: 0 },
 	},
 	{
 		timestamps: true,
@@ -191,16 +194,46 @@ const cocktailSchema = new mongoose.Schema(
 );
 
 // Virtual for average rating
-cocktailSchema.virtual('averageRating').get(function () {
+// Backward compatibility virtuals (fallback to denormalized fields if present)
+cocktailSchema.virtual('computedAverageRating').get(function () {
+	if (typeof this.averageRating === 'number' && this.averageRating >= 0) {
+		return this.averageRating;
+	}
 	if (!this.ratings || this.ratings.length === 0) return 0;
 	const sum = this.ratings.reduce((acc, rating) => acc + rating.rating, 0);
-	// Return numeric value rounded to 1 decimal place (not a string)
 	return Math.round((sum / this.ratings.length) * 10) / 10;
 });
-
-// Virtual for likes count
-cocktailSchema.virtual('likesCount').get(function () {
+cocktailSchema.virtual('computedLikesCount').get(function () {
+	if (typeof this.likesCount === 'number') return this.likesCount;
 	return this.likes.length;
+});
+
+// Helper to compute denormalized fields
+function computeDenormalized(doc) {
+	if (!doc) return;
+	if (Array.isArray(doc.likes)) {
+		doc.likesCount = doc.likes.length;
+	} else if (typeof doc.likesCount !== 'number') {
+		doc.likesCount = 0;
+	}
+	if (Array.isArray(doc.ratings) && doc.ratings.length) {
+		const sum = doc.ratings.reduce((acc, r) => acc + (r.rating || 0), 0);
+		doc.averageRating = Math.round((sum / doc.ratings.length) * 10) / 10;
+	} else if (typeof doc.averageRating !== 'number') {
+		doc.averageRating = 0;
+	}
+}
+
+cocktailSchema.pre('save', function (next) {
+	computeDenormalized(this);
+	next();
+});
+
+cocktailSchema.pre('insertMany', function (next, docs) {
+	if (Array.isArray(docs)) {
+		docs.forEach((d) => computeDenormalized(d));
+	}
+	next();
 });
 
 // Virtual for comments count
@@ -220,6 +253,9 @@ cocktailSchema.index({ isFeatured: 1 });
 cocktailSchema.index({ 'ingredients.name': 1 });
 cocktailSchema.index({ tags: 1 });
 cocktailSchema.index({ 'ratings.rating': -1 });
+cocktailSchema.index({ averageRating: -1 });
+cocktailSchema.index({ likesCount: -1 });
+cocktailSchema.index({ createdAt: -1, _id: -1 }); // keyset pagination
 
 // Compound indexes for common queries
 cocktailSchema.index({ createdBy: 1, createdAt: -1 });
