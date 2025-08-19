@@ -18,7 +18,8 @@ validateEnvironmentVariables();
 import { limiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { sanitizeInput } from './middleware/sanitization.js';
-import { getCacheMetrics } from './middleware/cache.js';
+import { getCacheMetrics, default as redisClient } from './middleware/cache.js';
+import mongoose from 'mongoose';
 import {
 	detectSuspiciousActivity,
 	monitorRateLimit,
@@ -142,12 +143,31 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cocktails', cocktailRoutes);
 app.use('/api/users', userRoutes);
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+	const cacheMetrics = getCacheMetrics();
+	let dbStatus = 'disconnected';
+	try {
+		dbStatus =
+			mongoose.connection.readyState === 1 ? 'connected' : 'connecting';
+	} catch {
+		/* ignore */
+	}
+	let redisStatus = 'disabled';
+	if (redisClient) {
+		try {
+			await redisClient.ping();
+			redisStatus = 'connected';
+		} catch {
+			redisStatus = 'error';
+		}
+	}
 	res.status(200).json({
 		success: true,
 		message: 'BartendersHub API is running!',
 		timestamp: new Date().toISOString(),
-		cache: getCacheMetrics(),
+		cache: cacheMetrics,
+		database: dbStatus,
+		redis: redisStatus,
 	});
 });
 
