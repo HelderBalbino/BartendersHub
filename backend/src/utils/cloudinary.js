@@ -60,6 +60,16 @@ export const uploadImage = async (imagePath, folder = 'cocktails') => {
 // Delete image from cloudinary
 export const deleteImage = async (publicId) => {
 	try {
+		// Validate pattern to avoid arbitrary deletions
+		const pattern =
+			/^bartendershub\/(cocktails|avatars)\/[A-Za-z0-9_\-/]+$/;
+		if (!pattern.test(publicId)) {
+			console.warn(
+				'Refusing to delete Cloudinary asset with suspicious publicId:',
+				publicId,
+			);
+			return;
+		}
 		await cloudinary.v2.uploader.destroy(publicId);
 	} catch (error) {
 		console.error('Error deleting image from cloudinary:', error);
