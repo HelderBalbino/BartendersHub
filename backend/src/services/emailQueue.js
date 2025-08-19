@@ -139,6 +139,19 @@ const generateEmailContent = (template, data) => {
 				<p>Cheers!<br>The BartendersHub Team</p>
 			</div>
 		`,
+		verifyEmail: `
+			<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+				<h1 style="color: #d4af37; text-align: center;">📧 Verify Your Email</h1>
+				<p>Hi ${data.name},</p>
+				<p>Thanks for signing up! Please confirm your email address by clicking the button below:</p>
+				<div style="text-align: center; margin: 30px 0;">
+					<a href="${data.verifyUrl}" style="background-color: #d4af37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px;">Verify Email</a>
+				</div>
+				<p>This link will expire in 24 hours.</p>
+				<p>If you did not create an account, you can ignore this email.</p>
+				<p>Cheers!<br>The BartendersHub Team</p>
+			</div>
+		`,
 	};
 
 	return templates[template] || '<p>Email template not found</p>';
@@ -262,6 +275,29 @@ export const sendNewFollowerNotification = async (userData, followerData) => {
 				followerName: followerData.name,
 				followerUsername: followerData.username,
 			},
+		);
+	}
+};
+
+export const sendVerificationEmail = async (userData, verifyToken) => {
+	const verifyUrl = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
+	const payload = {
+		to: userData.email,
+		subject: 'Verify your email - BartendersHub',
+		template: 'verifyEmail',
+		data: { ...userData, verifyUrl },
+	};
+	if (emailQueue) {
+		emailQueue.add('verifyEmail', payload, {
+			attempts: 3,
+			backoff: 'exponential',
+		});
+	} else {
+		await sendEmailDirect(
+			payload.to,
+			payload.subject,
+			payload.template,
+			payload.data,
 		);
 	}
 };
