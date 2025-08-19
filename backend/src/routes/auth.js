@@ -6,6 +6,10 @@ import {
 	getMe,
 	updateDetails,
 	updatePassword,
+	forgotPassword,
+	resetPassword,
+	verifyEmail,
+	resendVerification,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
@@ -92,5 +96,11 @@ router.put(
 	handleValidationErrors,
 	updatePassword,
 );
+
+// Password reset & email verification
+router.post('/forgotpassword', forgotPassword);
+router.post('/resetpassword/:token', resetPassword);
+router.get('/verify/:token', verifyEmail);
+router.post('/resend-verification', resendVerification);
 
 export default router;
