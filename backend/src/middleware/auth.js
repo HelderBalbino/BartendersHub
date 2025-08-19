@@ -98,8 +98,11 @@ export const trackLoginAttempts = (req, res, next) => {
 		attempts.lastAttempt = Date.now();
 	}
 
-	// Check if too many attempts
-	if (attempts.count >= maxAttempts) {
+	// Increment attempt count (will be reset on successful login downstream)
+	attempts.count += 1;
+	attempts.lastAttempt = Date.now();
+
+	if (attempts.count > maxAttempts) {
 		return res.status(429).json({
 			success: false,
 			message: 'Too many login attempts. Please try again later.',
