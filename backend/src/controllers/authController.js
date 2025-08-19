@@ -273,13 +273,10 @@ export const forgotPassword = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email });
 		if (!user) {
-			return res
-				.status(200)
-				.json({
-					success: true,
-					message:
-						'If that email exists, a reset link has been sent.',
-				});
+			return res.status(200).json({
+				success: true,
+				message: 'If that email exists, a reset link has been sent.',
+			});
 		}
 		const { raw, hashed, expire } = createExpiringTokenPair(60 * 60 * 1000);
 		user.resetPasswordToken = hashed;
@@ -342,12 +339,10 @@ export const verifyEmail = async (req, res) => {
 			emailVerificationExpire: { $gt: Date.now() },
 		});
 		if (!user) {
-			return res
-				.status(400)
-				.json({
-					success: false,
-					message: 'Invalid or expired verification token',
-				});
+			return res.status(400).json({
+				success: false,
+				message: 'Invalid or expired verification token',
+			});
 		}
 		user.isVerified = true;
 		user.emailVerificationToken = undefined;
@@ -373,13 +368,11 @@ export const resendVerification = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email });
 		if (!user)
-			return res
-				.status(200)
-				.json({
-					success: true,
-					message:
-						'If that email exists, a verification link has been sent.',
-				});
+			return res.status(200).json({
+				success: true,
+				message:
+					'If that email exists, a verification link has been sent.',
+			});
 		if (user.isVerified)
 			return res
 				.status(200)
