@@ -18,6 +18,7 @@ validateEnvironmentVariables();
 import { limiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { sanitizeInput } from './middleware/sanitization.js';
+import { getCacheMetrics } from './middleware/cache.js';
 import {
 	detectSuspiciousActivity,
 	monitorRateLimit,
@@ -146,6 +147,7 @@ app.get('/api/health', (req, res) => {
 		success: true,
 		message: 'BartendersHub API is running!',
 		timestamp: new Date().toISOString(),
+		cache: getCacheMetrics(),
 	});
 });
 
