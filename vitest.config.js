@@ -9,5 +9,15 @@ export default defineConfig({
 		setupFiles: './vitest.setup.js',
 		include: ['src/**/*.test.{js,jsx}'],
 		exclude: ['backend/**'],
+		coverage: {
+			reporter: ['text', 'lcov'],
+			provider: 'v8',
+			reportsDirectory: './coverage-frontend',
+			exclude: ['node_modules/', 'backend/'],
+			lines: 70,
+			functions: 70,
+			branches: 60,
+			statements: 70,
+		},
 	},
 });
