@@ -1,4 +1,6 @@
 import Cocktail from '../models/Cocktail.js';
+// Buffer is a global in Node; ensure linter knows usage
+/* eslint no-undef: 0 */
 import { uploadImage, deleteImage } from '../utils/cloudinary.js';
 import { invalidateCocktailCache } from '../middleware/cache.js';
 
@@ -7,9 +9,27 @@ import { invalidateCocktailCache } from '../middleware/cache.js';
 // @access  Public
 export const getCocktails = async (req, res) => {
 	try {
-		const page = parseInt(req.query.page) || 1;
-		const limit = parseInt(req.query.limit) || 10;
-		const skip = (page - 1) * limit;
+		const page = parseInt(req.query.page) || 1; // legacy pagination support
+		const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+		const cursor = req.query.cursor; // base64 encoded createdAt|_id
+		let cursorQuery = {};
+		if (cursor) {
+			try {
+				const raw = Buffer.from(cursor, 'base64').toString('utf8');
+				const [createdAtStr, id] = raw.split('|');
+				const createdAt = new Date(createdAtStr);
+				if (!isNaN(createdAt)) {
+					cursorQuery = {
+						$or: [
+							{ createdAt: { $lt: createdAt } },
+							{ createdAt, _id: { $lt: id } },
+						],
+					};
+				}
+			} catch {
+				// ignore bad cursor
+			}
+		}
 
 		// Build query
 		let query = { isApproved: true };
@@ -34,9 +54,8 @@ export const getCocktails = async (req, res) => {
 			query.$text = { $search: req.query.search };
 		}
 
-		// Determine if aggregation is required (rating or likes sorting rely on computed values)
+		// Determine sort option (now uses denormalized fields)
 		const sortOption = req.query.sortBy;
-		const requiresAggregation = ['rating', 'likes'].includes(sortOption);
 
 		// Field selection for optimized responses (convert to projection if aggregation)
 		const rawFields = req.query.fields
@@ -51,103 +70,40 @@ export const getCocktails = async (req, res) => {
 		}
 
 		let cocktails;
-		const total = await Cocktail.countDocuments(query);
+		const total = await Cocktail.countDocuments(query); // total for legacy pagination
 
-		if (requiresAggregation) {
-			// Build aggregation pipeline
-			const pipeline = [
-				{ $match: query },
-				// Compute averageRating & likesCount for sorting
-				{
-					$addFields: {
-						averageRating: {
-							$cond: [
-								{ $eq: [{ $size: '$ratings' }, 0] },
-								0,
-								{
-									$divide: [
-										{ $sum: '$ratings.rating' },
-										{ $size: '$ratings' },
-									],
-								},
-							],
-						},
-						likesCount: { $size: '$likes' },
-					},
-				},
-			];
+		// Build sort
+		let sortBy = { createdAt: -1, _id: -1 };
+		if (sortOption === 'views') sortBy = { views: -1, createdAt: -1 };
+		if (sortOption === 'rating')
+			sortBy = { averageRating: -1, createdAt: -1 };
+		if (sortOption === 'likes') sortBy = { likesCount: -1, createdAt: -1 };
 
-			// Sorting stage
-			if (sortOption === 'rating') {
-				pipeline.push({ $sort: { averageRating: -1, createdAt: -1 } });
-			} else if (sortOption === 'likes') {
-				pipeline.push({ $sort: { likesCount: -1, createdAt: -1 } });
-			} else {
-				pipeline.push({ $sort: { createdAt: -1 } });
-			}
+		const findQuery = { ...query, ...cursorQuery };
+		cocktails = await Cocktail.find(findQuery)
+			.select(rawFields.length ? rawFields.join(' ') : '')
+			.populate('createdBy', 'name username avatar isVerified')
+			.sort(sortBy)
+			.limit(limit + 1) // fetch one extra to determine next cursor
+			.lean();
 
-			// Pagination stages
-			pipeline.push({ $skip: skip }, { $limit: limit });
-
-			// Projection (always include required base fields)
-			const baseProjection = {
-				name: 1,
-				description: 1,
-				image: 1,
-				category: 1,
-				prepTime: 1,
-				tags: 1,
-				createdBy: 1,
-				views: 1,
-				averageRating: 1,
-				likesCount: 1,
-				createdAt: 1,
-			};
-			let finalProjection = baseProjection;
-			if (rawFields.length) {
-				finalProjection = {};
-				rawFields.forEach((f) => (finalProjection[f] = 1));
-				// Ensure computed fields included if sorting by them
-				if (sortOption === 'rating') finalProjection.averageRating = 1;
-				if (sortOption === 'likes') finalProjection.likesCount = 1;
-			}
-			pipeline.push({ $project: finalProjection });
-
-			cocktails = await Cocktail.aggregate(pipeline);
-
-			// Populate createdBy manually after aggregation if needed
-			if (finalProjection.createdBy) {
-				cocktails = await Cocktail.populate(cocktails, {
-					path: 'createdBy',
-					select: 'name username avatar isVerified',
-				});
-			}
-		} else {
-			// Simple find-based retrieval (createdAt / views sort supported directly)
-			let sortBy = { createdAt: -1 };
-			if (sortOption === 'views') sortBy = { views: -1 };
-
-			cocktails = await Cocktail.find(query)
-				.select(rawFields.length ? rawFields.join(' ') : '')
-				.populate('createdBy', 'name username avatar isVerified')
-				.sort(sortBy)
-				.skip(skip)
-				.limit(limit)
-				.lean();
+		let nextCursor = null;
+		if (cocktails.length > limit) {
+			const last = cocktails[limit - 1];
+			nextCursor = Buffer.from(
+				`${last.createdAt.toISOString()}|${last._id}`,
+			).toString('base64');
+			cocktails = cocktails.slice(0, limit);
 		}
 
 		res.status(200).json({
 			success: true,
 			count: cocktails.length,
-			total,
-			page,
-			pages: Math.ceil(total / limit),
-			pagination: {
-				current: page,
-				total: Math.ceil(total / limit),
-				hasNext: page * limit < total,
-				hasPrev: page > 1,
-			},
+			// legacy pagination data (omit if cursor used?)
+			total: cursor ? undefined : total,
+			page: cursor ? undefined : page,
+			pages: cursor ? undefined : Math.ceil(total / limit),
+			cursor: nextCursor,
 			data: cocktails,
 		});
 	} catch (error) {
@@ -392,6 +348,8 @@ export const toggleLike = async (req, res) => {
 			cocktail.likes.push({ user: req.user.id });
 		}
 
+		// Update denormalized like count (pre-save hook recomputes but set explicitly for clarity)
+		cocktail.likesCount = cocktail.likes.length;
 		await cocktail.save();
 
 		res.status(200).json({
@@ -432,6 +390,14 @@ export const addComment = async (req, res) => {
 		};
 
 		cocktail.comments.push(comment);
+		// Recompute denormalized rating
+		if (cocktail.ratings.length) {
+			const sum = cocktail.ratings.reduce((acc, r) => acc + r.rating, 0);
+			cocktail.averageRating =
+				Math.round((sum / cocktail.ratings.length) * 10) / 10;
+		} else {
+			cocktail.averageRating = 0;
+		}
 		await cocktail.save();
 
 		// Populate the new comment
