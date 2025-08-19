@@ -7,6 +7,18 @@ const redisDisabled =
 
 // Initialize Redis client only when not disabled
 let redis = null;
+// In-memory metrics (per process)
+let cacheHits = 0;
+let cacheMisses = 0;
+export const getCacheMetrics = () => ({
+	hits: cacheHits,
+	misses: cacheMisses,
+	hitRatio:
+		cacheHits + cacheMisses === 0
+			? 0
+			: cacheHits / (cacheHits + cacheMisses),
+});
+/* eslint no-undef:0 */
 if (!redisDisabled) {
 	try {
 		redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
@@ -56,9 +68,19 @@ export const cacheMiddleware = (duration = 300) => {
 		try {
 			const cached = await redis.get(key);
 			if (cached) {
+				cacheHits++;
 				console.log(`🎯 Cache hit: ${key}`);
+				// ETag handling
+				const etag = `W/"${
+					Buffer.from(cached).byteLength
+				}-${Buffer.from(key).toString('base64').slice(0, 8)}"`;
+				res.setHeader('ETag', etag);
+				if (req.headers['if-none-match'] === etag) {
+					return res.status(304).end();
+				}
 				return res.json(JSON.parse(cached));
 			}
+			cacheMisses++;
 		} catch (error) {
 			console.warn('Cache read error:', error.message);
 		}
@@ -70,8 +92,13 @@ export const cacheMiddleware = (duration = 300) => {
 		res.json = (body) => {
 			if (redis && res.statusCode === 200) {
 				try {
-					redis.setex(key, duration, JSON.stringify(body));
+					const payload = JSON.stringify(body);
+					redis.setex(key, duration, payload);
 					console.log(`💾 Cached: ${key} for ${duration}s`);
+					const etag = `W/"${
+						Buffer.from(payload).byteLength
+					}-${Buffer.from(key).toString('base64').slice(0, 8)}"`;
+					res.setHeader('ETag', etag);
 				} catch (error) {
 					console.warn('Cache write error:', error.message);
 				}
