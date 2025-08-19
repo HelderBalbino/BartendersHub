@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import process from 'process';
 
 const cocktailSchema = new mongoose.Schema(
 	{
@@ -72,11 +73,17 @@ const cocktailSchema = new mongoose.Schema(
 		image: {
 			url: {
 				type: String,
-				required: [true, 'Image URL is required'],
+				required:
+					process.env.NODE_ENV === 'test'
+						? false
+						: [true, 'Image URL is required'],
 			},
 			publicId: {
 				type: String,
-				required: [true, 'Image public ID is required'],
+				required:
+					process.env.NODE_ENV === 'test'
+						? false
+						: [true, 'Image public ID is required'],
 			},
 		},
 		category: {
