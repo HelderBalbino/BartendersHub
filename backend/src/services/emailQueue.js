@@ -48,8 +48,10 @@ if (redisUrl) {
 // Email transporter
 let transporter = null;
 
+
+// Configure transporter (typo fix: createTransport)
 if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-	transporter = nodemailer.createTransporter({
+	transporter = nodemailer.createTransport({
 		host: process.env.EMAIL_HOST || 'smtp.gmail.com',
 		port: parseInt(process.env.EMAIL_PORT) || 587,
 		secure: false,
