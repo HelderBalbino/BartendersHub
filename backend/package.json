@@ -10,6 +10,7 @@
 		"build": "echo 'No build step required for Node.js'",
 		"test": "NODE_ENV=test AUTO_VERIFY_USERS=true USE_IN_MEMORY_DB=true DISABLE_REDIS=true NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
 		"test:watch": "jest --watch",
+		"health": "node scripts/healthCheck.js",
 		"seed": "node src/utils/seedDatabase.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
 	},
