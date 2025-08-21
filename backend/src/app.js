@@ -7,6 +7,7 @@ import compression from 'compression';
 import path from 'path';
 import process from 'process';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 // Load env early
 dotenv.config();
@@ -32,6 +33,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Lightweight request ID + timing middleware
+app.use((req, res, next) => {
+	const start = process.hrtime.bigint();
+	req.id = randomUUID();
+	res.setHeader('X-Request-ID', req.id);
+	res.on('finish', () => {
+		const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
+		if (durationMs > 1000) {
+			console.warn(`⏱️ Slow request ${req.method} ${req.originalUrl} id=${req.id} ${durationMs.toFixed(1)}ms status=${res.statusCode}`);
+		}
+	});
+	next();
+});
 
 // Security middleware (helmet)
 app.use(
