@@ -40,12 +40,13 @@ export const errorHandler = (err, req, res, next) => {
 	if (process.env.NODE_ENV === 'development') {
 		console.error('🚨 Error Details:', errorContext);
 	} else {
-		// In production, log less sensitive information
+		// In production, log less sensitive information + correlation id
 		console.error('🚨 Error:', {
 			message: err.message,
 			method: req.method,
 			url: req.url,
 			timestamp: errorContext.timestamp,
+			requestId: req.id,
 		});
 	}
 
@@ -134,8 +135,7 @@ export const errorHandler = (err, req, res, next) => {
 
 	// Include error ID for tracking in production
 	if (process.env.NODE_ENV === 'production') {
-		response.errorId =
-			Date.now().toString(36) + Math.random().toString(36).substr(2);
+		response.requestId = req.id;
 	}
 
 	res.status(statusCode).json(response);
