@@ -7,19 +7,21 @@ platform. Built with Node.js, Express, and MongoDB.
 
 ## Features
 
--   User authentication and authorization
--   Cocktail CRUD operations
--   Image upload with Cloudinary
--   User profiles and social features
--   Comment and rating system
--   Search and filtering
--   Rate limiting and security
+- User authentication and authorization
+- Cocktail CRUD operations
+- Image upload with Cloudinary
+- User profiles and social features
+- Comment and rating system
+- Search and filtering
+- Rate limiting and security
+- Health diagnostics script (`npm run health`)
+- Request ID correlation & slow request logging
 
 ## Prerequisites
 
--   Node.js (v18.0.0 or higher)
--   MongoDB (v5.0 or higher)
--   Cloudinary account (for image uploads)
+- Node.js (v18.0.0 or higher)
+- MongoDB (v5.0 or higher)
+- Cloudinary account (for image uploads)
 
 ## Installation
 
@@ -28,7 +30,7 @@ platform. Built with Node.js, Express, and MongoDB.
     ```bash
     git clone https://github.com/HelderBalbino/BartendersHub.git
     cd BartendersHub/backend
-    ```
+    ```bash
 
 2. **Install dependencies**
 
@@ -67,6 +69,15 @@ platform. Built with Node.js, Express, and MongoDB.
     ```
 
 6. **Start the server**
+7. **Run health diagnostics (optional)**
+
+    ```bash
+    npm run health
+    # or JSON output
+    node scripts/healthCheck.js --json
+    ```
+
+    Ensures MongoDB, Cloudinary, Redis (if enabled), and email transporter are reachable.
 
     ```bash
     # Development
@@ -80,16 +91,16 @@ platform. Built with Node.js, Express, and MongoDB.
 
 ### Authentication
 
--   `POST /api/auth/register` - Register new user
--   `POST /api/auth/login` - Login user
--   `GET /api/auth/me` - Get current user
--   `PUT /api/auth/updatedetails` - Update user details
--   `PUT /api/auth/updatepassword` - Update password
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user
+- `PUT /api/auth/updatedetails` - Update user details
+- `PUT /api/auth/updatepassword` - Update password
 
 ### Cocktails
 
--   `GET /api/cocktails` - Get all cocktails
--   `GET /api/cocktails/:id` - Get single cocktail
+- `GET /api/cocktails` - Get all cocktails
+- `GET /api/cocktails/:id` - Get single cocktail
 -   `POST /api/cocktails` - Create cocktail (auth required)
 -   `PUT /api/cocktails/:id` - Update cocktail (auth required)
 -   `DELETE /api/cocktails/:id` - Delete cocktail (auth required)
