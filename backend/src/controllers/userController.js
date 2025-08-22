@@ -146,13 +146,34 @@ export const getProfile = async (req, res) => {
 // @access  Private
 export const updateProfile = async (req, res) => {
 	try {
+		// Support both JSON and multipart/form-data bodies. When using multipart,
+		// nested objects (socialLinks, preferences) arrive as either flattened keys
+		// or JSON strings. Attempt safe parsing of JSON strings.
+		let socialLinks = req.body.socialLinks;
+		if (typeof socialLinks === 'string') {
+			try {
+				socialLinks = JSON.parse(socialLinks);
+			} catch {
+				// ignore parse error, leave as original string so validation can surface issue
+			}
+		}
+
+		let preferences = req.body.preferences;
+		if (typeof preferences === 'string') {
+			try {
+				preferences = JSON.parse(preferences);
+			} catch {
+				// ignore parse error
+			}
+		}
+
 		const fieldsToUpdate = {
 			name: req.body.name,
 			bio: req.body.bio,
 			speciality: req.body.speciality,
 			location: req.body.location,
-			socialLinks: req.body.socialLinks,
-			preferences: req.body.preferences,
+			socialLinks,
+			preferences,
 		};
 
 		// Handle avatar upload
