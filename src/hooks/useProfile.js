@@ -178,13 +178,40 @@ export const useUpdateProfile = () => {
 
 	return useMutation({
 		mutationFn: async (profileData) => {
+			// If an avatar File object is present, use multipart/form-data
+			if (profileData && profileData.avatar instanceof File) {
+				const formData = new FormData();
+				// Append primitive fields
+				['name', 'bio', 'speciality', 'location'].forEach((f) => {
+					if (profileData[f] !== undefined && profileData[f] !== null)
+						formData.append(f, profileData[f]);
+				});
+				// Nested objects must be JSON.stringified
+				if (profileData.socialLinks)
+					formData.append(
+						'socialLinks',
+						JSON.stringify(profileData.socialLinks),
+					);
+				if (profileData.preferences)
+					formData.append(
+						'preferences',
+						JSON.stringify(profileData.preferences),
+					);
+				formData.append('avatar', profileData.avatar);
+				const data = await apiService.put('/users/profile', formData, {
+					headers: { 'Content-Type': 'multipart/form-data' },
+				});
+				if (data?.user) return data;
+				if (data?.data) return data;
+				throw new Error('No valid profile update response');
+			}
+			// Fallback: normal JSON update
 			const data = await apiService.put('/users/profile', profileData);
 			if (data?.user) return data;
 			if (data?.data) return data;
 			throw new Error('No valid profile update response');
 		},
 		onSuccess: () => {
-			// Invalidate and refetch profile queries
 			queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
 			toast.success('Profile updated successfully!');
 		},
