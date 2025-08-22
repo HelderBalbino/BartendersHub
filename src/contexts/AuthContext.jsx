@@ -204,26 +204,38 @@ export const AuthProvider = ({ children }) => {
 
 		try {
 			const response = await apiService.post('/auth/register', userData);
-			const { token, user } = response.token ? response : response.data;
-
-			TokenManager.set(token, false); // Default to session storage for new users
-
+			// Normalize potential response shapes
+			const data =
+				response?.data?.success !== undefined
+					? response.data
+					: response;
+			if (!data?.success) {
+				throw new Error(data?.message || 'Registration failed');
+			}
+			if (!data.token || !data.user) {
+				throw new Error('Incomplete registration response');
+			}
+			TokenManager.set(data.token, false);
 			dispatch({
 				type: 'LOGIN_SUCCESS',
-				payload: { token, user },
+				payload: { token: data.token, user: data.user },
 			});
 			try {
 				localStorage.setItem(
 					'currentUserId',
-					user.id || user._id || user.userId || '',
+					data.user.id || data.user._id || data.user.userId || '',
 				);
 			} catch {
 				// ignore storage errors
 			}
-
-			return { success: true, user };
+			return { success: true, user: data.user };
 		} catch (error) {
-			const errorMessage = error.data?.message || 'Registration failed';
+			// Derive message from various error shapes produced by apiService/enhanceError
+			const errorMessage =
+				error?.response?.data?.message ||
+				error?.data?.message ||
+				error?.message ||
+				'Registration failed';
 			dispatch({
 				type: 'LOGIN_FAILURE',
 				payload: errorMessage,
