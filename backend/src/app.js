@@ -42,7 +42,11 @@ app.use((req, res, next) => {
 	res.on('finish', () => {
 		const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
 		if (durationMs > 1000) {
-			console.warn(`⏱️ Slow request ${req.method} ${req.originalUrl} id=${req.id} ${durationMs.toFixed(1)}ms status=${res.statusCode}`);
+			console.warn(
+				`⏱️ Slow request ${req.method} ${req.originalUrl} id=${
+					req.id
+				} ${durationMs.toFixed(1)}ms status=${res.statusCode}`,
+			);
 		}
 	});
 	next();
