@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import {
 	useUserProfileById,
@@ -13,10 +13,62 @@ import SkeletonGrid from './ui/SkeletonGrid';
 import CocktailCard from './CocktailCard';
 import ArtDecoSection from './ui/ArtDecoSection';
 import ArtDecoButton from './ui/ArtDecoButton';
+import ImageUpload from './ui/Forms/ImageUpload';
+import { useUpdateProfile } from '../hooks/useProfile';
+import { toast } from 'react-hot-toast';
 
 const UserProfile = ({ userId }) => {
 	const { user: currentUser } = useAuth();
 	const [activeTab, setActiveTab] = useState('cocktails');
+	// Settings modal state
+	const [showSettings, setShowSettings] = useState(false);
+	const [avatarFile, setAvatarFile] = useState(null);
+	const [avatarPreview, setAvatarPreview] = useState(null);
+	const settingsRef = useRef(null);
+	const { mutateAsync: updateProfile, isLoading: updatingProfile } =
+		useUpdateProfile();
+
+	// Close settings on outside click
+	useEffect(() => {
+		if (!showSettings) return;
+		const handler = (e) => {
+			if (
+				settingsRef.current &&
+				!settingsRef.current.contains(e.target)
+			) {
+				setShowSettings(false);
+			}
+		};
+		document.addEventListener('mousedown', handler);
+		return () => document.removeEventListener('mousedown', handler);
+	}, [showSettings]);
+
+	// Avatar file preview management
+	useEffect(() => {
+		if (!avatarFile) {
+			setAvatarPreview(null);
+			return;
+		}
+		const url = URL.createObjectURL(avatarFile);
+		setAvatarPreview(url);
+		return () => URL.revokeObjectURL(url);
+	}, [avatarFile]);
+
+	const handleAvatarChange = async () => {
+		if (!avatarFile) return toast.error('Please select an image first');
+		try {
+			await updateProfile({ avatar: avatarFile });
+			toast.success('Avatar updated');
+			setShowSettings(false);
+		} catch (err) {
+			toast.error(err.message || 'Failed to update avatar');
+		}
+	};
+
+	const handleDeleteAccount = async () => {
+		// Placeholder until backend endpoint exists
+		toast.error('Account deletion not yet implemented');
+	};
 
 	// (Removed verbose debug logging)
 
@@ -309,7 +361,7 @@ const UserProfile = ({ userId }) => {
 		<ArtDecoSection>
 			<div className='container mx-auto px-4 py-12'>
 				{/* Profile Header */}
-				<div className='bg-black/50 backdrop-blur-sm border border-yellow-500/20 rounded-lg p-8 mb-8'>
+				<div className='bg-black/50 backdrop-blur-sm border border-yellow-500/20 rounded-lg p-8 mb-8 relative'>
 					<div className='flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8'>
 						{/* Avatar */}
 						<div className='relative'>
@@ -368,6 +420,36 @@ const UserProfile = ({ userId }) => {
 											? 'Unfollow'
 											: 'Follow'}
 									</ArtDecoButton>
+								)}
+								{/* Settings cog for own profile */}
+								{isOwnProfile && (
+									<button
+										onClick={() =>
+											setShowSettings((p) => !p)
+										}
+										className='absolute top-4 right-4 text-yellow-500 hover:text-yellow-300 transition'
+										aria-label='Profile settings'
+									>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-6 w-6'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'
+											strokeWidth={1.5}
+										>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z'
+											/>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+											/>
+										</svg>
+									</button>
 								)}
 							</div>
 
@@ -453,6 +535,80 @@ const UserProfile = ({ userId }) => {
 
 				{/* Tab Content */}
 				<div className='min-h-96'>{renderTabContent()}</div>
+				{/* Settings Modal */}
+				{showSettings && (
+					<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm'>
+						<div
+							ref={settingsRef}
+							className='bg-gray-900 border border-yellow-500/30 rounded-lg w-full max-w-lg p-6 relative'
+						>
+							<button
+								onClick={() => setShowSettings(false)}
+								className='absolute top-3 right-3 text-gray-400 hover:text-white'
+								aria-label='Close settings'
+							>
+								✕
+							</button>
+							<h2 className='text-2xl font-semibold text-yellow-500 mb-4'>
+								Profile Settings
+							</h2>
+							<div className='space-y-8 max-h-[70vh] overflow-y-auto pr-1'>
+								<section>
+									<h3 className='text-lg text-white mb-3'>
+										Avatar
+									</h3>
+									<ImageUpload
+										preview={
+											avatarPreview || userProfile.avatar
+										}
+										onChange={(file) => setAvatarFile(file)}
+										onRemove={() => setAvatarFile(null)}
+										placeholder='Choose new avatar'
+										maxSize={2 * 1024 * 1024}
+									/>
+									<div className='flex gap-4 mt-4'>
+										<ArtDecoButton
+											onClick={handleAvatarChange}
+											disabled={
+												updatingProfile || !avatarFile
+											}
+										>
+											{updatingProfile
+												? 'Updating...'
+												: 'Save Avatar'}
+										</ArtDecoButton>
+										{avatarFile && (
+											<button
+												onClick={() =>
+													setAvatarFile(null)
+												}
+												className='text-sm text-gray-400 hover:text-white'
+											>
+												Cancel
+											</button>
+										)}
+									</div>
+								</section>
+
+								<section className='border-t border-yellow-500/20 pt-6'>
+									<h3 className='text-lg text-white mb-2'>
+										Danger Zone
+									</h3>
+									<p className='text-gray-400 text-sm mb-4'>
+										Deleting your account is permanent and
+										cannot be undone.
+									</p>
+									<button
+										onClick={handleDeleteAccount}
+										className='px-4 py-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition rounded'
+									>
+										Delete Account
+									</button>
+								</section>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</ArtDecoSection>
 	);
