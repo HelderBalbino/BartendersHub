@@ -48,7 +48,6 @@ if (redisUrl) {
 // Email transporter
 let transporter = null;
 
-
 // Configure transporter (typo fix: createTransport)
 if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
 	transporter = nodemailer.createTransport({
