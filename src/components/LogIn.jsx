@@ -18,6 +18,8 @@ const LogIn = () => {
 
 	const { login, register, loading, error, isAuthenticated, clearError } =
 		useAuth();
+	const [needVerification, setNeedVerification] = useState(false);
+	const [resent, setResent] = useState(false);
 
 	// FIXED: Replace useFormValidation with simple local state
 	const [formValues, setFormValues] = useState({
@@ -179,7 +181,11 @@ const LogIn = () => {
 					toast.success('Welcome back to the speakeasy!');
 					// Navigation will be handled by the auth context useEffect
 				} else {
-					toast.error(result.error || 'Login failed');
+					if (result.needVerification) {
+						setNeedVerification(true);
+					} else {
+						toast.error(result.error || 'Login failed');
+					}
 				}
 			} else {
 				const result = await register({
@@ -199,6 +205,25 @@ const LogIn = () => {
 		} catch (error) {
 			console.error('Authentication error:', error);
 			toast.error('An unexpected error occurred');
+		}
+	};
+
+	const handleResendVerification = async () => {
+		try {
+			await fetch(
+				`${
+					import.meta.env.VITE_API_BASE_URL || ''
+				}/auth/resend-verification`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email: formValues.email }),
+				},
+			);
+			setResent(true);
+			toast.success('Verification email sent');
+		} catch {
+			toast.error('Failed to resend verification');
 		}
 	};
 
@@ -289,10 +314,25 @@ const LogIn = () => {
 						</button>
 					</div>
 
-					{/* Error Display */}
-					{error && (
-						<div className='mb-6 p-4 border border-red-400/50 bg-red-900/20 text-red-400 text-sm'>
-							{error}
+					{/* Error & Verification Display */}
+					{(error || needVerification) && (
+						<div className='mb-6 p-4 border border-red-400/50 bg-red-900/20 text-red-400 text-sm space-y-2'>
+							<p>
+								{needVerification
+									? 'Email not verified. Please verify your email to continue.'
+									: error}
+							</p>
+							{needVerification && (
+								<button
+									onClick={handleResendVerification}
+									disabled={resent}
+									className='text-yellow-400 hover:text-yellow-300 underline text-xs'
+								>
+									{resent
+										? 'Verification email sent'
+										: 'Resend verification email'}
+								</button>
+							)}
 						</div>
 					)}
 
