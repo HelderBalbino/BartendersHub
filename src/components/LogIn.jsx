@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
+import apiService from '../services/api';
 import CountrySelect from './ui/Forms/CountrySelect';
 import { validationRules } from '../hooks/useFormValidation';
 import LoadingSpinner from './LoadingSpinner';
@@ -209,21 +210,20 @@ const LogIn = () => {
 	};
 
 	const handleResendVerification = async () => {
+		if (!formValues.email) {
+			toast.error('Enter your email first');
+			return;
+		}
 		try {
-			await fetch(
-				`${
-					import.meta.env.VITE_API_BASE_URL || ''
-				}/auth/resend-verification`,
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ email: formValues.email }),
-				},
-			);
+			await apiService.post('/auth/resend-verification', {
+				email: formValues.email,
+			});
 			setResent(true);
 			toast.success('Verification email sent');
-		} catch {
-			toast.error('Failed to resend verification');
+		} catch (e) {
+			toast.error(
+				e?.response?.data?.message || 'Failed to resend verification',
+			);
 		}
 	};
 
