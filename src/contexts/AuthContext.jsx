@@ -181,20 +181,21 @@ export const AuthProvider = ({ children }) => {
 			return { success: true, user };
 		} catch (error) {
 			let errorMessage = 'Login failed';
-
-			if (error.response?.data?.message) {
-				errorMessage = error.response.data.message;
+			let needVerification = false;
+			if (error.response?.data) {
+				if (error.response.data.message)
+					errorMessage = error.response.data.message;
+				if (error.response.data.needVerification)
+					needVerification = true;
 			} else if (error.message) {
 				errorMessage = error.message;
 			}
-
 			dispatch({
 				type: 'LOGIN_FAILURE',
 				payload: errorMessage,
 			});
-
 			logError(error, 'auth-login');
-			return { success: false, error: errorMessage };
+			return { success: false, error: errorMessage, needVerification };
 		}
 	}, []);
 
