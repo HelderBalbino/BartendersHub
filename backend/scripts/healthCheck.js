@@ -19,10 +19,22 @@
 import process from 'process';
 import fs from 'fs';
 import path from 'path';
+// Load environment variables from both root and backend .env if present
+import dotenv from 'dotenv';
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import cloudinary from 'cloudinary';
 import nodemailer from 'nodemailer';
+
+// Explicitly ensure backend/.env is loaded if executed from repo root
+try {
+	const rootEnvPath = path.resolve(process.cwd(), '.env');
+	const backendEnvPath = path.resolve(process.cwd(), 'backend', '.env');
+	if (fs.existsSync(rootEnvPath)) dotenv.config({ path: rootEnvPath });
+	if (fs.existsSync(backendEnvPath)) dotenv.config({ path: backendEnvPath });
+} catch {
+	// non-fatal
+}
 
 // Lazy load redis client from existing middleware (may be null if disabled)
 let redisClient = null;
