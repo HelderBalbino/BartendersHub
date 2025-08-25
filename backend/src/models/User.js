@@ -99,6 +99,7 @@ const userSchema = new mongoose.Schema(
 		resetPasswordExpire: Date,
 		emailVerificationToken: String,
 		emailVerificationExpire: Date,
+		_lastVerificationResend: Date, // internal cooldown timestamp for verification email resends
 		joinDate: {
 			type: Date,
 			default: Date.now,
