@@ -31,7 +31,10 @@ async function main() {
 	console.log('🔍 Email debug start for', email);
 	console.log('📧 Email config check:');
 	console.log('  EMAIL_USER:', process.env.EMAIL_USER ? 'SET' : 'NOT SET');
-	console.log('  EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
+	console.log(
+		'  EMAIL_PASSWORD:',
+		process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET',
+	);
 	console.log('  EMAIL_HOST:', process.env.EMAIL_HOST || 'DEFAULT');
 
 	// Connect to database
@@ -47,7 +50,9 @@ async function main() {
 	}
 
 	// Generate token
-	const { raw, hashed, expire } = createExpiringTokenPair(24 * 60 * 60 * 1000);
+	const { raw, hashed, expire } = createExpiringTokenPair(
+		24 * 60 * 60 * 1000,
+	);
 	user.emailVerificationToken = hashed;
 	user.emailVerificationExpire = new Date(expire);
 	await user.save();
@@ -68,8 +73,8 @@ async function main() {
 			debug: true,
 		});
 
-		const frontendBase = 
-			(process.env.NODE_ENV === 'production' && 
+		const frontendBase =
+			(process.env.NODE_ENV === 'production' &&
 				(process.env.FRONTEND_URL_PROD || process.env.FRONTEND_URL)) ||
 			process.env.FRONTEND_URL ||
 			'http://localhost:3000';
@@ -113,8 +118,8 @@ async function main() {
 	}
 
 	console.log('👉 Verification URL (manual):');
-	const frontendBase = 
-		(process.env.NODE_ENV === 'production' && 
+	const frontendBase =
+		(process.env.NODE_ENV === 'production' &&
 			(process.env.FRONTEND_URL_PROD || process.env.FRONTEND_URL)) ||
 		process.env.FRONTEND_URL ||
 		'http://localhost:3000';
