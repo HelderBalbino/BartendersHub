@@ -13,6 +13,7 @@
 		"health": "node scripts/healthCheck.js",
 		"email:test": "node scripts/sendTestEmail.js",
 		"email:debug": "EMAIL_DEBUG=true node scripts/debugEmail.js",
+		"email:sendgrid": "node scripts/testSendGrid.js",
 		"user:verify": "node scripts/verifyUser.js",
 		"seed": "node src/utils/seedDatabase.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
@@ -27,6 +28,7 @@
 	"author": "Helder Balbino",
 	"license": "MIT",
 	"dependencies": {
+		"@sendgrid/mail": "^8.1.5",
 		"bcryptjs": "^2.4.3",
 		"bull": "^4.16.5",
 		"cloudinary": "^1.41.0",
