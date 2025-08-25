@@ -432,3 +432,70 @@ export const resendVerification = async (req, res) => {
 		});
 	}
 };
+
+// @desc    (Debug) Generate and return a fresh verification link (raw token) for a user
+// @route   GET /api/auth/debug/verification-link?email=...&key=...
+// @access  Protected via shared key (DEBUG_VERIFICATION_KEY)
+export const generateVerificationLink = async (req, res) => {
+	try {
+		const { email, key } = req.query;
+		if (!process.env.DEBUG_VERIFICATION_KEY) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'Endpoint disabled' });
+		}
+		if (key !== process.env.DEBUG_VERIFICATION_KEY) {
+			return res
+				.status(403)
+				.json({ success: false, message: 'Invalid debug key' });
+		}
+		if (!email) {
+			return res
+				.status(400)
+				.json({
+					success: false,
+					message: 'Email query param required',
+				});
+		}
+		const user = await User.findOne({ email });
+		if (!user) {
+			return res
+				.status(404)
+				.json({ success: false, message: 'User not found' });
+		}
+		if (user.isVerified) {
+			return res
+				.status(200)
+				.json({
+					success: true,
+					alreadyVerified: true,
+					message: 'User already verified',
+				});
+		}
+		const { raw, hashed, expire } = createExpiringTokenPair(
+			24 * 60 * 60 * 1000,
+		);
+		user.emailVerificationToken = hashed;
+		user.emailVerificationExpire = new Date(expire);
+		await user.save();
+		const frontendBase =
+			(process.env.NODE_ENV === 'production' &&
+				(process.env.FRONTEND_URL_PROD || process.env.FRONTEND_URL)) ||
+			process.env.FRONTEND_URL ||
+			'http://localhost:3000';
+		const verifyUrl = `${frontendBase}/verify-email/${raw}`;
+		return res
+			.status(200)
+			.json({
+				success: true,
+				verifyUrl,
+				expiresAt: new Date(expire).toISOString(),
+			});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Server error',
+			error: error.message,
+		});
+	}
+};
