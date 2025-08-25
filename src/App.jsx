@@ -24,6 +24,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const AddCocktailPage = lazy(() => import('./pages/AddCocktailPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
+const VerifyPendingPage = lazy(() => import('./pages/VerifyPendingPage'));
 
 // Enhanced loading component
 const PageLoader = () => (
@@ -72,6 +73,14 @@ const App = () => {
 							element={
 								<Suspense fallback={<PageLoader />}>
 									<VerifyEmailPage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path='verify-pending'
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<VerifyPendingPage />
 								</Suspense>
 							}
 						/>
