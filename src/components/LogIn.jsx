@@ -194,6 +194,12 @@ const LogIn = () => {
 				} else {
 					if (result.needVerification) {
 						setNeedVerification(true);
+						// Redirect to verify-pending with email param
+						navigate(
+							`/verify-pending?email=${encodeURIComponent(
+								formValues.email,
+							)}`,
+						);
 					} else {
 						toast.error(result.error || 'Login failed');
 					}
