@@ -12,6 +12,7 @@
 		"test:watch": "jest --watch",
 		"health": "node scripts/healthCheck.js",
 		"email:test": "node scripts/sendTestEmail.js",
+		"email:debug": "EMAIL_DEBUG=true node scripts/debugEmail.js",
 		"user:verify": "node scripts/verifyUser.js",
 		"seed": "node src/utils/seedDatabase.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
