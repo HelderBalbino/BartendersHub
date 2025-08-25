@@ -55,42 +55,56 @@ const frontendBase =
 // Email transporter
 let transporter = null;
 
-// Configure transporter (typo fix: createTransport)
-const EMAIL_DEBUG = process.env.EMAIL_DEBUG === 'true';
-if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-	transporter = nodemailer.createTransport({
-		host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-		port: parseInt(process.env.EMAIL_PORT) || 587,
-		secure: false,
-		auth: {
-			user: process.env.EMAIL_USER,
-			pass: process.env.EMAIL_PASSWORD,
-		},
-		logger: EMAIL_DEBUG,
-		debug: EMAIL_DEBUG,
-	});
-	transporter
-		.verify()
-		.then(() => {
-			console.log('✅ Email transporter verified');
-		})
-		.catch((err) => {
-			console.error('❌ Transport verify failed:', err.message);
+// Configure transporter lazily to ensure env vars are loaded
+const getTransporter = () => {
+	if (transporter) return transporter;
+	
+	const EMAIL_DEBUG = process.env.EMAIL_DEBUG === 'true';
+	if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+		transporter = nodemailer.createTransporter({
+			host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+			port: parseInt(process.env.EMAIL_PORT) || 587,
+			secure: false,
+			auth: {
+				user: process.env.EMAIL_USER,
+				pass: process.env.EMAIL_PASSWORD,
+			},
+			logger: EMAIL_DEBUG,
+			debug: EMAIL_DEBUG,
 		});
-	console.log(
-		'✅ Email transporter configured',
-		EMAIL_DEBUG ? '(debug ON)' : '',
-	);
-} else {
-	console.warn(
-		'⚠️ Email disabled - EMAIL_USER and EMAIL_PASSWORD not configured',
-	);
-}
+		
+		// Verify asynchronously
+		transporter
+			.verify()
+			.then(() => {
+				console.log('✅ Email transporter verified');
+			})
+			.catch((err) => {
+				console.error('❌ Transport verify failed:', err.message);
+			});
+		
+		console.log(
+			'✅ Email transporter configured',
+			EMAIL_DEBUG ? '(debug ON)' : '',
+		);
+		return transporter;
+	} else {
+		console.warn(
+			'⚠️ Email disabled - EMAIL_USER and EMAIL_PASSWORD not configured',
+		);
+		return null;
+	}
+};
 
 // Process email jobs
-if (emailQueue && transporter) {
+if (emailQueue) {
 	emailQueue.process(async (job) => {
 		const { to, subject, template, data } = job.data;
+		const transporter = getTransporter();
+		
+		if (!transporter) {
+			throw new Error('Email transporter not configured');
+		}
 
 		try {
 			const emailContent = generateEmailContent(template, data);
