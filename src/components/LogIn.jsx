@@ -21,6 +21,16 @@ const LogIn = () => {
 		useAuth();
 	const [needVerification, setNeedVerification] = useState(false);
 	const [resent, setResent] = useState(false);
+	const [cooldown, setCooldown] = useState(0); // seconds remaining for resend
+
+	// Cooldown timer effect
+	useEffect(() => {
+		if (cooldown <= 0) return;
+		const id = setInterval(() => {
+			setCooldown((c) => (c > 1 ? c - 1 : 0));
+		}, 1000);
+		return () => clearInterval(id);
+	}, [cooldown]);
 
 	// FIXED: Replace useFormValidation with simple local state
 	const [formValues, setFormValues] = useState({
@@ -215,15 +225,29 @@ const LogIn = () => {
 			return;
 		}
 		try {
-			await apiService.post('/auth/resend-verification', {
+			const res = await apiService.post('/auth/resend-verification', {
 				email: formValues.email,
 			});
 			setResent(true);
-			toast.success('Verification email sent');
-		} catch (e) {
-			toast.error(
-				e?.response?.data?.message || 'Failed to resend verification',
+			setCooldown(60); // start cooldown locally to match server
+			toast.success(
+				res?.data?.message || 'Verification email sent successfully',
 			);
+		} catch (e) {
+			const status = e?.response?.status;
+			if (status === 429) {
+				const retry = e?.response?.data?.retryAfterSeconds || 60;
+				setCooldown(retry);
+				toast.error(
+					e?.response?.data?.message ||
+						'Please wait before requesting another email',
+				);
+			} else {
+				toast.error(
+					e?.response?.data?.message ||
+						'Failed to resend verification email',
+				);
+			}
 		}
 	};
 
@@ -323,15 +347,25 @@ const LogIn = () => {
 									: error}
 							</p>
 							{needVerification && (
-								<button
-									onClick={handleResendVerification}
-									disabled={resent}
-									className='text-yellow-400 hover:text-yellow-300 underline text-xs'
-								>
-									{resent
-										? 'Verification email sent'
-										: 'Resend verification email'}
-								</button>
+								<div className='flex flex-col sm:flex-row gap-2 sm:items-center'>
+									<button
+										onClick={handleResendVerification}
+										disabled={cooldown > 0}
+										className='text-yellow-400 hover:text-yellow-300 underline text-xs disabled:opacity-50 disabled:cursor-not-allowed'
+									>
+										{cooldown > 0
+											? `Resend available in ${cooldown}s`
+											: resent
+											? 'Verification email sent'
+											: 'Resend verification email'}
+									</button>
+									{resent && cooldown === 0 && (
+										<span className='text-xs text-yellow-400'>
+											Need another? You can resend again
+											now.
+										</span>
+									)}
+								</div>
 							)}
 						</div>
 					)}
