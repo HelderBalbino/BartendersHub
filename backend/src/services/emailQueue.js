@@ -56,6 +56,7 @@ const frontendBase =
 let transporter = null;
 
 // Configure transporter (typo fix: createTransport)
+const EMAIL_DEBUG = process.env.EMAIL_DEBUG === 'true';
 if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
 	transporter = nodemailer.createTransport({
 		host: process.env.EMAIL_HOST || 'smtp.gmail.com',
@@ -65,8 +66,21 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
 			user: process.env.EMAIL_USER,
 			pass: process.env.EMAIL_PASSWORD,
 		},
+		logger: EMAIL_DEBUG,
+		debug: EMAIL_DEBUG,
 	});
-	console.log('✅ Email transporter configured');
+	transporter
+		.verify()
+		.then(() => {
+			console.log('✅ Email transporter verified');
+		})
+		.catch((err) => {
+			console.error('❌ Transport verify failed:', err.message);
+		});
+	console.log(
+		'✅ Email transporter configured',
+		EMAIL_DEBUG ? '(debug ON)' : '',
+	);
 } else {
 	console.warn(
 		'⚠️ Email disabled - EMAIL_USER and EMAIL_PASSWORD not configured',
