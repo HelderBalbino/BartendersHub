@@ -23,6 +23,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const AddCocktailPage = lazy(() => import('./pages/AddCocktailPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
 
 // Enhanced loading component
 const PageLoader = () => (
@@ -63,6 +64,14 @@ const App = () => {
 							element={
 								<Suspense fallback={<PageLoader />}>
 									<HomePage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path='verify-email/:token'
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<VerifyEmailPage />
 								</Suspense>
 							}
 						/>
