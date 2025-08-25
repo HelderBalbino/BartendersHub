@@ -45,6 +45,13 @@ if (redisUrl) {
 	);
 }
 
+// Determine frontend base URL for links (support production override)
+const frontendBase =
+	(process.env.NODE_ENV === 'production' &&
+		(process.env.FRONTEND_URL_PROD || process.env.FRONTEND_URL)) ||
+	process.env.FRONTEND_URL ||
+	'http://localhost:3000';
+
 // Email transporter
 let transporter = null;
 
@@ -211,7 +218,7 @@ export const sendWelcomeEmail = async (userData) => {
 };
 
 export const sendPasswordResetEmail = async (userData, resetToken) => {
-	const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+	const resetUrl = `${frontendBase}/reset-password/${resetToken}`;
 
 	if (emailQueue) {
 		// Use queue if Redis is available
@@ -281,7 +288,7 @@ export const sendNewFollowerNotification = async (userData, followerData) => {
 };
 
 export const sendVerificationEmail = async (userData, verifyToken) => {
-	const verifyUrl = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
+	const verifyUrl = `${frontendBase}/verify-email/${verifyToken}`;
 	const payload = {
 		to: userData.email,
 		subject: 'Verify your email - BartendersHub',
