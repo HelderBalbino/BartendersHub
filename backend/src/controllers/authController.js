@@ -291,7 +291,10 @@ export const forgotPassword = async (req, res) => {
 		user.resetPasswordToken = hashed;
 		user.resetPasswordExpire = new Date(expire);
 		await user.save();
-		await emailService.sendPasswordResetEmail({ name: user.name, email: user.email }, raw);
+		await emailService.sendPasswordResetEmail(
+			{ name: user.name, email: user.email },
+			raw,
+		);
 		res.status(200).json({
 			success: true,
 			message: 'Password reset email sent',
