@@ -9,9 +9,13 @@ import { createExpiringTokenPair } from '../src/utils/token.js';
 import User from '../src/models/User.js';
 import { sendVerificationEmail } from '../src/services/emailQueue.js';
 
-const backendEnvPath = path.resolve(process.cwd(), 'backend', '.env');
-if (fs.existsSync(backendEnvPath)) dotenv.config({ path: backendEnvPath });
-dotenv.config();
+// Load environment variables (fix path issue)
+const envPath = path.resolve(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+	dotenv.config({ path: envPath });
+} else {
+	dotenv.config();
+}
 
 async function main() {
 	const email = process.argv[2];
