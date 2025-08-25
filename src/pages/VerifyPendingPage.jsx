@@ -20,7 +20,12 @@ const VerifyPendingPage = () => {
 			const res = await apiService.post('/auth/resend-verification', {
 				email,
 			});
-			toast.success(res?.message || res?.data?.message || 'Email sent');
+			const redirect = searchParams.get('redirect');
+			toast.success(
+				res?.message ||
+					res?.data?.message ||
+					'Email sent' + (redirect ? ' (return after verify)' : ''),
+			);
 			setCooldown(60);
 			const timer = setInterval(() => {
 				setCooldown((c) => {
