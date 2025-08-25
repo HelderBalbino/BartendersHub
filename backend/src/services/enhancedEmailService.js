@@ -1,6 +1,10 @@
 import sgMail from '@sendgrid/mail';
 import nodemailer from 'nodemailer';
 import process from 'process';
+import dotenv from 'dotenv';
+
+// Ensure environment variables are loaded
+dotenv.config();
 
 class EmailService {
 	constructor() {
@@ -129,7 +133,10 @@ class EmailService {
 	async sendPasswordResetEmail(userData, resetToken) {
 		const frontendBase = this.getFrontendUrl();
 		const resetUrl = `${frontendBase}/reset-password/${resetToken}`;
-		const html = this.generatePasswordResetEmailTemplate(userData, resetUrl);
+		const html = this.generatePasswordResetEmailTemplate(
+			userData,
+			resetUrl,
+		);
 
 		await this.sendEmail({
 			to: userData.email,
