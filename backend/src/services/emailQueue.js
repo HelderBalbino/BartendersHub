@@ -58,7 +58,7 @@ let transporter = null;
 // Configure transporter lazily to ensure env vars are loaded
 const getTransporter = () => {
 	if (transporter) return transporter;
-	
+
 	const EMAIL_DEBUG = process.env.EMAIL_DEBUG === 'true';
 	if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
 		transporter = nodemailer.createTransporter({
@@ -72,7 +72,7 @@ const getTransporter = () => {
 			logger: EMAIL_DEBUG,
 			debug: EMAIL_DEBUG,
 		});
-		
+
 		// Verify asynchronously
 		transporter
 			.verify()
@@ -82,7 +82,7 @@ const getTransporter = () => {
 			.catch((err) => {
 				console.error('❌ Transport verify failed:', err.message);
 			});
-		
+
 		console.log(
 			'✅ Email transporter configured',
 			EMAIL_DEBUG ? '(debug ON)' : '',
@@ -101,7 +101,7 @@ if (emailQueue) {
 	emailQueue.process(async (job) => {
 		const { to, subject, template, data } = job.data;
 		const transporter = getTransporter();
-		
+
 		if (!transporter) {
 			throw new Error('Email transporter not configured');
 		}
@@ -196,6 +196,8 @@ const generateEmailContent = (template, data) => {
 // Email sending functions
 // Direct email sending function (when Redis is not available)
 const sendEmailDirect = async (to, subject, template, data) => {
+	const transporter = getTransporter();
+
 	if (!transporter) {
 		console.warn('⚠️ Email transporter not configured - skipping email');
 		return;
