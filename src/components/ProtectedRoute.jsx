@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from './LoadingSpinner';
 
 const ProtectedRoute = ({ children }) => {
-	const { isAuthenticated, loading } = useAuth();
+	const { isAuthenticated, loading, user } = useAuth();
 	const location = useLocation();
 
 	if (loading) {
@@ -18,6 +18,18 @@ const ProtectedRoute = ({ children }) => {
 					location.pathname,
 				)}`}
 				state={{ from: location }}
+				replace
+			/>
+		);
+	}
+
+	// If authenticated but unverified, send to verify-pending (preserve intended path for after verification)
+	if (user && user.isVerified === false) {
+		return (
+			<Navigate
+				to={`/verify-pending?email=${encodeURIComponent(
+					user.email || '',
+				)}&redirect=${encodeURIComponent(location.pathname)}`}
 				replace
 			/>
 		);
