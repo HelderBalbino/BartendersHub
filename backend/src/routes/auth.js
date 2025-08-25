@@ -10,6 +10,7 @@ import {
 	resetPassword,
 	verifyEmail,
 	resendVerification,
+	deleteAccount,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
@@ -110,6 +111,21 @@ router.put(
 	updatePasswordValidation,
 	handleValidationErrors,
 	updatePassword,
+);
+
+// Delete account validation
+const deleteAccountValidation = [
+	body('password')
+		.notEmpty()
+		.withMessage('Password is required to delete account'),
+];
+
+router.delete(
+	'/delete-account',
+	protect,
+	deleteAccountValidation,
+	handleValidationErrors,
+	deleteAccount,
 );
 
 // Password reset & email verification
