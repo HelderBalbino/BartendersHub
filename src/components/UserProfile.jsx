@@ -16,14 +16,19 @@ import ArtDecoButton from './ui/ArtDecoButton';
 import ImageUpload from './ui/Forms/ImageUpload';
 import { useUpdateProfile } from '../hooks/useProfile';
 import { toast } from 'react-hot-toast';
+import apiService from '../services/api';
 
 const UserProfile = ({ userId }) => {
-	const { user: currentUser } = useAuth();
+	const { user: currentUser, logout } = useAuth();
 	const [activeTab, setActiveTab] = useState('cocktails');
 	// Settings modal state
 	const [showSettings, setShowSettings] = useState(false);
 	const [avatarFile, setAvatarFile] = useState(null);
 	const [avatarPreview, setAvatarPreview] = useState(null);
+	// Delete account state
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [deletePassword, setDeletePassword] = useState('');
+	const [isDeleting, setIsDeleting] = useState(false);
 	const settingsRef = useRef(null);
 	const { mutateAsync: updateProfile, isLoading: updatingProfile } =
 		useUpdateProfile();
@@ -66,8 +71,44 @@ const UserProfile = ({ userId }) => {
 	};
 
 	const handleDeleteAccount = async () => {
-		// Placeholder until backend endpoint exists
-		toast.error('Account deletion not yet implemented');
+		if (!showDeleteConfirm) {
+			setShowDeleteConfirm(true);
+			return;
+		}
+
+		if (!deletePassword.trim()) {
+			toast.error(
+				'Please enter your password to confirm account deletion',
+			);
+			return;
+		}
+
+		try {
+			setIsDeleting(true);
+			await apiService.deleteAccount(deletePassword);
+
+			toast.success(
+				'Account deleted successfully. You will be logged out.',
+			);
+
+			// Clear local storage and redirect
+			setTimeout(() => {
+				logout();
+				window.location.href = '/';
+			}, 2000);
+		} catch (error) {
+			console.error('Delete account error:', error);
+			const message =
+				error.response?.data?.message || 'Failed to delete account';
+			toast.error(message);
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
+	const handleCancelDelete = () => {
+		setShowDeleteConfirm(false);
+		setDeletePassword('');
 	};
 
 	// (Removed verbose debug logging)
@@ -598,12 +639,58 @@ const UserProfile = ({ userId }) => {
 										Deleting your account is permanent and
 										cannot be undone.
 									</p>
-									<button
-										onClick={handleDeleteAccount}
-										className='px-4 py-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition rounded'
-									>
-										Delete Account
-									</button>
+
+									{!showDeleteConfirm ? (
+										<button
+											onClick={handleDeleteAccount}
+											className='px-4 py-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition rounded'
+										>
+											Delete Account
+										</button>
+									) : (
+										<div className='bg-red-900/20 border border-red-500/30 rounded-lg p-4'>
+											<p className='text-red-400 text-sm mb-3'>
+												⚠️ This action cannot be undone.
+												Please enter your password to
+												confirm:
+											</p>
+											<input
+												type='password'
+												value={deletePassword}
+												onChange={(e) =>
+													setDeletePassword(
+														e.target.value,
+													)
+												}
+												placeholder='Enter your password'
+												className='w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white mb-3'
+												disabled={isDeleting}
+											/>
+											<div className='flex gap-3'>
+												<button
+													onClick={
+														handleDeleteAccount
+													}
+													disabled={
+														isDeleting ||
+														!deletePassword.trim()
+													}
+													className='px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded transition'
+												>
+													{isDeleting
+														? 'Deleting...'
+														: 'Confirm Delete'}
+												</button>
+												<button
+													onClick={handleCancelDelete}
+													disabled={isDeleting}
+													className='px-4 py-2 border border-gray-600 hover:border-gray-500 text-gray-400 hover:text-white rounded transition'
+												>
+													Cancel
+												</button>
+											</div>
+										</div>
+									)}
 								</section>
 							</div>
 						</div>
