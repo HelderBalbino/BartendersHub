@@ -2,11 +2,7 @@ import User from '../models/User.js';
 import process from 'process';
 import { generateToken, hashPassword, comparePassword } from '../utils/auth.js';
 import { createExpiringTokenPair, hashToken } from '../utils/token.js';
-import {
-	sendWelcomeEmail,
-	sendPasswordResetEmail,
-	sendVerificationEmail,
-} from '../services/emailQueue.js';
+import emailService from '../services/enhancedEmailService.js';
 import websocketService from '../services/websocketService.js';
 
 // @desc    Register user
@@ -72,7 +68,7 @@ export const register = async (req, res) => {
 				user.emailVerificationToken = hashed;
 				user.emailVerificationExpire = new Date(expire);
 				await user.save();
-				await sendVerificationEmail(
+				await emailService.sendVerificationEmail(
 					{ name: user.name, email: user.email },
 					raw,
 				);
@@ -84,7 +80,7 @@ export const register = async (req, res) => {
 		setAuthCookie(res, token);
 
 		// Send welcome email in background
-		sendWelcomeEmail({
+		emailService.sendWelcomeEmail({
 			name: user.name,
 			email: user.email,
 			username: user.username,
@@ -295,7 +291,7 @@ export const forgotPassword = async (req, res) => {
 		user.resetPasswordToken = hashed;
 		user.resetPasswordExpire = new Date(expire);
 		await user.save();
-		sendPasswordResetEmail({ name: user.name, email: user.email }, raw);
+		await emailService.sendPasswordResetEmail({ name: user.name, email: user.email }, raw);
 		res.status(200).json({
 			success: true,
 			message: 'Password reset email sent',
@@ -392,20 +388,19 @@ export const resendVerification = async (req, res) => {
 				.json({ success: true, message: 'Email already verified' });
 
 		const now = Date.now();
-		const cooldownMs = 60 * 1000; // 1 minute between resends
+		const cooldownMs = 30 * 1000; // 30 seconds between resends (reduced from 60)
 		if (
 			user._lastVerificationResend &&
 			now - user._lastVerificationResend.getTime() < cooldownMs
 		) {
+			const remainingTime = Math.ceil(
+				(cooldownMs - (now - user._lastVerificationResend.getTime())) /
+					1000,
+			);
 			return res.status(429).json({
 				success: false,
-				message:
-					'Please wait before requesting another verification email.',
-				retryAfterSeconds: Math.ceil(
-					(cooldownMs -
-						(now - user._lastVerificationResend.getTime())) /
-						1000,
-				),
+				message: `Please wait ${remainingTime} seconds before requesting another verification email.`,
+				retryAfterSeconds: remainingTime,
 			});
 		}
 
@@ -416,14 +411,27 @@ export const resendVerification = async (req, res) => {
 		user.emailVerificationExpire = new Date(expire);
 		user._lastVerificationResend = new Date(); // transient metadata (not in schema yet but stored)
 		await user.save();
-		await sendVerificationEmail(
-			{ name: user.name, email: user.email },
-			raw,
-		);
-		res.status(200).json({
-			success: true,
-			message: 'Verification email resent',
-		});
+
+		try {
+			await emailService.sendVerificationEmail(
+				{ name: user.name, email: user.email },
+				raw,
+			);
+			res.status(200).json({
+				success: true,
+				message: 'Verification email sent successfully',
+			});
+		} catch (emailError) {
+			console.error('Email sending failed:', emailError);
+			res.status(200).json({
+				success: true,
+				message:
+					'Verification token generated. Please check email service configuration.',
+				verifyUrl: `${
+					process.env.FRONTEND_URL || 'http://localhost:3000'
+				}/verify-email/${raw}`,
+			});
+		}
 	} catch (error) {
 		res.status(500).json({
 			success: false,
