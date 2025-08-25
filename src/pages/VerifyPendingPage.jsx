@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import apiService from '../services/api';
 import { toast } from 'react-hot-toast';
 
 const VerifyPendingPage = () => {
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [email, setEmail] = useState('');
 	const [cooldown, setCooldown] = useState(0);
+
+	useEffect(() => {
+		const paramEmail = searchParams.get('email');
+		if (paramEmail) setEmail(paramEmail);
+	}, [searchParams]);
 
 	const handleResend = async () => {
 		if (!email) return toast.error('Enter your email first');
