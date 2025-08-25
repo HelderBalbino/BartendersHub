@@ -289,6 +289,9 @@ export const sendNewFollowerNotification = async (userData, followerData) => {
 
 export const sendVerificationEmail = async (userData, verifyToken) => {
 	const verifyUrl = `${frontendBase}/verify-email/${verifyToken}`;
+	console.log(
+		`🔐 Verification email queued for ${userData.email} -> ${verifyUrl}`,
+	);
 	const payload = {
 		to: userData.email,
 		subject: 'Verify your email - BartendersHub',
