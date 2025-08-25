@@ -54,16 +54,29 @@ export const register = async (req, res) => {
 			isVerified: autoVerify,
 		});
 
-		// Generate email verification token if not auto verified
+		// Generate email verification token if not auto verified.
+		// If a token was already generated very recently (e.g., duplicate form submit), reuse it to avoid spamming.
 		if (!user.isVerified) {
-			const { raw, hashed, expire } = createExpiringTokenPair(
-				24 * 60 * 60 * 1000,
-			);
-			user.emailVerificationToken = hashed;
-			user.emailVerificationExpire = new Date(expire);
-			await user.save();
-			// Send verification email
-			sendVerificationEmail({ name: user.name, email: user.email }, raw);
+			const reuseWindowMs = 2 * 60 * 1000; // 2 minutes
+			const now = Date.now();
+			if (
+				user.emailVerificationToken &&
+				user.emailVerificationExpire &&
+				now + reuseWindowMs < user.emailVerificationExpire.getTime()
+			) {
+				// Reuse existing token; do nothing (email already sent)
+			} else {
+				const { raw, hashed, expire } = createExpiringTokenPair(
+					24 * 60 * 60 * 1000,
+				);
+				user.emailVerificationToken = hashed;
+				user.emailVerificationExpire = new Date(expire);
+				await user.save();
+				sendVerificationEmail(
+					{ name: user.name, email: user.email },
+					raw,
+				);
+			}
 		}
 
 		// Generate token
@@ -377,11 +390,31 @@ export const resendVerification = async (req, res) => {
 			return res
 				.status(200)
 				.json({ success: true, message: 'Email already verified' });
+
+		const now = Date.now();
+		const cooldownMs = 60 * 1000; // 1 minute between resends
+		if (
+			user._lastVerificationResend &&
+			now - user._lastVerificationResend.getTime() < cooldownMs
+		) {
+			return res.status(429).json({
+				success: false,
+				message:
+					'Please wait before requesting another verification email.',
+				retryAfterSeconds: Math.ceil(
+					(cooldownMs -
+						(now - user._lastVerificationResend.getTime())) /
+						1000,
+				),
+			});
+		}
+
 		const { raw, hashed, expire } = createExpiringTokenPair(
 			24 * 60 * 60 * 1000,
 		);
 		user.emailVerificationToken = hashed;
 		user.emailVerificationExpire = new Date(expire);
+		user._lastVerificationResend = new Date(); // transient metadata (not in schema yet but stored)
 		await user.save();
 		sendVerificationEmail({ name: user.name, email: user.email }, raw);
 		res.status(200).json({
