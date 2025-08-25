@@ -416,7 +416,10 @@ export const resendVerification = async (req, res) => {
 		user.emailVerificationExpire = new Date(expire);
 		user._lastVerificationResend = new Date(); // transient metadata (not in schema yet but stored)
 		await user.save();
-		await sendVerificationEmail({ name: user.name, email: user.email }, raw);
+		await sendVerificationEmail(
+			{ name: user.name, email: user.email },
+			raw,
+		);
 		res.status(200).json({
 			success: true,
 			message: 'Verification email resent',
