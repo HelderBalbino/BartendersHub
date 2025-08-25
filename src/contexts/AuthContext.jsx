@@ -1,5 +1,4 @@
 import { useReducer, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContextDefinition';
 import { logError } from '../utils/errorMonitoring';
 import apiService from '../services/api';
@@ -117,102 +116,93 @@ class TokenManager {
 
 export const AuthProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, initialState);
-	const navigate = useNavigate();
 
 	// Memoized login function
-	const login = useCallback(
-		async (email, password, remember = false) => {
-			dispatch({ type: 'LOGIN_START' });
+	const login = useCallback(async (email, password, remember = false) => {
+		dispatch({ type: 'LOGIN_START' });
 
-			try {
-				const response = await apiService.post('/auth/login', {
-					email,
-					password,
-				});
+		try {
+			const response = await apiService.post('/auth/login', {
+				email,
+				password,
+			});
 
-				// Handle different response structures
-				// Sometimes the response is the data itself, sometimes it's nested under .data
-				let responseData;
-				if (response.data) {
-					// Standard axios response structure
-					responseData = response.data;
-				} else if (response.success !== undefined) {
-					// Response is the data itself
-					responseData = response;
-				} else {
-					throw new Error('No valid response data found');
-				}
-
-				// The API returns: { success: true, message: "...", token: "...", user: {...} }
-				if (!responseData) {
-					throw new Error('No response data received');
-				}
-
-				// Check if the response indicates success
-				if (!responseData.success) {
-					throw new Error(responseData.message || 'Login failed');
-				}
-
-				if (!responseData.token) {
-					throw new Error('No token in response');
-				}
-
-				if (!responseData.user) {
-					throw new Error('No user in response');
-				}
-
-				const { token, user } = responseData;
-
-				// Store token with preference
-				TokenManager.set(token, remember);
-
-				dispatch({
-					type: 'LOGIN_SUCCESS',
-					payload: { token, user },
-				});
-
-				// Persist current user id for optimistic UI helpers
-				try {
-					localStorage.setItem(
-						'currentUserId',
-						user.id || user._id || user.userId || '',
-					);
-				} catch {
-					// ignore storage errors
-				}
-
-				return { success: true, user };
-			} catch (error) {
-				let errorMessage = 'Login failed';
-				let needVerification = false;
-				if (error.response?.data) {
-					if (error.response.data.message)
-						errorMessage = error.response.data.message;
-					if (error.response.data.needVerification)
-						needVerification = true;
-				} else if (error.message) {
-					errorMessage = error.message;
-				}
-				dispatch({
-					type: 'LOGIN_FAILURE',
-					payload: errorMessage,
-				});
-				logError(error, 'auth-login');
-				if (needVerification) {
-					// Redirect to pending verification page with email prefilled
-					navigate(
-						`/verify-pending?email=${encodeURIComponent(email)}`,
-					);
-				}
-				return {
-					success: false,
-					error: errorMessage,
-					needVerification,
-				};
+			// Handle different response structures
+			// Sometimes the response is the data itself, sometimes it's nested under .data
+			let responseData;
+			if (response.data) {
+				// Standard axios response structure
+				responseData = response.data;
+			} else if (response.success !== undefined) {
+				// Response is the data itself
+				responseData = response;
+			} else {
+				throw new Error('No valid response data found');
 			}
-		},
-		[navigate],
-	);
+
+			// The API returns: { success: true, message: "...", token: "...", user: {...} }
+			if (!responseData) {
+				throw new Error('No response data received');
+			}
+
+			// Check if the response indicates success
+			if (!responseData.success) {
+				throw new Error(responseData.message || 'Login failed');
+			}
+
+			if (!responseData.token) {
+				throw new Error('No token in response');
+			}
+
+			if (!responseData.user) {
+				throw new Error('No user in response');
+			}
+
+			const { token, user } = responseData;
+
+			// Store token with preference
+			TokenManager.set(token, remember);
+
+			dispatch({
+				type: 'LOGIN_SUCCESS',
+				payload: { token, user },
+			});
+
+			// Persist current user id for optimistic UI helpers
+			try {
+				localStorage.setItem(
+					'currentUserId',
+					user.id || user._id || user.userId || '',
+				);
+			} catch {
+				// ignore storage errors
+			}
+
+			return { success: true, user };
+		} catch (error) {
+			let errorMessage = 'Login failed';
+			let needVerification = false;
+			if (error.response?.data) {
+				if (error.response.data.message)
+					errorMessage = error.response.data.message;
+				if (error.response.data.needVerification)
+					needVerification = true;
+			} else if (error.message) {
+				errorMessage = error.message;
+			}
+			dispatch({
+				type: 'LOGIN_FAILURE',
+				payload: errorMessage,
+			});
+			logError(error, 'auth-login');
+			// Redirect logic handled by caller (e.g., LogIn component)
+			return {
+				success: false,
+				error: errorMessage,
+				needVerification,
+			};
+		}
+	}, []);
 
 	// Memoized register function
 	const register = useCallback(async (userData) => {
