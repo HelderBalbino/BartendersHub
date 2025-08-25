@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import apiService from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const VerifyEmailPage = () => {
 	const { token } = useParams();
+	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const [status, setStatus] = useState('pending'); // pending | success | error
 	const [message, setMessage] = useState('Verifying your email...');
@@ -22,6 +24,14 @@ const VerifyEmailPage = () => {
 					setMessage(
 						'Email verified successfully! Redirecting to login...',
 					);
+					// Optional redirect back after short delay if redirect param present
+					const redirect = searchParams.get('redirect');
+					if (redirect) {
+						setTimeout(
+							() => navigate(redirect, { replace: true }),
+							2000,
+						);
+					}
 					setTimeout(() => navigate('/login?mode=login'), 2500);
 				} else {
 					setStatus('error');
@@ -39,7 +49,7 @@ const VerifyEmailPage = () => {
 		return () => {
 			cancelled = true;
 		};
-	}, [token, navigate]);
+	}, [token, navigate, searchParams]);
 
 	return (
 		<section className='min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-4 py-12'>
