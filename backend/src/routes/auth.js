@@ -43,10 +43,17 @@ const registerValidation = [
 		.withMessage('Username is required')
 		.isLength({ min: 3, max: 20 })
 		.withMessage('Username must be between 3 and 20 characters')
-		.matches(/^[a-zA-Z0-9_]+$/)
+		.matches(/^[a-zA-Z0-9._-]+$/)
 		.withMessage(
-			'Username can only contain letters, numbers, and underscores',
-		),
+			'Username can only contain letters, numbers, dots, hyphens, and underscores',
+		)
+		.custom((value) => {
+			// Don't allow usernames that look like emails
+			if (value.includes('@')) {
+				throw new Error('Username cannot contain @ symbol');
+			}
+			return true;
+		}),
 ];
 
 const loginValidation = [
@@ -87,6 +94,14 @@ router.post(
 	login,
 );
 router.get('/me', protect, getMe);
+router.post('/logout', (req, res) => {
+	// Simple logout endpoint - JWT is stateless so we just return success
+	// Client handles token removal
+	res.status(200).json({
+		success: true,
+		message: 'Logged out successfully',
+	});
+});
 router.put('/updatedetails', protect, updateDetails);
 router.put(
 	'/updatepassword',
