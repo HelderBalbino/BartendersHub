@@ -444,6 +444,97 @@ export const resendVerification = async (req, res) => {
 	}
 };
 
+// @desc    Delete user account
+// @route   DELETE /api/auth/delete-account
+// @access  Private
+export const deleteAccount = async (req, res) => {
+	try {
+		const { password } = req.body;
+		const userId = req.user.id;
+
+		// Get user with password for verification
+		const user = await User.findById(userId).select('+password');
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found',
+			});
+		}
+
+		// Verify password before deletion
+		const isMatch = await comparePassword(password, user.password);
+		if (!isMatch) {
+			return res.status(401).json({
+				success: false,
+				message: 'Incorrect password. Account deletion cancelled.',
+			});
+		}
+
+		// Store user data for email before deletion
+		const userData = {
+			name: user.name,
+			email: user.email,
+			username: user.username,
+		};
+
+		// Delete user's cocktails first (to maintain referential integrity)
+		const { default: Cocktail } = await import('../models/Cocktail.js');
+		await Cocktail.deleteMany({ createdBy: userId });
+
+		// Delete user's other related data (likes, comments, follows, etc.)
+		// Import models dynamically to avoid circular dependencies
+		try {
+			const { default: Follow } = await import('../models/Follow.js');
+			await Follow.deleteMany({
+				$or: [{ follower: userId }, { following: userId }],
+			});
+		} catch (error) {
+			console.warn(
+				'Follow model not found or error deleting follows:',
+				error.message,
+			);
+		}
+
+		try {
+			const { default: Favorite } = await import('../models/Favorite.js');
+			await Favorite.deleteMany({ user: userId });
+		} catch (error) {
+			console.warn(
+				'Favorite model not found or error deleting favorites:',
+				error.message,
+			);
+		}
+
+		// Finally delete the user account
+		await User.findByIdAndDelete(userId);
+
+		// Send account deletion confirmation email
+		try {
+			await emailService.sendAccountDeletionEmail(userData);
+		} catch (emailError) {
+			console.error('Failed to send account deletion email:', emailError);
+			// Don't fail the deletion if email fails
+		}
+
+		console.log(
+			`🗑️ User account deleted: ${userData.email} (${userData.username})`,
+		);
+
+		res.status(200).json({
+			success: true,
+			message:
+				'Account deleted successfully. A confirmation email has been sent.',
+		});
+	} catch (error) {
+		console.error('Account deletion error:', error);
+		res.status(500).json({
+			success: false,
+			message: 'Server error during account deletion',
+			error: error.message,
+		});
+	}
+};
+
 // @desc    (Debug) Generate and return a fresh verification link (raw token) for a user
 // @route   GET /api/auth/debug/verification-link?email=...&key=...
 // @access  Protected via shared key (DEBUG_VERIFICATION_KEY)
