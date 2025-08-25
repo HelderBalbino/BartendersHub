@@ -1,5 +1,4 @@
 import express from 'express';
-import process from 'process';
 import { body } from 'express-validator';
 import {
 	register,
@@ -11,7 +10,6 @@ import {
 	resetPassword,
 	verifyEmail,
 	resendVerification,
-	generateVerificationLink,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
@@ -104,9 +102,5 @@ router.post('/forgotpassword', forgotPassword);
 router.post('/resetpassword/:token', resetPassword);
 router.get('/verify/:token', verifyEmail);
 router.post('/resend-verification', resendVerification);
-// Debug route (only active if DEBUG_VERIFICATION_KEY is set)
-if (process.env.DEBUG_VERIFICATION_KEY) {
-	router.get('/debug/verification-link', generateVerificationLink);
-}
 
 export default router;
