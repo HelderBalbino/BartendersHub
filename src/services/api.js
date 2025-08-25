@@ -273,6 +273,11 @@ class ApiService {
 	async removeFavorite(cocktailId) {
 		return this.delete(`/cocktails/${cocktailId}/favorite`);
 	}
+
+	// Auth methods
+	async deleteAccount(password) {
+		return this.delete('/auth/delete-account', { password });
+	}
 }
 
 // Create singleton instance
@@ -291,4 +296,5 @@ export const {
 	batch,
 	healthCheck,
 	clearCache,
+	deleteAccount,
 } = apiService;
