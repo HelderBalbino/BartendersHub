@@ -187,8 +187,9 @@ class ApiService {
 		return this.request('PATCH', url, data, { cache: false, ...options });
 	}
 
-	async delete(url, options = {}) {
-		return this.request('DELETE', url, null, { cache: false, ...options });
+	// Allow sending a request body with DELETE (some servers expect JSON body)
+	async delete(url, data = null, options = {}) {
+		return this.request('DELETE', url, data, { cache: false, ...options });
 	}
 
 	// File upload with progress tracking
