@@ -9,13 +9,7 @@ const CocktailCard = memo(
 		const queryClient = useQueryClient();
 		const [imageError, setImageError] = useState(false);
 
-		// Memoized handlers to prevent unnecessary re-renders
-		const handleMouseEnter = useCallback(() => {
-			setIsHovered(true);
-			prefetch();
-		}, [prefetch]);
-		const handleMouseLeave = useCallback(() => setIsHovered(false), []);
-		const handleImageError = useCallback(() => setImageError(true), []);
+		// Prefetch function must be declared before handlers that reference it
 		const prefetch = useCallback(() => {
 			const id = cocktailData?.id || cocktailData?._id;
 			if (!id) return;
@@ -32,6 +26,14 @@ const CocktailCard = memo(
 				staleTime: 5 * 60 * 1000,
 			});
 		}, [cocktailData, queryClient]);
+
+		// Memoized handlers to prevent unnecessary re-renders
+		const handleMouseEnter = useCallback(() => {
+			setIsHovered(true);
+			prefetch();
+		}, [prefetch]);
+		const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+		const handleImageError = useCallback(() => setImageError(true), []);
 
 		const handleCardClick = useCallback(() => {
 			onCardClick?.(cocktailData);
