@@ -1,16 +1,38 @@
 import { useState, memo, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import ArtDecoCorners from './ui/ArtDecoCorners';
 
 const CocktailCard = memo(
 	({ cocktailData, size = 'medium', onCardClick, className = '' }) => {
 		const [isHovered, setIsHovered] = useState(false);
+		const queryClient = useQueryClient();
 		const [imageError, setImageError] = useState(false);
 
 		// Memoized handlers to prevent unnecessary re-renders
-		const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+		const handleMouseEnter = useCallback(() => {
+			setIsHovered(true);
+			prefetch();
+		}, [prefetch]);
 		const handleMouseLeave = useCallback(() => setIsHovered(false), []);
 		const handleImageError = useCallback(() => setImageError(true), []);
+		const prefetch = useCallback(() => {
+			const id = cocktailData?.id || cocktailData?._id;
+			if (!id) return;
+			queryClient.prefetchQuery({
+				queryKey: ['cocktail', id],
+				queryFn: () =>
+					fetch(
+						`${
+							import.meta.env.VITE_API_BASE_URL || ''
+						}/api/cocktails/${id}`,
+					)
+						.then((r) => r.json())
+						.then((d) => d.data || d),
+				staleTime: 5 * 60 * 1000,
+			});
+		}, [cocktailData, queryClient]);
+
 		const handleCardClick = useCallback(() => {
 			onCardClick?.(cocktailData);
 		}, [onCardClick, cocktailData]);
@@ -41,6 +63,8 @@ const CocktailCard = memo(
 				onClick={handleCardClick}
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
+				onFocus={prefetch}
+				tabIndex={0}
 			>
 				{/* Optimized corner decorations */}
 				<ArtDecoCorners size={size === 'large' ? 'large' : 'medium'} />
