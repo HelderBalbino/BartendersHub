@@ -263,6 +263,21 @@ class ApiService {
 		return this.get(`/cocktails?${params.toString()}`);
 	}
 
+	// Fetch a single cocktail by id
+	async getCocktail(id) {
+		return this.get(`/cocktails/${id}`);
+	}
+
+	// Toggle like
+	async toggleLike(id) {
+		return this.put(`/cocktails/${id}/like`);
+	}
+
+	// Add comment
+	async addComment(id, text) {
+		return this.post(`/cocktails/${id}/comments`, { text });
+	}
+
 	async createCocktail(data) {
 		return this.post('/cocktails', data);
 	}
