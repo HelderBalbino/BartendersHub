@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Components
@@ -17,6 +18,7 @@ import { useAuth } from '../../hooks/useAuth';
 import useDebounce from '../../hooks/useDebounce';
 
 const CocktailContent = () => {
+	const navigate = useNavigate();
 	const [activeCategory, setActiveCategory] = useState('all');
 	const [searchTerm, setSearchTerm] = useState('');
 	const [sortBy, setSortBy] = useState('newest');
@@ -94,9 +96,9 @@ const CocktailContent = () => {
 	};
 
 	const handleCardClick = (cocktail) => {
-		// Navigate to cocktail detail page or show modal
-		console.log('Cocktail clicked:', cocktail);
-		// TODO: Implement navigation to detail page
+		if (!cocktail) return;
+		const id = cocktail.id || cocktail._id;
+		if (id) navigate(`/cocktails/${id}`);
 	};
 
 	const handleRetry = () => {
