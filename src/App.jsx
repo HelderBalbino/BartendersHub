@@ -18,6 +18,7 @@ import config from './config/environment.js';
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./pages/HomePage'));
 const CocktailsPage = lazy(() => import('./pages/CocktailsPage'));
+const CocktailDetailPage = lazy(() => import('./pages/CocktailDetailPage'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -89,6 +90,14 @@ const App = () => {
 							element={
 								<Suspense fallback={<PageLoader />}>
 									<CocktailsPage />
+								</Suspense>
+							}
+						/>
+						<Route
+							path='cocktails/:id'
+							element={
+								<Suspense fallback={<PageLoader />}>
+									<CocktailDetailPage />
 								</Suspense>
 							}
 						/>
