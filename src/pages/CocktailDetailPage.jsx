@@ -9,6 +9,9 @@ import {
 	useFavoriteCocktail,
 } from '../hooks/useCocktails';
 import { useAuth } from '../hooks/useAuth';
+import { useUserFavorites } from '../hooks/useProfile';
+import SeoMeta from '../components/SeoMeta';
+import apiService from '../services/api';
 import { toast } from 'react-hot-toast';
 
 const CocktailDetailPage = () => {
@@ -20,22 +23,16 @@ const CocktailDetailPage = () => {
 	const [commentText, setCommentText] = useState('');
 	const addCommentMutation = useAddComment(id);
 	const cocktail = data?.data || data; // backend returns { success, data }
+	// State hooks MUST be before any return
+	const [inlineError, setInlineError] = useState(null);
+	const [ratingValue, setRatingValue] = useState(0);
+	const { data: favoritesData } = useUserFavorites(user?.id || user?._id, {
+		enabled: !!user,
+		limit: 250,
+	});
 
 	useEffect(() => {
-		if (cocktail?.data?.name) {
-			document.title = `${cocktail.data.name} | BartendersHub`;
-			const meta = document.querySelector('meta[name="description"]');
-			const desc =
-				cocktail.data.description?.slice(0, 155) ||
-				'Cocktail recipe on BartendersHub';
-			if (meta) meta.setAttribute('content', desc);
-			else {
-				const m = document.createElement('meta');
-				m.name = 'description';
-				m.content = desc;
-				document.head.appendChild(m);
-			}
-		}
+		/* no-op kept for potential side-effects */
 	}, [cocktail]);
 
 	if (isLoading) return <CocktailDetailSkeleton />;
@@ -65,35 +62,71 @@ const CocktailDetailPage = () => {
 	const isLiked = cocktail.likes?.some(
 		(l) => (l.user?._id || l.user) === (user?.id || user?._id),
 	);
-	const isFavorite = cocktail.isFavorite; // backend may embed; else compute from user favorites query on future enhancement
+	const favoriteIds =
+		favoritesData?.favorites?.map(
+			(f) => f._id || f.id || f.cocktail?._id || f.cocktail?.id,
+		) || [];
+	const isFavorite = favoriteIds.includes(cocktail._id || cocktail.id);
 
 	const handleToggleLike = () => {
 		if (!isAuthenticated) return toast.error('Login required');
-		likeMutation.mutate(cocktail._id || cocktail.id);
+		setInlineError(null);
+		likeMutation.mutate(cocktail._id || cocktail.id, {
+			onError: (e) => setInlineError(e.message || 'Failed to like'),
+		});
 	};
 
 	const handleToggleFavorite = () => {
 		if (!isAuthenticated) return toast.error('Login required');
-		toggleFavorite.mutate({
-			cocktailId: cocktail._id || cocktail.id,
-			isFavorite,
-		});
+		setInlineError(null);
+		toggleFavorite.mutate(
+			{
+				cocktailId: cocktail._id || cocktail.id,
+				isFavorite,
+			},
+			{
+				onError: (e) =>
+					setInlineError(e.message || 'Failed to favorite'),
+			},
+		);
 	};
 
 	const handleAddComment = (e) => {
 		e.preventDefault();
 		if (!isAuthenticated) return toast.error('Login required');
 		if (!commentText.trim()) return;
+		setInlineError(null);
 		addCommentMutation.mutate(commentText.trim(), {
 			onSuccess: () => {
 				setCommentText('');
 				toast.success('Comment added');
 			},
+			onError: (e) => setInlineError(e.message || 'Failed to comment'),
 		});
+	};
+
+	const handleSubmitRating = async () => {
+		if (!isAuthenticated) return toast.error('Login required');
+		if (!ratingValue) return;
+		try {
+			setInlineError(null);
+			await apiService.post(
+				`/cocktails/${cocktail._id || cocktail.id}/rating`,
+				{ rating: ratingValue },
+			);
+			toast.success('Rating submitted');
+		} catch (e) {
+			setInlineError(e.message || 'Failed to rate');
+		}
 	};
 
 	return (
 		<section className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-16 px-4'>
+			<SeoMeta
+				title={cocktail.name}
+				description={cocktail.description?.slice(0, 155)}
+				image={cocktail.image?.url || cocktail.image}
+			/>
 			<div className='max-w-5xl mx-auto'>
 				<Link
 					to='/cocktails'
@@ -158,7 +191,7 @@ const CocktailDetailPage = () => {
 								</p>
 							</div>
 						</div>
-						<div className='flex gap-4 mb-6'>
+						<div className='flex flex-wrap gap-4 mb-4 items-center'>
 							<button
 								onClick={handleToggleLike}
 								disabled={likeMutation.isLoading}
@@ -187,7 +220,36 @@ const CocktailDetailPage = () => {
 									? 'Unfavorite'
 									: 'Favorite'}
 							</button>
+							<div className='flex items-center gap-2 text-sm text-yellow-400'>
+								<span>Rate:</span>
+								<select
+									value={ratingValue}
+									onChange={(e) =>
+										setRatingValue(Number(e.target.value))
+									}
+									className='bg-black/40 border border-yellow-500/40 text-yellow-400 px-2 py-1'
+								>
+									<option value={0}>--</option>
+									{[1, 2, 3, 4, 5].map((v) => (
+										<option key={v} value={v}>
+											{v}
+										</option>
+									))}
+								</select>
+								<button
+									onClick={handleSubmitRating}
+									disabled={!ratingValue}
+									className='px-3 py-1 border border-yellow-500/40 text-yellow-400 text-xs uppercase tracking-wider hover:bg-yellow-500/10 disabled:opacity-40'
+								>
+									Submit
+								</button>
+							</div>
 						</div>
+						{inlineError && (
+							<p className='text-red-500 text-xs mb-4'>
+								{inlineError}
+							</p>
+						)}
 						{ingredientList.length > 0 && (
 							<div className='mb-8'>
 								<h2 className='text-2xl font-semibold text-yellow-400 mb-3 tracking-wide'>
