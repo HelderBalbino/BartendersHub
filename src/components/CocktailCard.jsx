@@ -2,6 +2,7 @@ import { useState, memo, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import ArtDecoCorners from './ui/ArtDecoCorners';
+import apiService from '../services/api';
 
 const CocktailCard = memo(
 	({ cocktailData, size = 'medium', onCardClick, className = '' }) => {
@@ -16,13 +17,7 @@ const CocktailCard = memo(
 			queryClient.prefetchQuery({
 				queryKey: ['cocktail', id],
 				queryFn: () =>
-					fetch(
-						`${
-							import.meta.env.VITE_API_BASE_URL || ''
-						}/api/cocktails/${id}`,
-					)
-						.then((r) => r.json())
-						.then((d) => d.data || d),
+					apiService.getCocktail(id).then((d) => d.data || d),
 				staleTime: 5 * 60 * 1000,
 			});
 		}, [cocktailData, queryClient]);
