@@ -14,6 +14,19 @@ export const useCocktails = (filters = {}) => {
 	});
 };
 
+// Hook for a single cocktail
+export const useCocktail = (id, options = {}) => {
+	return useQuery({
+		queryKey: ['cocktail', id],
+		enabled: !!id && options.enabled !== false,
+		queryFn: () => apiService.getCocktail(id),
+		staleTime: 5 * 60 * 1000,
+		onError: (error) => {
+			toast.error(error.message || 'Failed to fetch cocktail');
+		},
+	});
+};
+
 // Hook for creating cocktails
 export const useCreateCocktail = () => {
 	const queryClient = useQueryClient();
@@ -52,8 +65,42 @@ export const useFavoriteCocktail = () => {
 	return { toggleFavorite };
 };
 
+// Hook for toggling like on a cocktail
+export const useToggleLike = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (id) => apiService.toggleLike(id),
+		onSuccess: (_data, id) => {
+			queryClient.invalidateQueries({ queryKey: ['cocktail', id] });
+			queryClient.invalidateQueries({ queryKey: ['cocktails'] });
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Failed to update like');
+		},
+	});
+};
+
+// Hook for adding a comment
+export const useAddComment = (cocktailId) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (text) => apiService.addComment(cocktailId, text),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['cocktail', cocktailId],
+			});
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Failed to add comment');
+		},
+	});
+};
+
 export default {
 	useCocktails,
+	useCocktail,
 	useCreateCocktail,
 	useFavoriteCocktail,
+	useToggleLike,
+	useAddComment,
 };
