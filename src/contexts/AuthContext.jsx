@@ -182,6 +182,7 @@ export const AuthProvider = ({ children }) => {
 		} catch (error) {
 			let errorMessage = 'Login failed';
 			let needVerification = false;
+			const status = error.response?.status || error.status;
 			if (error.response?.data) {
 				if (error.response.data.message)
 					errorMessage = error.response.data.message;
@@ -194,8 +195,10 @@ export const AuthProvider = ({ children }) => {
 				type: 'LOGIN_FAILURE',
 				payload: errorMessage,
 			});
-			logError(error, 'auth-login');
-			// Redirect logic handled by caller (e.g., LogIn component)
+			// Suppress noisy logging for expected unverified email case
+			if (!(status === 403 && needVerification)) {
+				logError(error, 'auth-login');
+			}
 			return {
 				success: false,
 				error: errorMessage,
