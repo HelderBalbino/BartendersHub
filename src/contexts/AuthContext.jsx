@@ -158,7 +158,7 @@ export const AuthProvider = ({ children }) => {
 				throw new Error('No user in response');
 			}
 
-			const { token, user } = responseData;
+			const { token, user, needsVerification } = responseData;
 
 			// Store token with preference
 			TokenManager.set(token, remember);
@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }) => {
 				// ignore storage errors
 			}
 
-			return { success: true, user };
+			return { success: true, user, needsVerification };
 		} catch (error) {
 			let errorMessage = 'Login failed';
 			let needVerification = false;
