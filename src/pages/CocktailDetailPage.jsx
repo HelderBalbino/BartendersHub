@@ -18,6 +18,7 @@ const CocktailDetailPage = () => {
 	const { id } = useParams();
 	const { data, isLoading, error } = useCocktail(id);
 	const { user, isAuthenticated } = useAuth();
+	const isVerified = user?.isVerified;
 	const { toggleFavorite } = useFavoriteCocktail();
 	const likeMutation = useToggleLike();
 	const [commentText, setCommentText] = useState('');
@@ -68,8 +69,20 @@ const CocktailDetailPage = () => {
 		) || [];
 	const isFavorite = favoriteIds.includes(cocktail._id || cocktail.id);
 
+	const requireVerified = () => {
+		if (!isAuthenticated) {
+			toast.error('Login required');
+			return false;
+		}
+		if (!isVerified) {
+			toast.error('Verify email to unlock this feature');
+			return false;
+		}
+		return true;
+	};
+
 	const handleToggleLike = () => {
-		if (!isAuthenticated) return toast.error('Login required');
+		if (!requireVerified('like')) return;
 		setInlineError(null);
 		likeMutation.mutate(cocktail._id || cocktail.id, {
 			onError: (e) => setInlineError(e.message || 'Failed to like'),
@@ -77,7 +90,7 @@ const CocktailDetailPage = () => {
 	};
 
 	const handleToggleFavorite = () => {
-		if (!isAuthenticated) return toast.error('Login required');
+		if (!requireVerified('favorite')) return;
 		setInlineError(null);
 		toggleFavorite.mutate(
 			{
@@ -93,7 +106,7 @@ const CocktailDetailPage = () => {
 
 	const handleAddComment = (e) => {
 		e.preventDefault();
-		if (!isAuthenticated) return toast.error('Login required');
+		if (!requireVerified('comment')) return;
 		if (!commentText.trim()) return;
 		setInlineError(null);
 		addCommentMutation.mutate(commentText.trim(), {
@@ -106,7 +119,7 @@ const CocktailDetailPage = () => {
 	};
 
 	const handleSubmitRating = async () => {
-		if (!isAuthenticated) return toast.error('Login required');
+		if (!requireVerified('rate')) return;
 		if (!ratingValue) return;
 		try {
 			setInlineError(null);
@@ -194,7 +207,12 @@ const CocktailDetailPage = () => {
 						<div className='flex flex-wrap gap-4 mb-4 items-center'>
 							<button
 								onClick={handleToggleLike}
-								disabled={likeMutation.isLoading}
+								disabled={likeMutation.isLoading || !isVerified}
+								title={
+									!isVerified
+										? 'Verify email to like cocktails'
+										: ''
+								}
 								className='px-4 py-2 border border-yellow-500/40 text-yellow-400 text-sm uppercase tracking-wider hover:bg-yellow-500/10 transition disabled:opacity-50'
 							>
 								{likeMutation.isLoading
@@ -210,7 +228,13 @@ const CocktailDetailPage = () => {
 								onClick={handleToggleFavorite}
 								disabled={
 									toggleFavorite.isPending ||
-									toggleFavorite.isLoading
+									toggleFavorite.isLoading ||
+									!isVerified
+								}
+								title={
+									!isVerified
+										? 'Verify email to favorite cocktails'
+										: ''
 								}
 								className='px-4 py-2 border border-yellow-500/40 text-yellow-400 text-sm uppercase tracking-wider hover:bg-yellow-500/10 transition disabled:opacity-50'
 							>
@@ -238,7 +262,12 @@ const CocktailDetailPage = () => {
 								</select>
 								<button
 									onClick={handleSubmitRating}
-									disabled={!ratingValue}
+									disabled={!ratingValue || !isVerified}
+									title={
+										!isVerified
+											? 'Verify email to submit ratings'
+											: ''
+									}
 									className='px-3 py-1 border border-yellow-500/40 text-yellow-400 text-xs uppercase tracking-wider hover:bg-yellow-500/10 disabled:opacity-40'
 								>
 									Submit
@@ -351,13 +380,21 @@ const CocktailDetailPage = () => {
 									}
 									placeholder={
 										isAuthenticated
-											? 'Add a comment...'
+											? isVerified
+												? 'Add a comment...'
+												: 'Verify email to comment'
 											: 'Login to comment'
 									}
 									className='w-full bg-black/40 border border-yellow-500/30 focus:border-yellow-500 outline-none text-sm text-white p-3 min-h-24 resize-vertical'
 									disabled={
 										!isAuthenticated ||
-										addCommentMutation.isLoading
+										addCommentMutation.isLoading ||
+										!isVerified
+									}
+									title={
+										!isVerified && isAuthenticated
+											? 'Verify email to comment'
+											: ''
 									}
 								/>
 								<div>
@@ -366,7 +403,13 @@ const CocktailDetailPage = () => {
 										disabled={
 											!isAuthenticated ||
 											addCommentMutation.isLoading ||
-											!commentText.trim()
+											!commentText.trim() ||
+											!isVerified
+										}
+										title={
+											!isVerified && isAuthenticated
+												? 'Verify email to comment'
+												: ''
 										}
 										className='px-5 py-2 border border-yellow-500/40 text-yellow-400 uppercase tracking-wider text-xs hover:bg-yellow-500/10 transition disabled:opacity-50'
 									>
