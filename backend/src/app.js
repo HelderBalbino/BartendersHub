@@ -198,6 +198,33 @@ app.get('/', (req, res) => {
 	});
 });
 
+// Email verification link safeguard: if the email points to the API domain instead of the frontend,
+// redirect the user to the proper frontend SPA route so the React app can complete verification.
+// This prevents confused users seeing raw JSON "Route not found".
+app.get('/verify-email/:token', (req, res) => {
+	const { token } = req.params;
+	const query = req.url.includes('?')
+		? req.url.substring(req.url.indexOf('?'))
+		: '';
+	const frontendBase =
+		process.env.FRONTEND_URL_PROD || process.env.FRONTEND_URL || null;
+
+	if (frontendBase) {
+		const cleanBase = frontendBase.replace(/\/$/, '');
+		return res.redirect(302, `${cleanBase}/verify-email/${token}${query}`);
+	}
+
+	// Fallback: instruct configuration instead of 404
+	res.status(200).send(
+		`<html><head><title>Redirecting...</title><meta http-equiv="refresh" content="5"></head><body style="font-family:Arial; background:#111; color:#eee;">
+			<h1>Email Verification Redirect Not Configured</h1>
+			<p>The server received your verification token <code>${token}</code> but cannot redirect because <code>FRONTEND_URL</code> is not set.</p>
+			<p>Please set <code>FRONTEND_URL</code> (and optionally <code>FRONTEND_URL_PROD</code>) in the backend environment to the public URL of your frontend (e.g. https://your-frontend.example).</p>
+			<p>After setting it, resend the verification email or copy this token and verify via the frontend route.</p>
+		</body></html>`,
+	);
+});
+
 app.use('*', (req, res) => {
 	res.status(404).json({
 		success: false,
