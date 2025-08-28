@@ -190,16 +190,19 @@ const LogIn = () => {
 
 				if (result.success) {
 					toast.success('Welcome back to the speakeasy!');
-					// Navigation will be handled by the auth context useEffect
+					if (result.needsVerification) {
+						setNeedVerification(true); // show inline banner/message
+						toast(
+							'Verify your email when convenient for full access',
+							{
+								icon: '✉️',
+							},
+						);
+					}
 				} else {
 					if (result.needVerification) {
 						setNeedVerification(true);
-						// Redirect to verify-pending with email param
-						navigate(
-							`/verify-pending?email=${encodeURIComponent(
-								formValues.email,
-							)}`,
-						);
+						toast('Email verification recommended', { icon: '✉️' });
 					} else {
 						toast.error(result.error || 'Login failed');
 					}
