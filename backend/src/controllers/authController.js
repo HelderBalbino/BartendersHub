@@ -139,14 +139,9 @@ export const login = async (req, res) => {
 			});
 		}
 
-		if (!user.isVerified) {
-			return res.status(403).json({
-				success: false,
-				message:
-					'Email not verified. Please verify your email to continue.',
-				needVerification: true,
-			});
-		}
+		// Previously unverified users were blocked with 403. Now we allow login
+		// and simply include a flag so the frontend can show a gentle reminder.
+		const needsVerification = !user.isVerified;
 
 		// Generate token
 		const token = generateToken(user._id);
@@ -154,8 +149,11 @@ export const login = async (req, res) => {
 
 		res.status(200).json({
 			success: true,
-			message: 'Login successful',
+			message: needsVerification
+				? 'Login successful (email verification pending)'
+				: 'Login successful',
 			token,
+			needsVerification,
 			user: {
 				id: user._id,
 				name: user.name,
