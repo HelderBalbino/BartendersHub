@@ -11,6 +11,7 @@ import {
 	verifyEmail,
 	resendVerification,
 	deleteAccount,
+	getResendAttempts,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
@@ -133,5 +134,7 @@ router.post('/forgotpassword', forgotPassword);
 router.post('/resetpassword/:token', resetPassword);
 router.get('/verify/:token', verifyEmail);
 router.post('/resend-verification', resendVerification);
+// Diagnostics: recent resend attempts (limit). Could be restricted to admins; using protect for now.
+router.get('/resend-attempts', protect, getResendAttempts);
 
 export default router;
