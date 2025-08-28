@@ -375,6 +375,12 @@ export const verifyEmail = async (req, res) => {
 // @route   POST /api/auth/resend-verification
 // @access  Public
 export const resendVerification = async (req, res) => {
+	globalThis.__resendAttempts = globalThis.__resendAttempts || [];
+	const pushAttempt = (entry) => {
+		globalThis.__resendAttempts.unshift(entry);
+		if (globalThis.__resendAttempts.length > 300)
+			globalThis.__resendAttempts.length = 300;
+	};
 	try {
 		const user = await User.findOne({ email: req.body.email });
 		if (!user)
@@ -398,6 +404,13 @@ export const resendVerification = async (req, res) => {
 				(cooldownMs - (now - user._lastVerificationResend.getTime())) /
 					1000,
 			);
+			pushAttempt({
+				ip: req.ip,
+				email: req.body.email,
+				status: 'rate_limited',
+				remainingTime,
+				ts: new Date().toISOString(),
+			});
 			return res.status(429).json({
 				success: false,
 				message: `Please wait ${remainingTime} seconds before requesting another verification email.`,
@@ -418,12 +431,25 @@ export const resendVerification = async (req, res) => {
 				{ name: user.name, email: user.email },
 				raw,
 			);
+			pushAttempt({
+				ip: req.ip,
+				email: user.email,
+				status: 'sent',
+				ts: new Date().toISOString(),
+			});
 			res.status(200).json({
 				success: true,
 				message: 'Verification email sent successfully',
 			});
 		} catch (emailError) {
 			console.error('Email sending failed:', emailError);
+			pushAttempt({
+				ip: req.ip,
+				email: user.email,
+				status: 'failed',
+				error: emailError.message,
+				ts: new Date().toISOString(),
+			});
 			res.status(200).json({
 				success: true,
 				message:
@@ -440,6 +466,22 @@ export const resendVerification = async (req, res) => {
 			error: error.message,
 		});
 	}
+};
+
+// @desc    Get recent verification resend attempts (diagnostics)
+// @route   GET /api/auth/resend-attempts?email=optional
+// @access  Private (admin in production - for now simple token check + isAdmin flag if user loaded upstream)
+export const getResendAttempts = async (req, res) => {
+	globalThis.__resendAttempts = globalThis.__resendAttempts || [];
+	const emailFilter = req.query.email?.toLowerCase();
+	let data = globalThis.__resendAttempts;
+	if (emailFilter)
+		data = data.filter((a) => a.email?.toLowerCase() === emailFilter);
+	res.status(200).json({
+		success: true,
+		count: data.length,
+		attempts: data.slice(0, 50),
+	});
 };
 
 // @desc    Delete user account
