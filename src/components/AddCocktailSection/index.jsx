@@ -18,6 +18,7 @@ import SubmitButton from './FormActions/SubmitButton';
 
 // Hooks
 import { useCreateCocktail } from '../../hooks/useCocktails';
+import { useAuth } from '../../hooks/useAuth';
 import {
 	useFormValidation,
 	validationRules,
@@ -26,6 +27,8 @@ import { useImageUpload } from '../../hooks/useImageUpload';
 
 const AddCocktailSection = () => {
 	const navigate = useNavigate();
+	const { isAuthenticated, user } = useAuth();
+	const isVerified = user?.isVerified;
 	const createCocktailMutation = useCreateCocktail();
 
 	// Initialize image upload hook
@@ -138,6 +141,13 @@ const AddCocktailSection = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		if (!isAuthenticated) {
+			return toast.error('Login required');
+		}
+		if (!isVerified) {
+			return toast.error('Verify email to create cocktails');
+		}
+
 		if (!validateAll()) {
 			toast.error('Please fix the errors in the form');
 			return;
@@ -201,6 +211,8 @@ const AddCocktailSection = () => {
 		);
 	}
 
+	const gated = !isVerified;
+
 	return (
 		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-20 overflow-hidden'>
 			{/* Art Deco Background Pattern */}
@@ -233,7 +245,14 @@ const AddCocktailSection = () => {
 				<ArtDecoCard className='p-8'>
 					<form
 						onSubmit={handleSubmit}
-						className='grid grid-cols-1 lg:grid-cols-2 gap-8'
+						className={`grid grid-cols-1 lg:grid-cols-2 gap-8 ${
+							gated
+								? 'opacity-60 pointer-events-none select-none'
+								: ''
+						}`}
+						title={
+							gated ? 'Verify email to enable form inputs' : ''
+						}
 					>
 						{/* Left Column */}
 						<div className='space-y-6'>
@@ -276,10 +295,19 @@ const AddCocktailSection = () => {
 						<FormActions className='col-span-1 lg:col-span-2'>
 							<SubmitButton
 								isLoading={createCocktailMutation.isLoading}
-								disabled={createCocktailMutation.isLoading}
+								disabled={
+									createCocktailMutation.isLoading || gated
+								}
 							/>
 						</FormActions>
 					</form>
+
+					{gated && (
+						<p className='mt-6 text-center text-yellow-400 text-xs uppercase tracking-wider'>
+							Verify your email to create and publish new cocktail
+							recipes.
+						</p>
+					)}
 				</ArtDecoCard>
 
 				{/* Back to Cocktails */}
