@@ -40,7 +40,7 @@ premium digital experience.
 -   **🌟 Community Hub** - Connect with elite bartenders worldwide through
     featured profiles
 -   **🏆 Add Your Creations** - Submit and showcase your own cocktail
-    masterpieces
+    masterpieces so the whole world can admire your mixology skills
 -   **💎 Modular Architecture** - Highly maintainable component-based structure
 -   **🚀 Performance Focused** - Optimized loading with lazy-loaded components
 -   **🎯 Type Safety** - PropTypes validation throughout the component tree
