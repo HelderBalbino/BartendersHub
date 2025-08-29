@@ -3,7 +3,7 @@
 <div align="center">
   <img src="src/assets/images/logo.png" alt="BartendersHub Logo" width="100" height="100">
 
-**Where sophistication meets artistry**
+**Where sophistication and mastery meets artistry**
 
 _Step into the golden age of cocktails with the most exclusive bartending
 experience_
