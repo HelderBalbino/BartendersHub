@@ -20,13 +20,20 @@ import classics from '../src/data/classicCocktails.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load env (fallback to project root .env)
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Try loading env from project root, then backend/.env if still missing
+const rootEnvPath = path.resolve(__dirname, '../../.env');
+const backendEnvPath = path.resolve(__dirname, '../.env');
+dotenv.config({ path: rootEnvPath });
+if (!process.env.MONGO_URI) {
+	dotenv.config({ path: backendEnvPath });
+}
 
 if (!process.env.MONGO_URI) {
-	console.error('MONGO_URI not set. Aborting.');
+	console.error('MONGO_URI not set. Provide it in project root .env, backend/.env, or inline: MONGO_URI="mongodb+srv://..." npm run seed:classics');
 	process.exit(1);
 }
+
+console.log('Using Mongo URI from environment');
 
 const PLACEHOLDER_IMAGE = {
 	url: 'https://res.cloudinary.com/bartendershub/image/upload/v1/classics/placeholder.jpg',
