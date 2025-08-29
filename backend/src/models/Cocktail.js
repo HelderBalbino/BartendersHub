@@ -123,6 +123,40 @@ const cocktailSchema = new mongoose.Schema(
 			],
 			default: 'sweet',
 		},
+		// Optional provenance & metadata (mainly for classics)
+		origin: {
+			type: String,
+			trim: true,
+			maxlength: [150, 'Origin cannot exceed 150 characters'],
+		},
+		originYear: {
+			type: Number,
+			min: [1700, 'Origin year seems too early'],
+			max: [
+				new Date().getFullYear() + 1,
+				'Origin year cannot be in the far future',
+			],
+		},
+		iba: {
+			type: Boolean,
+			default: false,
+		},
+		aliases: [
+			{
+				type: String,
+				trim: true,
+				maxlength: [80, 'Alias cannot exceed 80 characters'],
+			},
+		],
+		defaultTechnique: {
+			type: String,
+			trim: true,
+			maxlength: [60, 'Technique cannot exceed 60 characters'],
+		},
+		isSystem: {
+			type: Boolean,
+			default: false, // true for seeded immutable classics
+		},
 		createdBy: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
