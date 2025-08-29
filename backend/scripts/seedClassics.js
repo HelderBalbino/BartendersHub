@@ -29,7 +29,20 @@ if (!process.env.MONGO_URI) {
 }
 
 if (!process.env.MONGO_URI) {
-	console.error('MONGO_URI not set. Provide it in project root .env, backend/.env, or inline: MONGO_URI="mongodb+srv://..." npm run seed:classics');
+	console.error(
+		'MONGO_URI not set. Provide it in project root .env, backend/.env, or inline: MONGO_URI="mongodb+srv://<user>:<pass>@host/db" npm run seed:classics',
+	);
+	process.exit(1);
+}
+
+const normalizedUri = process.env.MONGO_URI.trim();
+if (
+	normalizedUri === 'your-mongodb-connection-string' ||
+	!/^mongodb(\+srv)?:\/\//.test(normalizedUri)
+) {
+	console.error(
+		'Invalid MONGO_URI. It must start with mongodb:// or mongodb+srv:// and not be a placeholder.',
+	);
 	process.exit(1);
 }
 
