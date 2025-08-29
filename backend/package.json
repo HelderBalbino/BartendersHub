@@ -16,6 +16,7 @@
 		"email:sendgrid": "node scripts/testSendGrid.js",
 		"user:verify": "node scripts/verifyUser.js",
 		"seed": "node src/utils/seedDatabase.js",
+		"seed:classics": "node scripts/seedClassics.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
 	},
 	"keywords": [
