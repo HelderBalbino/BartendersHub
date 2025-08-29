@@ -1,0 +1,100 @@
+#!/usr/bin/env node
+/*
+ Seed classic cocktails.
+ - Upsert by case-insensitive name
+ - Associates with (or creates) a system user
+ - Marks isApproved + isSystem true
+ - Injects placeholder image if none supplied
+*/
+/* eslint-env node */
+/* global process */
+
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import Cocktail from '../src/models/Cocktail.js';
+import User from '../src/models/User.js';
+import classics from '../src/data/classicCocktails.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load env (fallback to project root .env)
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+if (!process.env.MONGO_URI) {
+	console.error('MONGO_URI not set. Aborting.');
+	process.exit(1);
+}
+
+const PLACEHOLDER_IMAGE = {
+	url: 'https://res.cloudinary.com/bartendershub/image/upload/v1/classics/placeholder.jpg',
+	publicId: 'classics/placeholder',
+};
+
+async function ensureSystemUser() {
+	const systemEmail = 'system@classics.local';
+	let user = await User.findOne({ email: systemEmail });
+	if (!user) {
+		user = await User.create({
+			name: 'Classic Library',
+			email: systemEmail,
+			password: 'TempPassw0rd!', // meets schema regex; not used for login (could randomize)
+			username: 'classiclibrary',
+			isVerified: true,
+			isAdmin: true,
+		});
+		console.log('Created system user');
+	} else {
+		console.log('Using existing system user');
+	}
+	return user;
+}
+
+async function seed() {
+	await mongoose.connect(process.env.MONGO_URI, {
+		autoIndex: true,
+	});
+	console.log('Connected to MongoDB');
+
+	const systemUser = await ensureSystemUser();
+
+	let inserted = 0;
+	let updated = 0;
+
+	for (const cocktail of classics) {
+		const filter = {
+			name: { $regex: new RegExp(`^${cocktail.name}$`, 'i') },
+		};
+
+		const payload = {
+			...cocktail,
+			category: 'classics',
+			isApproved: true,
+			isSystem: true,
+			createdBy: systemUser._id,
+			image: cocktail.image || PLACEHOLDER_IMAGE,
+		};
+
+		const existing = await Cocktail.findOne(filter);
+		if (existing) {
+			await Cocktail.updateOne({ _id: existing._id }, { $set: payload });
+			updated++;
+			console.log(`Updated: ${cocktail.name}`);
+		} else {
+			await Cocktail.create(payload);
+			inserted++;
+			console.log(`Inserted: ${cocktail.name}`);
+		}
+	}
+
+	console.log(`\nDone. Inserted: ${inserted}, Updated: ${updated}`);
+	await mongoose.disconnect();
+	process.exit(0);
+}
+
+seed().catch((err) => {
+	console.error(err);
+	process.exit(1);
+});
