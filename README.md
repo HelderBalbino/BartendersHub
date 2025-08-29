@@ -5,8 +5,8 @@
 
 **Where sophistication and mastery meets artistry**
 
-_Step into the golden age of cocktails with the most exclusive bartending
-experience_
+_Step into the golden age of cocktails with the most exclusive and sophisticated
+bartending experience_
 
 [![React](https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-4.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
