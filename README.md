@@ -36,7 +36,7 @@ premium digital experience.
 -   **🎨 Interactive UI** - Smooth touch gestures, responsive carousels, and
     elegant transitions
 -   **📱 Mobile-Optimized** - Touch-first design with specialized mobile
-    components
+    components and design
 -   **🌟 Community Hub** - Connect with elite bartenders worldwide through
     featured profiles
 -   **🏆 Add Your Creations** - Submit and showcase your own cocktail
