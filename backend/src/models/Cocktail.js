@@ -305,3 +305,8 @@ cocktailSchema.index({ category: 1, isApproved: 1 });
 cocktailSchema.index({ views: -1, isApproved: 1, createdAt: -1 });
 
 export default mongoose.model('Cocktail', cocktailSchema);
+
+// Additional unique-ish index for classic system cocktails to prevent duplicates by name (case-insensitive)
+try {
+	cocktailSchema.index({ name: 1 }, { collation: { locale: 'en', strength: 2 } });
+} catch {/* index may already exist during hot reload */}

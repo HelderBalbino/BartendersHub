@@ -28,11 +28,15 @@ import {
 import authRoutes from './routes/auth.js';
 import cocktailRoutes from './routes/cocktails.js';
 import userRoutes from './routes/users.js';
+import { responseHelpers } from './middleware/response.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Standard response helpers (must come before controllers use res.success/res.fail)
+app.use(responseHelpers);
 
 // Lightweight request ID + timing middleware
 app.use((req, res, next) => {
