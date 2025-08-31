@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { useCommunityMembers } from '../hooks/useCommunity';
 import useCommunityRealtime from '../hooks/useCommunityRealtime';
 import LoadingSpinner from './LoadingSpinner';
@@ -12,6 +13,8 @@ import JoinCommunityCTA from './community/JoinCommunityCTA';
 import NewMemberNotifications from './community/NewMemberNotifications';
 
 const CommunitySection = () => {
+	const { user, isAuthenticated } = useAuth();
+	const isVerified = Boolean(user?.isVerified);
 	const [isVisible, setIsVisible] = useState(false);
 	const [activeFilter, setActiveFilter] = useState('all');
 
@@ -44,6 +47,45 @@ const CommunitySection = () => {
 	const featuredMembers = communityMembers
 		.filter((member) => member.isVerified)
 		.slice(0, 3);
+
+	// Helper gating notice component
+	const GatedNotice = ({ action = 'interact' }) => (
+		<div className='mt-8 border border-yellow-400/30 bg-black/40 p-6 text-center'>
+			<p className='text-sm text-gray-300 mb-4'>
+				{!isAuthenticated && (
+					<span>
+						Create an account to {action} with the community.
+						Verification unlocks full features.
+					</span>
+				)}
+				{isAuthenticated && !isVerified && (
+					<span>
+						Email verification required to {action}. Check your
+						inbox or resend the verification email from your
+						profile.
+					</span>
+				)}
+			</p>
+			<div className='flex flex-col sm:flex-row gap-3 justify-center'>
+				{!isAuthenticated && (
+					<a
+						href='/login?mode=register&redirect=/community'
+						className='px-5 py-2 text-[11px] tracking-widest uppercase bg-yellow-400 text-black hover:bg-yellow-300 transition font-medium'
+					>
+						Create Account
+					</a>
+				)}
+				{isAuthenticated && !isVerified && (
+					<a
+						href='/verify-pending?redirect=/community'
+						className='px-5 py-2 text-[11px] tracking-widest uppercase border border-yellow-400/60 text-yellow-300 hover:border-yellow-400 hover:bg-yellow-400/10 transition'
+					>
+						Verify Email
+					</a>
+				)}
+			</div>
+		</div>
+	);
 
 	// Show loading state
 	if (isLoading) {
@@ -230,6 +272,21 @@ const CommunitySection = () => {
 
 				{/* Members Grid */}
 				<MembersGrid members={getFilteredMembers()} />
+
+				{/* Interactive social layer (likes/comments) placeholder gating */}
+				<div className='mt-16'>
+					<h2 className='text-center text-xl md:text-2xl font-light tracking-wide text-yellow-400 mb-6'>
+						Community Interactions
+					</h2>
+					{isVerified ? (
+						<p className='text-center text-gray-400 text-sm max-w-2xl mx-auto'>
+							Future: display recent likes, comment threads, and
+							collaboration prompts here.
+						</p>
+					) : (
+						<GatedNotice action='access likes & comments' />
+					)}
+				</div>
 
 				{/* Join Community CTA */}
 				<JoinCommunityCTA />
