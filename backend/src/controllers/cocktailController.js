@@ -96,16 +96,13 @@ export const getCocktails = async (req, res) => {
 			cocktails = cocktails.slice(0, limit);
 		}
 
-		res.success(
-			cocktails,
-			{
-				count: cocktails.length,
-				cursor: nextCursor,
-				page: cursor ? undefined : page,
-				pages: cursor ? undefined : Math.ceil(total / limit),
-				total: cursor ? undefined : total,
-			},
-		);
+		res.success(cocktails, {
+			count: cocktails.length,
+			cursor: nextCursor,
+			page: cursor ? undefined : page,
+			pages: cursor ? undefined : Math.ceil(total / limit),
+			total: cursor ? undefined : total,
+		});
 	} catch (error) {
 		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
