@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import LoadingSpinner from './LoadingSpinner';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, requireVerification = true }) => {
 	const { isAuthenticated, loading, user } = useAuth();
 	const location = useLocation();
 
@@ -23,8 +23,8 @@ const ProtectedRoute = ({ children }) => {
 		);
 	}
 
-	// If authenticated but unverified, send to verify-pending (preserve intended path for after verification)
-	if (user && user.isVerified === false) {
+	// If authenticated but unverified and this route requires verification, redirect
+	if (requireVerification && user && user.isVerified === false) {
 		return (
 			<Navigate
 				to={`/verify-pending?email=${encodeURIComponent(
