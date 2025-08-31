@@ -87,6 +87,21 @@ const CommunitySection = () => {
 		</div>
 	);
 
+	// Auto-open interactions if user just verified and had stored intent
+	useEffect(() => {
+		if (isVerified) {
+			const intent = localStorage.getItem('postVerifyIntent');
+			if (intent === 'open-community-interactions') {
+				// Future: automatically scroll into view or expand threads
+				const el = document.getElementById('community-interactions');
+				if (el) {
+					setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 150);
+				}
+				localStorage.removeItem('postVerifyIntent');
+			}
+		}
+	}, [isVerified]);
+
 	// Show loading state
 	if (isLoading) {
 		return (
@@ -274,17 +289,26 @@ const CommunitySection = () => {
 				<MembersGrid members={getFilteredMembers()} />
 
 				{/* Interactive social layer (likes/comments) placeholder gating */}
-				<div className='mt-16'>
+				<div className='mt-16' id='community-interactions'>
 					<h2 className='text-center text-xl md:text-2xl font-light tracking-wide text-yellow-400 mb-6'>
 						Community Interactions
 					</h2>
 					{isVerified ? (
 						<p className='text-center text-gray-400 text-sm max-w-2xl mx-auto'>
-							Future: display recent likes, comment threads, and
-							collaboration prompts here.
+							Future: display recent likes, comment threads, and collaboration prompts here.
 						</p>
 					) : (
-						<GatedNotice action='access likes & comments' />
+						<>
+							<GatedNotice action='access likes & comments' />
+							<button
+								onClick={() => {
+									localStorage.setItem('postVerifyIntent', 'open-community-interactions');
+								}}
+								className='mx-auto mt-4 block text-[11px] tracking-widest uppercase text-yellow-400/80 hover:text-yellow-300'
+							>
+								Remember this intent
+							</button>
+						</>
 					)}
 				</div>
 
