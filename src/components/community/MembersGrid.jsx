@@ -18,6 +18,8 @@ const MemberCard = ({ member }) => {
 					<img
 						src={member.avatar}
 						alt={member.name}
+						loading='lazy'
+						decoding='async'
 						className='w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-yellow-400/40 group-hover:border-yellow-400 object-cover mx-auto transition-all duration-300'
 					/>
 					{member.isVerified && (

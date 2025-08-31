@@ -30,7 +30,7 @@ const CocktailContent = () => {
 	// New simplified filters
 	const baseCategories = [
 		{ id: 'all', name: 'All', emoji: '🍸' },
-		{ id: 'classics', name: 'Classics', emoji: '�' },
+		{ id: 'classics', name: 'Classics', emoji: '📜' },
 	];
 	const categories = isAuthenticated
 		? [...baseCategories, { id: 'mine', name: 'My Cocktails', emoji: '⭐' }]
