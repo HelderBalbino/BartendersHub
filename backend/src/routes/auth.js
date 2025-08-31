@@ -97,12 +97,10 @@ router.post(
 );
 router.get('/me', protect, getMe);
 router.post('/logout', (req, res) => {
-	// Simple logout endpoint - JWT is stateless so we just return success
-	// Client handles token removal
-	res.status(200).json({
-		success: true,
-		message: 'Logged out successfully',
-	});
+	// Stateless logout; client discards token
+	if (res.success)
+		return res.success(null, { message: 'Logged out successfully' });
+	res.status(200).json({ success: true, message: 'Logged out successfully' }); // fallback
 });
 router.put('/updatedetails', protect, updateDetails);
 router.put(
