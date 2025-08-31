@@ -165,25 +165,23 @@ export const login = async (req, res) => {
 export const getMe = async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id);
-
-		res.status(200).json({
-			success: true,
-			user: {
-				id: user._id,
-				name: user.name,
-				email: user.email,
-				username: user.username,
-				avatar: user.avatar,
-				isVerified: user.isVerified,
-				isAdmin: user.isAdmin,
+		if (!user) return res.fail(404, 'User not found', 'NOT_FOUND');
+		res.success(
+			{
+				user: {
+					id: user._id,
+					name: user.name,
+					email: user.email,
+					username: user.username,
+					avatar: user.avatar,
+					isVerified: user.isVerified,
+					isAdmin: user.isAdmin,
+				},
 			},
-		});
+			{ message: 'User profile retrieved' },
+		);
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -209,17 +207,10 @@ export const updateDetails = async (req, res) => {
 			new: true,
 			runValidators: true,
 		});
-
-		res.status(200).json({
-			success: true,
-			data: user,
-		});
+		if (!user) return res.fail(404, 'User not found', 'NOT_FOUND');
+		res.success({ user }, { message: 'Details updated' });
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -231,12 +222,13 @@ export const updatePassword = async (req, res) => {
 		const user = await User.findById(req.user.id).select('+password');
 
 		// Check current password
-		if (!(await comparePassword(req.body.currentPassword, user.password))) {
-			return res.status(401).json({
-				success: false,
-				message: 'Password is incorrect',
-			});
-		}
+		if (!user) return res.fail(404, 'User not found', 'NOT_FOUND');
+		const currentOk = await comparePassword(
+			req.body.currentPassword,
+			user.password,
+		);
+		if (!currentOk)
+			return res.fail(401, 'Password is incorrect', 'PASSWORD_INCORRECT');
 
 		// Hash new password
 		user.password = await hashPassword(req.body.newPassword);
@@ -245,17 +237,9 @@ export const updatePassword = async (req, res) => {
 		const token = generateToken(user._id);
 		setAuthCookie(res, token);
 
-		res.status(200).json({
-			success: true,
-			message: 'Password updated successfully',
-			token,
-		});
+		res.success({ token }, { message: 'Password updated successfully' });
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -265,12 +249,10 @@ export const updatePassword = async (req, res) => {
 export const forgotPassword = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email });
-		if (!user) {
-			return res.status(200).json({
-				success: true,
+		if (!user)
+			return res.success(null, {
 				message: 'If that email exists, a reset link has been sent.',
 			});
-		}
 		const { raw, hashed, expire } = createExpiringTokenPair(60 * 60 * 1000);
 		user.resetPasswordToken = hashed;
 		user.resetPasswordExpire = new Date(expire);
@@ -279,16 +261,9 @@ export const forgotPassword = async (req, res) => {
 			{ name: user.name, email: user.email },
 			raw,
 		);
-		res.status(200).json({
-			success: true,
-			message: 'Password reset email sent',
-		});
+		res.success(null, { message: 'Password reset email sent' });
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -302,25 +277,15 @@ export const resetPassword = async (req, res) => {
 			resetPasswordToken: hashed,
 			resetPasswordExpire: { $gt: Date.now() },
 		}).select('+password');
-		if (!user) {
-			return res
-				.status(400)
-				.json({ success: false, message: 'Invalid or expired token' });
-		}
+		if (!user)
+			return res.fail(400, 'Invalid or expired token', 'TOKEN_INVALID');
 		user.password = await hashPassword(req.body.password);
 		user.resetPasswordToken = undefined;
 		user.resetPasswordExpire = undefined;
 		await user.save();
-		res.status(200).json({
-			success: true,
-			message: 'Password reset successful',
-		});
+		res.success(null, { message: 'Password reset successful' });
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -334,26 +299,19 @@ export const verifyEmail = async (req, res) => {
 			emailVerificationToken: hashed,
 			emailVerificationExpire: { $gt: Date.now() },
 		});
-		if (!user) {
-			return res.status(400).json({
-				success: false,
-				message: 'Invalid or expired verification token',
-			});
-		}
+		if (!user)
+			return res.fail(
+				400,
+				'Invalid or expired verification token',
+				'TOKEN_INVALID',
+			);
 		user.isVerified = true;
 		user.emailVerificationToken = undefined;
 		user.emailVerificationExpire = undefined;
 		await user.save();
-		res.status(200).json({
-			success: true,
-			message: 'Email verified successfully',
-		});
+		res.success(null, { message: 'Email verified successfully' });
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -370,15 +328,12 @@ export const resendVerification = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email });
 		if (!user)
-			return res.status(200).json({
-				success: true,
+			return res.success(null, {
 				message:
 					'If that email exists, a verification link has been sent.',
 			});
 		if (user.isVerified)
-			return res
-				.status(200)
-				.json({ success: true, message: 'Email already verified' });
+			return res.success(null, { message: 'Email already verified' });
 
 		const now = Date.now();
 		const cooldownMs = 30 * 1000; // 30 seconds between resends (reduced from 60)
@@ -397,11 +352,12 @@ export const resendVerification = async (req, res) => {
 				remainingTime,
 				ts: new Date().toISOString(),
 			});
-			return res.status(429).json({
-				success: false,
-				message: `Please wait ${remainingTime} seconds before requesting another verification email.`,
-				retryAfterSeconds: remainingTime,
-			});
+			return res.fail(
+				429,
+				`Please wait ${remainingTime} seconds before requesting another verification email.`,
+				'RATE_LIMIT',
+				{ retryAfterSeconds: remainingTime },
+			);
 		}
 
 		const { raw, hashed, expire } = createExpiringTokenPair(
@@ -423,8 +379,7 @@ export const resendVerification = async (req, res) => {
 				status: 'sent',
 				ts: new Date().toISOString(),
 			});
-			res.status(200).json({
-				success: true,
+			res.success(null, {
 				message: 'Verification email sent successfully',
 			});
 		} catch (emailError) {
@@ -436,8 +391,7 @@ export const resendVerification = async (req, res) => {
 				error: emailError.message,
 				ts: new Date().toISOString(),
 			});
-			res.status(200).json({
-				success: true,
+			res.success(null, {
 				message:
 					'Verification token generated. Please check email service configuration.',
 				verifyUrl: `${
@@ -446,11 +400,7 @@ export const resendVerification = async (req, res) => {
 			});
 		}
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -463,11 +413,7 @@ export const getResendAttempts = async (req, res) => {
 	let data = globalThis.__resendAttempts;
 	if (emailFilter)
 		data = data.filter((a) => a.email?.toLowerCase() === emailFilter);
-	res.status(200).json({
-		success: true,
-		count: data.length,
-		attempts: data.slice(0, 50),
-	});
+	res.success({ attempts: data.slice(0, 50) }, { count: data.length });
 };
 
 // @desc    Delete user account
@@ -480,21 +426,16 @@ export const deleteAccount = async (req, res) => {
 
 		// Get user with password for verification
 		const user = await User.findById(userId).select('+password');
-		if (!user) {
-			return res.status(404).json({
-				success: false,
-				message: 'User not found',
-			});
-		}
+		if (!user) return res.fail(404, 'User not found', 'NOT_FOUND');
 
 		// Verify password before deletion
 		const isMatch = await comparePassword(password, user.password);
-		if (!isMatch) {
-			return res.status(401).json({
-				success: false,
-				message: 'Incorrect password. Account deletion cancelled.',
-			});
-		}
+		if (!isMatch)
+			return res.fail(
+				401,
+				'Incorrect password. Account deletion cancelled.',
+				'PASSWORD_INCORRECT',
+			);
 
 		// Store user data for email before deletion
 		const userData = {
@@ -546,17 +487,14 @@ export const deleteAccount = async (req, res) => {
 			`🗑️ User account deleted: ${userData.email} (${userData.username})`,
 		);
 
-		res.status(200).json({
-			success: true,
+		res.success(null, {
 			message:
 				'Account deleted successfully. A confirmation email has been sent.',
 		});
 	} catch (error) {
 		console.error('Account deletion error:', error);
-		res.status(500).json({
-			success: false,
-			message: 'Server error during account deletion',
-			error: error.message,
+		res.fail(500, 'Server error during account deletion', 'SERVER', {
+			detail: error.message,
 		});
 	}
 };
