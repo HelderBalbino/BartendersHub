@@ -67,15 +67,27 @@ const RequireVerification = ({
 		}
 	};
 
+	// Use a button for better semantics if child is not already an interactive element.
+	// We render a wrapper that is still focusable so keyboard users get feedback.
 	const WrapperTag = inline ? 'span' : 'div';
 
 	return (
 		<WrapperTag
+			role='button'
+			tabIndex={0}
 			onClick={handleClick}
+			onKeyDown={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					handleClick(e);
+				}
+			}}
 			className={`relative group ${
 				inline ? 'inline-block' : ''
-			} cursor-not-allowed opacity-60 select-none`}
+			} cursor-not-allowed opacity-60 select-none outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded`}
 			aria-disabled='true'
+			aria-label={`Verification required to ${reason}`}
+			title={`Verification required to ${reason}`}
 			data-requires-verification='true'
 		>
 			{typeof children === 'function'
