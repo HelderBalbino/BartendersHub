@@ -95,7 +95,10 @@ const CommunitySection = () => {
 				// Future: automatically scroll into view or expand threads
 				const el = document.getElementById('community-interactions');
 				if (el) {
-					setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 150);
+					setTimeout(
+						() => el.scrollIntoView({ behavior: 'smooth' }),
+						150,
+					);
 				}
 				localStorage.removeItem('postVerifyIntent');
 			}
@@ -295,14 +298,18 @@ const CommunitySection = () => {
 					</h2>
 					{isVerified ? (
 						<p className='text-center text-gray-400 text-sm max-w-2xl mx-auto'>
-							Future: display recent likes, comment threads, and collaboration prompts here.
+							Future: display recent likes, comment threads, and
+							collaboration prompts here.
 						</p>
 					) : (
 						<>
 							<GatedNotice action='access likes & comments' />
 							<button
 								onClick={() => {
-									localStorage.setItem('postVerifyIntent', 'open-community-interactions');
+									localStorage.setItem(
+										'postVerifyIntent',
+										'open-community-interactions',
+									);
 								}}
 								className='mx-auto mt-4 block text-[11px] tracking-widest uppercase text-yellow-400/80 hover:text-yellow-300'
 							>
