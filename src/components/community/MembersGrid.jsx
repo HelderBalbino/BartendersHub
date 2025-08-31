@@ -1,6 +1,38 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+// Safely convert plain-text URLs into clickable links (no HTML injection)
+function linkify(text) {
+	if (!text || typeof text !== 'string') return text;
+	const urlRegex = /(https?:\/\/[^\s)]+)|(www\.[^\s)]+)/gi;
+	const parts = [];
+	let lastIndex = 0;
+	let match;
+	while ((match = urlRegex.exec(text)) !== null) {
+		const url = match[0];
+		const start = match.index;
+		if (start > lastIndex) {
+			parts.push(text.slice(lastIndex, start));
+		}
+		let href = url;
+		if (!href.startsWith('http')) href = 'https://' + href; // normalize
+		parts.push(
+			<a
+				key={start + url}
+				href={href}
+				target='_blank'
+				rel='noopener noreferrer'
+				className='underline text-yellow-400 hover:text-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/60 break-all'
+			>
+				{url}
+			</a>,
+		);
+		lastIndex = start + url.length;
+	}
+	if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+	return parts.length ? parts : text;
+}
+
 const MemberCard = ({ member }) => {
 	const userId = member.id || member._id;
 
@@ -41,9 +73,11 @@ const MemberCard = ({ member }) => {
 					@{member.username}
 				</p>
 				<p className='text-gray-400 text-xs mb-3'>
-					{member.speciality}
+					{linkify(member.speciality)}
 				</p>
-				<p className='text-gray-500 text-xs mb-4'>{member.location}</p>
+				<p className='text-gray-500 text-xs mb-4'>
+					{linkify(member.location)}
+				</p>
 
 				{/* Cocktails Count */}
 				<div className='mb-4'>
@@ -76,10 +110,12 @@ const MemberCard = ({ member }) => {
 
 				{/* Recent Activity */}
 				<div className='text-xs text-gray-500 italic mb-4'>
-					{member.recentActivity ||
-						`Joined ${new Date(
-							member.joinDate || member.createdAt,
-						).toLocaleDateString()}`}
+					{linkify(
+						member.recentActivity ||
+							`Joined ${new Date(
+								member.joinDate || member.createdAt,
+							).toLocaleDateString()}`,
+					)}
 				</div>
 
 				{/* View Profile Button */}
