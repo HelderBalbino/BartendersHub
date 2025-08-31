@@ -117,12 +117,14 @@ export const login = async (req, res) => {
 		// Check for user
 		const user = await User.findOne({ email }).select('+password');
 
-		if (!user) return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
+		if (!user)
+			return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
 
 		// Check password
 		const isMatch = await comparePassword(password, user.password);
 
-		if (!isMatch) return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
+		if (!isMatch)
+			return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
 
 		// Previously unverified users were blocked with 403. Now we allow login
 		// and simply include a flag so the frontend can show a gentle reminder.
