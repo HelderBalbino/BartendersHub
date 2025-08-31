@@ -304,9 +304,16 @@ cocktailSchema.index({ category: 1, isApproved: 1 });
 // New performance indexes for high-traffic sorts/filters
 cocktailSchema.index({ views: -1, isApproved: 1, createdAt: -1 });
 
-export default mongoose.model('Cocktail', cocktailSchema);
+// Unique index (partial) to prevent duplicate seeded classics (system-owned)
+// Case-insensitive uniqueness enforced only for system classics so users can
+// still create their own variants.
+cocktailSchema.index(
+	{ name: 1 },
+	{
+		unique: true,
+		partialFilterExpression: { isSystem: true, category: 'classics' },
+		collation: { locale: 'en', strength: 2 },
+	},
+);
 
-// Additional unique-ish index for classic system cocktails to prevent duplicates by name (case-insensitive)
-try {
-	cocktailSchema.index({ name: 1 }, { collation: { locale: 'en', strength: 2 } });
-} catch {/* index may already exist during hot reload */}
+export default mongoose.model('Cocktail', cocktailSchema);
