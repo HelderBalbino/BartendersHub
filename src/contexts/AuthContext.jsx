@@ -122,70 +122,50 @@ export const AuthProvider = ({ children }) => {
 		dispatch({ type: 'LOGIN_START' });
 
 		try {
-			const response = await apiService.post('/auth/login', {
+			const raw = await apiService.post('/auth/login', {
 				email,
 				password,
 			});
-
-			// Handle different response structures
-			// Sometimes the response is the data itself, sometimes it's nested under .data
-			let responseData;
-			if (response.data) {
-				// Standard axios response structure
-				responseData = response.data;
-			} else if (response.success !== undefined) {
-				// Response is the data itself
-				responseData = response;
-			} else {
-				throw new Error('No valid response data found');
+			// raw may already be the payload (apiService returns response.data) per apiService implementation
+			// Supported shapes:
+			// 1) { success:true, token, user, needsVerification }
+			// 2) { success:true, data:{ token, user, needsVerification }, meta:{ message } }
+			// 3) Legacy: { token, user }
+			let success = raw?.success;
+			let token = raw?.token;
+			let user = raw?.user;
+			let needsVerification = raw?.needsVerification;
+			if (success && raw?.data) {
+				// New envelope style
+				token = raw.data.token;
+				user = raw.data.user;
+				needsVerification =
+					raw.data.needsVerification ?? needsVerification;
 			}
-
-			// The API returns: { success: true, message: "...", token: "...", user: {...} }
-			if (!responseData) {
-				throw new Error('No response data received');
+			if (!token || !user) {
+				throw new Error('Login failed');
 			}
-
-			// Check if the response indicates success
-			if (!responseData.success) {
-				throw new Error(responseData.message || 'Login failed');
-			}
-
-			if (!responseData.token) {
-				throw new Error('No token in response');
-			}
-
-			if (!responseData.user) {
-				throw new Error('No user in response');
-			}
-
-			const { token, user, needsVerification } = responseData;
-
-			// Store token with preference
+			// Store token
 			TokenManager.set(token, remember);
-
-			dispatch({
-				type: 'LOGIN_SUCCESS',
-				payload: { token, user },
-			});
-
-			// Persist current user id for optimistic UI helpers
+			dispatch({ type: 'LOGIN_SUCCESS', payload: { token, user } });
 			try {
 				localStorage.setItem(
 					'currentUserId',
 					user.id || user._id || user.userId || '',
 				);
 			} catch {
-				// ignore storage errors
+				/* ignore */
 			}
-
 			return { success: true, user, needsVerification };
 		} catch (error) {
 			let errorMessage = 'Login failed';
 			let needVerification = false;
 			const status = error.response?.status || error.status;
 			if (error.response?.data) {
-				if (error.response.data.message)
-					errorMessage = error.response.data.message;
+				const d = error.response.data;
+				// Support new envelope { success:false, error:{ message }}
+				if (d.error?.message) errorMessage = d.error.message;
+				else if (d.message) errorMessage = d.message;
 				if (error.response.data.needVerification)
 					needVerification = true;
 			} else if (error.message) {
@@ -212,37 +192,33 @@ export const AuthProvider = ({ children }) => {
 		dispatch({ type: 'LOGIN_START' });
 
 		try {
-			const response = await apiService.post('/auth/register', userData);
-			// Normalize potential response shapes
-			const data =
-				response?.data?.success !== undefined
-					? response.data
-					: response;
-			if (!data?.success) {
-				throw new Error(data?.message || 'Registration failed');
+			const raw = await apiService.post('/auth/register', userData);
+			let success = raw?.success;
+			let token = raw?.token;
+			let user = raw?.user;
+			if (success && raw?.data) {
+				token = raw.data.token;
+				user = raw.data.user;
 			}
-			if (!data.token || !data.user) {
-				throw new Error('Incomplete registration response');
-			}
-			TokenManager.set(data.token, false);
-			dispatch({
-				type: 'LOGIN_SUCCESS',
-				payload: { token: data.token, user: data.user },
-			});
+			if (!success || !token || !user)
+				throw new Error(raw?.message || 'Registration failed');
+			TokenManager.set(token, false);
+			dispatch({ type: 'LOGIN_SUCCESS', payload: { token, user } });
 			try {
 				localStorage.setItem(
 					'currentUserId',
-					data.user.id || data.user._id || data.user.userId || '',
+					user.id || user._id || user.userId || '',
 				);
 			} catch {
-				// ignore storage errors
+				/* ignore */
 			}
-			return { success: true, user: data.user };
+			return { success: true, user };
 		} catch (error) {
 			// Derive message from various error shapes produced by apiService/enhanceError
+			const d = error?.response?.data || error?.data || {};
 			const errorMessage =
-				error?.response?.data?.message ||
-				error?.data?.message ||
+				d.error?.message ||
+				d.message ||
 				error?.message ||
 				'Registration failed';
 			dispatch({
