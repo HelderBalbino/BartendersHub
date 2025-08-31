@@ -35,17 +35,15 @@ const PageLoader = () => (
 );
 
 const App = () => {
-	// Memoize query client to prevent recreation on re-renders
+	// Memoize QueryClient
 	const queryClient = useMemo(
 		() =>
 			new QueryClient({
 				defaultOptions: {
 					queries: {
-						retry: 2,
-						staleTime: 5 * 60 * 1000, // 5 minutes
-						gcTime: 10 * 60 * 1000, // 10 minutes
-						refetchOnWindowFocus: false, // Disable refetch on window focus for better performance
-						refetchOnReconnect: true,
+						retry: 0,
+						refetchOnWindowFocus: false,
+						staleTime: 60 * 1000,
 					},
 					mutations: {
 						retry: 1,
@@ -54,7 +52,6 @@ const App = () => {
 			}),
 		[],
 	);
-
 	// Memoize router to prevent recreation
 	const router = useMemo(
 		() =>
@@ -117,8 +114,6 @@ const App = () => {
 								</Suspense>
 							}
 						/>
-
-						{/* Protected Routes */}
 						<Route
 							path='community'
 							element={
@@ -140,7 +135,7 @@ const App = () => {
 						<Route
 							path='profile'
 							element={
-								<ProtectedRoute>
+								<ProtectedRoute requireVerification={false}>
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
 									</Suspense>
@@ -150,7 +145,7 @@ const App = () => {
 						<Route
 							path='profile/:userId'
 							element={
-								<ProtectedRoute>
+								<ProtectedRoute requireVerification={false}>
 									<Suspense fallback={<PageLoader />}>
 										<ProfilePage />
 									</Suspense>
@@ -198,7 +193,6 @@ const App = () => {
 				<AuthProvider>
 					<RouterProvider router={router} />
 					<Toaster {...toasterConfig} />
-					{/* Only show React Query DevTools in development */}
 					{config.features.enableDevtools && (
 						<ReactQueryDevtools initialIsOpen={false} />
 					)}
