@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import {
 	Route,
 	createBrowserRouter,
@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
+import lazyWithRetry from './utils/lazyWithRetry';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './layouts/MainLayout';
@@ -16,16 +17,20 @@ import LoadingSpinner from './components/LoadingSpinner';
 import config from './config/environment.js';
 
 // Lazy load pages for better performance
-const HomePage = lazy(() => import('./pages/HomePage'));
-const CocktailsPage = lazy(() => import('./pages/CocktailsPage'));
-const CocktailDetailPage = lazy(() => import('./pages/CocktailDetailPage'));
-const CommunityPage = lazy(() => import('./pages/CommunityPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const AddCocktailPage = lazy(() => import('./pages/AddCocktailPage'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
-const VerifyPendingPage = lazy(() => import('./pages/VerifyPendingPage'));
+const HomePage = lazyWithRetry(() => import('./pages/HomePage'));
+const CocktailsPage = lazyWithRetry(() => import('./pages/CocktailsPage'));
+const CocktailDetailPage = lazyWithRetry(() =>
+	import('./pages/CocktailDetailPage'),
+);
+const CommunityPage = lazyWithRetry(() => import('./pages/CommunityPage'));
+const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'));
+const AddCocktailPage = lazyWithRetry(() => import('./pages/AddCocktailPage'));
+const ProfilePage = lazyWithRetry(() => import('./pages/ProfilePage'));
+const VerifyEmailPage = lazyWithRetry(() => import('./pages/VerifyEmailPage'));
+const VerifyPendingPage = lazyWithRetry(() =>
+	import('./pages/VerifyPendingPage'),
+);
 
 // Enhanced loading component
 const PageLoader = () => (
