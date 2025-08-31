@@ -15,6 +15,7 @@ import {
 	rateCocktail,
 } from '../controllers/cocktailController.js';
 import { protect } from '../middleware/auth.js';
+import { requireVerified } from '../middleware/response.js';
 import { handleValidationErrors } from '../middleware/errorHandler.js';
 import { uploadLimiter } from '../middleware/rateLimiter.js';
 import { cacheMiddleware } from '../middleware/cache.js';
@@ -172,10 +173,11 @@ router.put(
 	updateCocktail,
 );
 router.delete('/:id', protect, deleteCocktail);
-router.put('/:id/like', protect, toggleLike);
+router.put('/:id/like', protect, requireVerified, toggleLike);
 router.post(
 	'/:id/comments',
 	protect,
+	requireVerified,
 	commentValidation,
 	handleValidationErrors,
 	addComment,
@@ -183,6 +185,7 @@ router.post(
 router.post(
 	'/:id/rating',
 	protect,
+	requireVerified,
 	ratingValidation,
 	handleValidationErrors,
 	rateCocktail,
