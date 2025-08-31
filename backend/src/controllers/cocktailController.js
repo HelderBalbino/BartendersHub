@@ -96,22 +96,18 @@ export const getCocktails = async (req, res) => {
 			cocktails = cocktails.slice(0, limit);
 		}
 
-		res.status(200).json({
-			success: true,
-			count: cocktails.length,
-			// legacy pagination data (omit if cursor used?)
-			total: cursor ? undefined : total,
-			page: cursor ? undefined : page,
-			pages: cursor ? undefined : Math.ceil(total / limit),
-			cursor: nextCursor,
-			data: cocktails,
-		});
+		res.success(
+			cocktails,
+			{
+				count: cocktails.length,
+				cursor: nextCursor,
+				page: cursor ? undefined : page,
+				pages: cursor ? undefined : Math.ceil(total / limit),
+				total: cursor ? undefined : total,
+			},
+		);
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -129,29 +125,17 @@ export const getCocktail = async (req, res) => {
 			.populate('likes.user', 'name username avatar')
 			.populate('ratings.user', 'name username avatar');
 
-		if (!cocktail) {
-			return res.status(404).json({
-				success: false,
-				message: 'Cocktail not found',
-			});
-		}
+		if (!cocktail) return res.fail(404, 'Cocktail not found', 'NOT_FOUND');
 
 		// Increment view count
 		await Cocktail.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
 
-		res.status(200).json({
-			success: true,
-			data: cocktail,
-		});
+		res.success(cocktail);
 
 		// Invalidate cache after update
 		invalidateCocktailCache();
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -167,10 +151,8 @@ export const createCocktail = async (req, res) => {
 			try {
 				imageData = await uploadImage(req.file.path, 'cocktails');
 			} catch (uploadError) {
-				return res.status(400).json({
-					success: false,
-					message: 'Error uploading image',
-					error: uploadError.message,
+				return res.fail(400, 'Error uploading image', 'UPLOAD_FAILED', {
+					detail: uploadError.message,
 				});
 			}
 		}
@@ -197,17 +179,13 @@ export const createCocktail = async (req, res) => {
 		// Invalidate cocktail cache
 		invalidateCocktailCache();
 
-		res.status(201).json({
-			success: true,
-			message: 'Cocktail created successfully',
-			data: cocktail,
-		});
+		res.success(
+			cocktail,
+			{ message: 'Cocktail created successfully' },
+			201,
+		);
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -218,22 +196,18 @@ export const updateCocktail = async (req, res) => {
 	try {
 		let cocktail = await Cocktail.findById(req.params.id);
 
-		if (!cocktail) {
-			return res.status(404).json({
-				success: false,
-				message: 'Cocktail not found',
-			});
-		}
+		if (!cocktail) return res.fail(404, 'Cocktail not found', 'NOT_FOUND');
 
 		// Make sure user is cocktail owner or admin
 		if (
 			cocktail.createdBy.toString() !== req.user.id &&
 			!req.user.isAdmin
 		) {
-			return res.status(401).json({
-				success: false,
-				message: 'Not authorized to update this cocktail',
-			});
+			return res.fail(
+				401,
+				'Not authorized to update this cocktail',
+				'NOT_OWNER',
+			);
 		}
 
 		// Handle new image upload
@@ -248,10 +222,8 @@ export const updateCocktail = async (req, res) => {
 				const imageData = await uploadImage(req.file.path, 'cocktails');
 				req.body.image = imageData;
 			} catch (uploadError) {
-				return res.status(400).json({
-					success: false,
-					message: 'Error uploading image',
-					error: uploadError.message,
+				return res.fail(400, 'Error uploading image', 'UPLOAD_FAILED', {
+					detail: uploadError.message,
 				});
 			}
 		}
@@ -261,16 +233,9 @@ export const updateCocktail = async (req, res) => {
 			runValidators: true,
 		}).populate('createdBy', 'name username avatar isVerified');
 
-		res.status(200).json({
-			success: true,
-			data: cocktail,
-		});
+		res.success(cocktail);
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -281,22 +246,18 @@ export const deleteCocktail = async (req, res) => {
 	try {
 		const cocktail = await Cocktail.findById(req.params.id);
 
-		if (!cocktail) {
-			return res.status(404).json({
-				success: false,
-				message: 'Cocktail not found',
-			});
-		}
+		if (!cocktail) return res.fail(404, 'Cocktail not found', 'NOT_FOUND');
 
 		// Make sure user is cocktail owner or admin
 		if (
 			cocktail.createdBy.toString() !== req.user.id &&
 			!req.user.isAdmin
 		) {
-			return res.status(401).json({
-				success: false,
-				message: 'Not authorized to delete this cocktail',
-			});
+			return res.fail(
+				401,
+				'Not authorized to delete this cocktail',
+				'NOT_OWNER',
+			);
 		}
 
 		// Delete image from cloudinary
@@ -306,19 +267,12 @@ export const deleteCocktail = async (req, res) => {
 
 		await cocktail.deleteOne();
 
-		res.status(200).json({
-			success: true,
-			message: 'Cocktail deleted successfully',
-		});
+		res.success(null, { message: 'Cocktail deleted successfully' });
 
 		// Invalidate cache after deletion
 		invalidateCocktailCache();
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -329,12 +283,7 @@ export const toggleLike = async (req, res) => {
 	try {
 		const cocktail = await Cocktail.findById(req.params.id);
 
-		if (!cocktail) {
-			return res.status(404).json({
-				success: false,
-				message: 'Cocktail not found',
-			});
-		}
+		if (!cocktail) return res.fail(404, 'Cocktail not found', 'NOT_FOUND');
 
 		const likeIndex = cocktail.likes.findIndex(
 			(like) => like.user.toString() === req.user.id,
@@ -352,21 +301,14 @@ export const toggleLike = async (req, res) => {
 		cocktail.likesCount = cocktail.likes.length;
 		await cocktail.save();
 
-		res.status(200).json({
-			success: true,
-			data: {
-				isLiked: likeIndex === -1,
-				likesCount: cocktail.likes.length,
-			},
+		res.success({
+			isLiked: likeIndex === -1,
+			likesCount: cocktail.likes.length,
 		});
 
 		invalidateCocktailCache();
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -377,12 +319,7 @@ export const addComment = async (req, res) => {
 	try {
 		const cocktail = await Cocktail.findById(req.params.id);
 
-		if (!cocktail) {
-			return res.status(404).json({
-				success: false,
-				message: 'Cocktail not found',
-			});
-		}
+		if (!cocktail) return res.fail(404, 'Cocktail not found', 'NOT_FOUND');
 
 		const comment = {
 			user: req.user.id,
@@ -406,18 +343,15 @@ export const addComment = async (req, res) => {
 			'name username avatar isVerified',
 		);
 
-		res.status(201).json({
-			success: true,
-			data: cocktail.comments[cocktail.comments.length - 1],
-		});
+		res.success(
+			cocktail.comments[cocktail.comments.length - 1],
+			{ message: 'Comment added' },
+			201,
+		);
 
 		invalidateCocktailCache();
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -428,12 +362,7 @@ export const rateCocktail = async (req, res) => {
 	try {
 		const cocktail = await Cocktail.findById(req.params.id);
 
-		if (!cocktail) {
-			return res.status(404).json({
-				success: false,
-				message: 'Cocktail not found',
-			});
-		}
+		if (!cocktail) return res.fail(404, 'Cocktail not found', 'NOT_FOUND');
 
 		const existingRatingIndex = cocktail.ratings.findIndex(
 			(rating) => rating.user.toString() === req.user.id,
@@ -452,20 +381,13 @@ export const rateCocktail = async (req, res) => {
 
 		await cocktail.save();
 
-		res.status(200).json({
-			success: true,
-			data: {
-				averageRating: cocktail.averageRating,
-				ratingsCount: cocktail.ratings.length,
-			},
+		res.success({
+			averageRating: cocktail.averageRating,
+			ratingsCount: cocktail.ratings.length,
 		});
 
 		invalidateCocktailCache();
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
