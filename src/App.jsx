@@ -122,11 +122,9 @@ const App = () => {
 						<Route
 							path='community'
 							element={
-								<ProtectedRoute>
-									<Suspense fallback={<PageLoader />}>
-										<CommunityPage />
-									</Suspense>
-								</ProtectedRoute>
+								<Suspense fallback={<PageLoader />}>
+									<CommunityPage />
+								</Suspense>
 							}
 						/>
 						<Route
