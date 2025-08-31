@@ -29,10 +29,7 @@ export const register = async (req, res) => {
 		});
 
 		if (userExists) {
-			return res.status(400).json({
-				success: false,
-				message: 'User already exists',
-			});
+			return res.fail(400, 'User already exists', 'USER_EXISTS');
 		}
 
 		// Hash password
@@ -89,26 +86,24 @@ export const register = async (req, res) => {
 		// Broadcast new member to community (real-time update)
 		websocketService.broadcastNewMember(user);
 
-		res.status(201).json({
-			success: true,
-			message: 'User registered successfully',
-			token,
-			user: {
-				id: user._id,
-				name: user.name,
-				email: user.email,
-				username: user.username,
-				avatar: user.avatar,
-				isVerified: user.isVerified,
-				country: user.country || null, // ISO code
+		res.success(
+			{
+				token,
+				user: {
+					id: user._id,
+					name: user.name,
+					email: user.email,
+					username: user.username,
+					avatar: user.avatar,
+					isVerified: user.isVerified,
+					country: user.country || null,
+				},
 			},
-		});
+			{ message: 'User registered successfully' },
+			201,
+		);
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
@@ -122,22 +117,12 @@ export const login = async (req, res) => {
 		// Check for user
 		const user = await User.findOne({ email }).select('+password');
 
-		if (!user) {
-			return res.status(401).json({
-				success: false,
-				message: 'Invalid credentials',
-			});
-		}
+		if (!user) return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
 
 		// Check password
 		const isMatch = await comparePassword(password, user.password);
 
-		if (!isMatch) {
-			return res.status(401).json({
-				success: false,
-				message: 'Invalid credentials',
-			});
-		}
+		if (!isMatch) return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
 
 		// Previously unverified users were blocked with 403. Now we allow login
 		// and simply include a flag so the frontend can show a gentle reminder.
@@ -147,29 +132,28 @@ export const login = async (req, res) => {
 		const token = generateToken(user._id);
 		setAuthCookie(res, token);
 
-		res.status(200).json({
-			success: true,
-			message: needsVerification
-				? 'Login successful (email verification pending)'
-				: 'Login successful',
-			token,
-			needsVerification,
-			user: {
-				id: user._id,
-				name: user.name,
-				email: user.email,
-				username: user.username,
-				avatar: user.avatar,
-				isVerified: user.isVerified,
-				isAdmin: user.isAdmin,
+		res.success(
+			{
+				token,
+				needsVerification,
+				user: {
+					id: user._id,
+					name: user.name,
+					email: user.email,
+					username: user.username,
+					avatar: user.avatar,
+					isVerified: user.isVerified,
+					isAdmin: user.isAdmin,
+				},
 			},
-		});
+			{
+				message: needsVerification
+					? 'Login successful (email verification pending)'
+					: 'Login successful',
+			},
+		);
 	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'Server error',
-			error: error.message,
-		});
+		res.fail(500, 'Server error', 'SERVER', { detail: error.message });
 	}
 };
 
