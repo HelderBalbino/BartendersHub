@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import apiService from '../services/api';
 import { toast } from 'react-hot-toast';
+import GradientPage from '../components/GradientPage';
 
 const VerifyPendingPage = () => {
 	const navigate = useNavigate();
@@ -52,7 +53,7 @@ const VerifyPendingPage = () => {
 	};
 
 	return (
-		<section className='min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-4 py-12'>
+		<GradientPage center full className='px-4 py-12'>
 			<div className='max-w-md w-full border border-yellow-400/40 p-8 bg-black/30 backdrop-blur-sm relative'>
 				<div className='absolute -top-1 -left-1 w-6 h-6 border-l-2 border-t-2 border-yellow-400' />
 				<div className='absolute -top-1 -right-1 w-6 h-6 border-r-2 border-t-2 border-yellow-400' />
@@ -99,7 +100,7 @@ const VerifyPendingPage = () => {
 					</Link>
 				</div>
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
