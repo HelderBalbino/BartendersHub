@@ -2,204 +2,169 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 
-const PRINCIPLES = [
+// Content data (kept lean & scannable)
+const VALUES = [
 	{
-		icon: '🎨',
-		title: 'Craft',
-		detail: 'Measured technique. Respect for classics. Deliberate balance.',
+		icon: '🧪',
+		title: 'Evidence',
+		text: 'Repeatable ratios & technique notes.',
 	},
 	{
-		icon: '💎',
-		title: 'Quality',
-		detail: 'Thoughtful sourcing over quantity. Simplicity with intent.',
-	},
-	{
-		icon: '🔬',
-		title: 'R&D',
-		detail: 'Iterative refinement; flavor structure over gimmicks.',
+		icon: '�',
+		title: 'Curation',
+		text: 'Signal over volume. Fewer, better recipes.',
 	},
 	{
 		icon: '🤝',
-		title: 'Community',
-		detail: 'Open knowledge exchange that raises the collective bar.',
+		title: 'Sharing',
+		text: 'Open learning path from novice to contributor.',
+	},
+	{
+		icon: '🛠️',
+		title: 'Iteration',
+		text: 'Transparent improvements logged over time.',
 	},
 ];
 
-const ROADMAP = [
+const STACK = [
+	'Node',
+	'Express',
+	'MongoDB',
+	'React 19',
+	'React Query',
+	'Tailwind',
+	'Vite',
+];
+
+const MILESTONES = [
+	{ tag: 'Now', text: 'Stable recipe core & auth foundation.' },
+	{ tag: 'Next', text: 'Stronger media handling & moderation signals.' },
 	{
-		tag: '2025',
-		phase: 'Foundation',
-		text: 'Core recipe model & initial curated set.',
-	},
-	{
-		tag: 'Q2',
-		phase: 'Refinement',
-		text: 'Improved tagging, media pipeline & quality signals.',
-	},
-	{
-		tag: 'Q3',
-		phase: 'Engagement',
-		text: 'Progressive contributor capabilities & verification.',
-	},
-	{
-		tag: 'Next',
-		phase: 'Expansion',
-		text: 'Structured technique guides & educational modules.',
+		tag: 'Soon',
+		text: 'Progressive contributor tooling & verification depth.',
 	},
 ];
 
-// A cleaner, calmer About section with progressive disclosure
 const AboutSection = () => {
-	const [expanded, setExpanded] = useState(false);
-	const principles = useMemo(() => PRINCIPLES, []);
-	const roadmap = useMemo(() => ROADMAP, []);
+	const [more, setMore] = useState(false);
+	const values = useMemo(() => VALUES, []);
+	const milestones = useMemo(() => MILESTONES, []);
+	const stack = useMemo(() => STACK, []);
 
 	return (
-		<section className='relative bg-gradient-to-br from-black via-gray-900 to-black text-gray-300'>
-			{/* Subtle backdrop */}
-			<div className='pointer-events-none absolute inset-0 opacity-[0.07] bg-[radial-gradient(circle_at_30%_20%,rgba(234,179,8,0.18),transparent_60%)]'></div>
-			<div className='relative mx-auto max-w-6xl px-5 py-24 md:py-28'>
+		<section className='relative overflow-hidden bg-gradient-to-b from-black via-gray-950 to-black text-gray-300'>
+			{/* Ambient background accents */}
+			<div className='pointer-events-none absolute inset-0 [mask-image:radial-gradient(circle_at_center,black,transparent_70%)]'>
+				<div className='absolute -top-32 left-1/2 -translate-x-1/2 w-[60rem] h-[60rem] rounded-full bg-[conic-gradient(at_50%_50%,rgba(234,179,8,0.08),transparent_55%)] blur-3xl' />
+			</div>
+			<div className='relative mx-auto max-w-6xl px-6 pt-28 pb-32'>
 				{/* Hero */}
-				<header className='flex flex-col items-center text-center mb-20'>
+				<header className='text-center mb-24'>
 					<img
 						src={logo}
-						alt='BartendersHub'
-						className='h-16 w-auto mb-6 drop-shadow-md opacity-90'
+						alt='BartendersHub logo'
+						className='h-16 mx-auto mb-8 opacity-90 drop-shadow'
 					/>
 					<h1 className='text-3xl md:text-5xl font-light tracking-wide text-white mb-6'>
-						Refined Cocktail Culture
+						Cocktail Knowledge, Distilled
 					</h1>
-					<p className='max-w-2xl text-base md:text-lg font-light text-gray-400 leading-relaxed'>
-						A focused platform for precise recipes, technique
-						annotation and respectful innovation in modern mixology.
+					<p className='max-w-2xl mx-auto text-base md:text-lg font-light text-gray-400 leading-relaxed'>
+						Practical, reference‑quality recipes and technique
+						notes. Minimal distraction. Built for bartenders &
+						curious makers.
 					</p>
 				</header>
 
-				{/* Story */}
-				<section className='max-w-4xl mx-auto mb-24'>
-					<h2 className='sr-only'>Origin</h2>
-					<div className='prose prose-invert prose-sm md:prose-base max-w-none prose-headings:tracking-wide'>
-						<p>
-							BartendersHub was founded to reduce noise and
-							surface substance—distilling the craft into clear,
-							reference‑grade entries.
-						</p>
-						{expanded && (
-							<>
-								<p>
-									We emphasize ingredient clarity, proportion
-									logic and repeatable process. Iteration is
-									documented so refinement is visible and
-									transferable.
-								</p>
-								<p>
-									Capabilities grow with trust: verified
-									contributors unlock extended tooling while
-									casual learners still gain value. The result
-									is a pathway from curiosity to disciplined
-									practice.
-								</p>
-							</>
-						)}
-					</div>
+				{/* Intro */}
+				<section className='max-w-3xl mx-auto mb-24'>
+					<h2 className='sr-only'>Mission</h2>
+					<p className='text-sm md:text-base leading-relaxed text-gray-400'>
+						We focus on clarity: ingredient intent, proportion logic
+						and repeatable process.{' '}
+						{more &&
+							'Depth is added incrementally so newcomers are not overwhelmed while experienced bartenders still gain nuance.'}
+					</p>
 					<button
-						onClick={() => setExpanded((v) => !v)}
-						className='mt-6 inline-flex items-center gap-2 text-[11px] tracking-widest uppercase text-yellow-400/80 hover:text-yellow-300 border border-yellow-400/30 hover:border-yellow-400 px-4 py-2 transition'
+						onClick={() => setMore((v) => !v)}
+						className='mt-5 text-[11px] tracking-widest uppercase text-yellow-400/80 hover:text-yellow-300 border border-yellow-400/30 hover:border-yellow-400 px-4 py-2 transition'
 					>
-						{expanded ? 'Collapse' : 'Read More'}
+						{more ? 'Show Less' : 'Read More'}
 					</button>
 				</section>
 
-				{/* Principles */}
-				<section className='mb-24'>
+				{/* Values */}
+				<section className='mb-28'>
 					<h2 className='text-center text-xl md:text-2xl font-light tracking-wide text-yellow-400 mb-12'>
-						Core Principles
+						Guiding Values
 					</h2>
 					<div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4'>
-						{principles.map((p) => (
-							<article
-								key={p.title}
-								className='group rounded-lg border border-yellow-400/15 bg-neutral-900/40 p-6 backdrop-blur-sm transition hover:border-yellow-400/40'
+						{values.map((v) => (
+							<div
+								key={v.title}
+								className='group rounded-lg border border-yellow-400/15 bg-neutral-900/40 p-5 backdrop-blur-sm transition hover:border-yellow-400/40'
 							>
-								<div className='mb-4 text-2xl' aria-hidden>
-									{p.icon}
+								<div className='mb-3 text-2xl' aria-hidden>
+									{v.icon}
 								</div>
-								<h3 className='mb-2 text-sm font-semibold tracking-wide text-yellow-300 uppercase'>
-									{p.title}
+								<h3 className='mb-1 text-xs font-semibold tracking-wider text-yellow-300 uppercase'>
+									{v.title}
 								</h3>
-								<p className='text-xs leading-relaxed text-gray-400'>
-									{p.detail}
+								<p className='text-[11px] leading-relaxed text-gray-400'>
+									{v.text}
 								</p>
-							</article>
+							</div>
 						))}
 					</div>
 				</section>
 
-				{/* Timeline */}
-				<section className='mb-24'>
-					<h2 className='text-center text-xl md:text-2xl font-light tracking-wide text-yellow-400 mb-12'>
-						Progression
-					</h2>
-					<ol className='relative border-l border-yellow-400/20 ml-2 md:ml-4 space-y-10'>
-						{roadmap.map((item) => (
-							<li key={item.tag} className='pl-6 relative'>
-								<span className='absolute -left-[10px] top-1 w-4 h-4 rounded-full border border-yellow-400/60 bg-black'></span>
-								<div className='flex items-center gap-3 mb-1'>
-									<span className='text-yellow-300 text-xs font-medium tracking-widest uppercase'>
-										{item.tag}
+				{/* Milestones + Stack */}
+				<div className='grid gap-20 lg:grid-cols-2 mb-32'>
+					<section>
+						<h2 className='text-xl md:text-2xl font-light tracking-wide text-yellow-400 mb-8'>
+							Direction
+						</h2>
+						<ul className='space-y-6'>
+							{milestones.map((m) => (
+								<li
+									key={m.tag}
+									className='flex gap-4 items-start'
+								>
+									<span className='mt-0.5 text-[10px] font-medium tracking-widest text-yellow-300 uppercase bg-yellow-400/10 border border-yellow-400/30 px-2 py-1 rounded'>
+										{m.tag}
 									</span>
-									<span className='text-[11px] uppercase tracking-wider text-gray-500'>
-										{item.phase}
-									</span>
-								</div>
-								<p className='text-xs md:text-sm text-gray-400 leading-relaxed max-w-prose'>
-									{item.text}
-								</p>
-							</li>
-						))}
-					</ol>
-				</section>
-
-				{/* Metrics (concise) */}
-				<section className='mb-24'>
-					<h2 className='sr-only'>Snapshot</h2>
-					<div className='flex flex-wrap justify-center gap-10 text-center'>
-						<div>
-							<div className='text-lg font-medium text-yellow-300 tracking-wide'>
-								Curated
-							</div>
-							<div className='text-[11px] uppercase tracking-widest text-gray-500'>
-								Recipe Library
-							</div>
+									<p className='text-sm text-gray-400 leading-relaxed'>
+										{m.text}
+									</p>
+								</li>
+							))}
+						</ul>
+					</section>
+					<section>
+						<h2 className='text-xl md:text-2xl font-light tracking-wide text-yellow-400 mb-8'>
+							Stack
+						</h2>
+						<div className='flex flex-wrap gap-3'>
+							{stack.map((s) => (
+								<span
+									key={s}
+									className='text-[11px] tracking-widest uppercase bg-neutral-900/60 border border-yellow-400/25 text-yellow-300/90 px-3 py-2 rounded'
+								>
+									{s}
+								</span>
+							))}
 						</div>
-						<div>
-							<div className='text-lg font-medium text-yellow-300 tracking-wide'>
-								Growing
-							</div>
-							<div className='text-[11px] uppercase tracking-widest text-gray-500'>
-								Contributor Base
-							</div>
-						</div>
-						<div>
-							<div className='text-lg font-medium text-yellow-300 tracking-wide'>
-								Structured
-							</div>
-							<div className='text-[11px] uppercase tracking-widest text-gray-500'>
-								Technique Docs
-							</div>
-						</div>
-					</div>
-				</section>
+					</section>
+				</div>
 
 				{/* CTA */}
 				<section className='text-center'>
 					<h2 className='text-2xl md:text-3xl font-light tracking-wide text-white mb-6'>
-						Contribute & Refine
+						Help Refine The Library
 					</h2>
 					<p className='mx-auto mb-10 max-w-xl text-sm md:text-base leading-relaxed text-gray-400'>
-						Help shape a practical, signal‑rich resource. Share
-						rigorously tested recipes, improvement notes, or
-						technique clarifications.
+						Share rigorously tested recipes or technique
+						improvements. Every clear contribution raises the
+						baseline.
 					</p>
 					<div className='flex flex-col sm:flex-row justify-center gap-4'>
 						<Link
