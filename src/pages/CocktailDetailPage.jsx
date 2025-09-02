@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import LoadingSpinner from '../components/LoadingSpinner';
+import FullScreenSpinner from '../components/FullScreenSpinner';
+import GradientPage from '../components/GradientPage';
 import CocktailDetailSkeleton from '../components/ui/Skeletons/CocktailDetailSkeleton';
 import {
 	useCocktail,
@@ -36,11 +37,11 @@ const CocktailDetailPage = () => {
 		/* no-op kept for potential side-effects */
 	}, [cocktail]);
 
-	if (isLoading) return <CocktailDetailSkeleton />;
+	if (isLoading) return <CocktailDetailSkeleton />; // existing skeleton fine
 
 	if (error || !cocktail) {
 		return (
-			<div className='min-h-screen flex flex-col items-center justify-center text-center bg-gradient-to-br from-black via-gray-900 to-black px-4'>
+			<GradientPage center full className='px-4'>
 				<h1 className='text-3xl font-bold text-yellow-400 mb-4'>
 					Cocktail Not Found
 				</h1>
@@ -54,7 +55,7 @@ const CocktailDetailPage = () => {
 				>
 					Back to Cocktails
 				</Link>
-			</div>
+			</GradientPage>
 		);
 	}
 
@@ -134,7 +135,7 @@ const CocktailDetailPage = () => {
 	};
 
 	return (
-		<section className='min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-16 px-4'>
+		<GradientPage full className='py-16 px-4'>
 			<SeoMeta
 				title={cocktail.name}
 				description={cocktail.description?.slice(0, 155)}
@@ -423,7 +424,7 @@ const CocktailDetailPage = () => {
 					</div>
 				</div>
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
