@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 
 // Components
 import SectionHeader from './CocktailHeader/SectionHeader';
-import CategoryFilter from './CocktailHeader/CategoryFilter';
+// Using FilterTabs directly (CategoryFilter deprecated)
+import FilterTabs from '../ui/Navigation/FilterTabs';
 // import CarouselContainer from './CocktailCarousel/CarouselContainer'; // Replaced by grid view with pagination
 import CocktailCard from '../CocktailCard';
 import LoadingState from '../ui/States/LoadingState';
@@ -147,12 +148,10 @@ const CocktailContent = () => {
 
 				{/* Filters & Search */}
 				<div className='space-y-6'>
-					<CategoryFilter
-						categories={categories}
-						activeCategory={activeCategory}
-						onCategoryChange={(id) => {
-							setActiveCategory(id);
-						}}
+					<FilterTabs
+						filters={categories}
+						activeFilter={activeCategory}
+						onChange={(id) => setActiveCategory(id)}
 					/>
 					<div className='flex flex-col items-center gap-4 md:flex-row md:justify-center md:gap-6'>
 						<div className='relative w-full max-w-md'>
