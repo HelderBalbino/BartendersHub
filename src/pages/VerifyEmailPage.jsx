@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import apiService from '../services/api';
-import LoadingSpinner from '../components/LoadingSpinner';
+import FullScreenSpinner from '../components/FullScreenSpinner';
+import GradientPage from '../components/GradientPage';
 
 const VerifyEmailPage = () => {
 	const { token } = useParams();
@@ -52,7 +53,7 @@ const VerifyEmailPage = () => {
 	}, [token, navigate, searchParams]);
 
 	return (
-		<section className='min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-4 py-12'>
+		<GradientPage center full className='px-4 py-12'>
 			<div className='max-w-md w-full border border-yellow-400/40 p-8 bg-black/30 backdrop-blur-sm text-center relative'>
 				<div className='absolute -top-1 -left-1 w-6 h-6 border-l-2 border-t-2 border-yellow-400' />
 				<div className='absolute -top-1 -right-1 w-6 h-6 border-r-2 border-t-2 border-yellow-400' />
@@ -61,7 +62,9 @@ const VerifyEmailPage = () => {
 				<h1 className='text-2xl font-light tracking-[0.2em] uppercase text-yellow-400 mb-4'>
 					Email Verification
 				</h1>
-				{status === 'pending' && <LoadingSpinner text='Verifying...' />}
+				{status === 'pending' && (
+					<FullScreenSpinner text='Verifying...' />
+				)}
 				<p
 					className={`mt-4 text-sm ${
 						status === 'error' ? 'text-red-400' : 'text-gray-300'
@@ -94,7 +97,7 @@ const VerifyEmailPage = () => {
 					</div>
 				)}
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
