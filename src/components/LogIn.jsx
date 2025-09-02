@@ -5,7 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import apiService from '../services/api';
 import CountrySelect from './ui/Forms/CountrySelect';
 import { validationRules } from '../hooks/useFormValidation';
-import LoadingSpinner from './LoadingSpinner';
+import FullScreenSpinner from './FullScreenSpinner';
+import GradientPage from './GradientPage';
 import PasswordInput from './ui/Forms/PasswordInput';
 
 const LogIn = () => {
@@ -260,23 +261,20 @@ const LogIn = () => {
 		}
 	};
 
-	if (loading) {
+	if (loading)
 		return (
-			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
-				<LoadingSpinner
-					size='large'
-					text={
-						isLogin
-							? 'Entering the speakeasy...'
-							: 'Joining the elite...'
-					}
-				/>
-			</section>
+			<FullScreenSpinner
+				size='large'
+				text={
+					isLogin
+						? 'Entering the speakeasy...'
+						: 'Joining the elite...'
+				}
+			/>
 		);
-	}
 
 	return (
-		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8'>
+		<GradientPage full center className='overflow-hidden py-8'>
 			{/* Art Deco Background Pattern */}
 			<div className='absolute inset-0 opacity-8'>
 				{/* Golden gradient overlay */}
@@ -588,7 +586,7 @@ const LogIn = () => {
 					<div className='w-16 h-0.5 bg-gradient-to-l from-transparent to-yellow-400'></div>
 				</div>
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
