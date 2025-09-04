@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useCommunityMembers } from '../hooks/useCommunity';
 import useCommunityRealtime from '../hooks/useCommunityRealtime';
-import LoadingSpinner from './LoadingSpinner';
+import FullScreenSpinner from './FullScreenSpinner';
+import GradientPage from './GradientPage';
 import FeaturedMemberCarousel from './community/FeaturedMemberCarousel';
 import MemberFilters from './community/MemberFilters';
 import MembersGrid from './community/MembersGrid';
@@ -106,25 +107,18 @@ const CommunitySection = () => {
 	}, [isVerified]);
 
 	// Show loading state
-	if (isLoading) {
-		return (
-			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
-				<LoadingSpinner />
-			</section>
-		);
-	}
+	if (isLoading) return <FullScreenSpinner text='Loading community...' />;
 
 	// Show error state
-	if (error) {
+	if (error)
 		return (
-			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+			<GradientPage center full>
 				<div className='text-center text-white'>
 					<h2 className='text-2xl mb-4'>Unable to load community</h2>
 					<p className='text-gray-400'>Please try again later</p>
 				</div>
-			</section>
+			</GradientPage>
 		);
-	}
 
 	const filters = [
 		{ key: 'all', label: 'All Members', count: communityMembers.length },
@@ -171,7 +165,7 @@ const CommunitySection = () => {
 	};
 
 	return (
-		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black overflow-hidden py-16 md:py-20'>
+		<GradientPage full className='overflow-hidden py-16 md:py-20'>
 			{/* Real-time New Member Notifications */}
 			<NewMemberNotifications
 				recentJoins={recentJoins}
@@ -322,7 +316,7 @@ const CommunitySection = () => {
 				{/* Join Community CTA */}
 				<JoinCommunityCTA />
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
