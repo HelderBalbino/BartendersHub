@@ -88,6 +88,12 @@ class ApiService {
 			enhanced.status = error.response.status;
 			enhanced.statusText = error.response.statusText;
 			enhanced.data = error.response.data;
+			// Provide a unified message fallback
+			if (!enhanced.message) {
+				enhanced.message =
+					error.response.data?.message ||
+					`Request failed with status code ${error.response.status}`;
+			}
 		} else if (error.request) {
 			enhanced.type = 'network';
 			enhanced.message = 'Network error - please check your connection';
