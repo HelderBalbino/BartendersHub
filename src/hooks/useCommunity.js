@@ -95,7 +95,10 @@ export const useFollowUser = () => {
 				userId,
 			]);
 			// Determine if current user is already in followers list
-			const currentUserId = localStorage.getItem('currentUserId'); // could be set on login elsewhere
+			// Resolve current user id from storage (AuthContext ensures it is set)
+			const currentUserId =
+				localStorage.getItem('currentUserId') ||
+				sessionStorage.getItem('currentUserId');
 			if (currentUserId && prevFollowers?.followers) {
 				const exists = prevFollowers.followers.some(
 					(f) => (f._id || f.id) === currentUserId,
@@ -133,14 +136,18 @@ export const useFollowUser = () => {
 				);
 			}
 			if (prevProfile && currentUserId) {
-				const alreadyFollowing =
-					prevProfile.followersCount &&
-					prevProfile.followersCount > 0; // heuristic
+				// Determine if current user appears in followers list when available
+				let currentlyFollowing = false;
+				if (prevFollowers?.followers) {
+					currentlyFollowing = prevFollowers.followers.some(
+						(f) => (f._id || f.id) === currentUserId,
+					);
+				}
 				queryClient.setQueryData(['user', 'profile', userId], {
 					...prevProfile,
-					followersCount: alreadyFollowing
-						? prevProfile.followersCount - 1
-						: (prevProfile.followersCount || 0) + 1,
+					followersCount:
+						(prevProfile.followersCount || 0) +
+						(currentlyFollowing ? -1 : 1),
 				});
 			}
 			return { prevFollowers, prevProfile };
