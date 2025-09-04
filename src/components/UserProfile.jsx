@@ -114,8 +114,10 @@ const UserProfile = ({ userId }) => {
 
 	// (Removed verbose debug logging)
 
-	// Determine if this is the current user's profile
-	const isOwnProfile = currentUser?.id === userId;
+	// Determine if this is the current user's profile (consider multiple possible id field names)
+	const resolvedCurrentUserId =
+		currentUser?.id || currentUser?._id || currentUser?.userId;
+	const isOwnProfile = resolvedCurrentUserId === userId;
 
 	// Fetch user data - disable queries if no userId
 	const {
