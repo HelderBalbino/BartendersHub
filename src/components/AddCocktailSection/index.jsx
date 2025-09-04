@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import ArtDecoHeader from '../ui/ArtDeco/ArtDecoHeader';
 import ArtDecoCard from '../ui/ArtDeco/ArtDecoCard';
 import ArtDecoSeparator from '../ui/ArtDeco/ArtDecoSeparator';
-import LoadingState from '../ui/States/LoadingState';
+import LoadingState from '../ui/States/LoadingState'; // will internally use ArtDecoLoader; keep for now
+import GradientPage from '../GradientPage';
 import FormActions from '../ui/Forms/FormActions';
 
 // Form Components
@@ -214,7 +215,7 @@ const AddCocktailSection = () => {
 	const gated = !isVerified;
 
 	return (
-		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-20 overflow-hidden'>
+		<GradientPage full className='py-20 overflow-hidden'>
 			{/* Art Deco Background Pattern */}
 			<div className='absolute inset-0 opacity-8'>
 				{/* Golden gradient overlay */}
@@ -326,7 +327,7 @@ const AddCocktailSection = () => {
 				{/* Bottom decorative element */}
 				<ArtDecoSeparator variant='diamond' className='mt-8' />
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
