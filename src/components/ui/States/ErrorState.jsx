@@ -9,12 +9,8 @@ const ErrorState = ({
 	fullScreen = false,
 	className = '',
 }) => {
-	const containerClasses = fullScreen
-		? 'relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black'
-		: 'section';
-
 	return (
-		<section className={`${containerClasses} py-20 ${className}`}>
+		<section className={`${fullScreen ? 'py-20' : 'py-20'} ${className}`}>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
 				<div className='text-6xl text-red-400 mb-6'>{emoji}</div>
 				<h2 className='text-2xl text-white font-light tracking-wide uppercase mb-4'>
