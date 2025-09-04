@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import GradientPage from './GradientPage';
 import HeroBackground from './hero/HeroBackground';
 import HeroHeader from './hero/HeroHeader';
 import HeroContentFrame from './hero/HeroContentFrame';
@@ -31,7 +32,7 @@ const Hero = () => {
 	}, [speakeasyQuotes.length]);
 
 	return (
-		<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center overflow-hidden py-8'>
+		<GradientPage full center className='overflow-hidden py-8'>
 			{/* Enhanced Art Deco Background Pattern - Mobile Optimized */}
 			<HeroBackground />
 
@@ -60,7 +61,7 @@ const Hero = () => {
 				{/* Enhanced bottom decorative element - Mobile optimized */}
 				<HeroFooter />
 			</div>
-		</section>
+		</GradientPage>
 	);
 };
 
