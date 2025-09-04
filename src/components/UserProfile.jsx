@@ -8,7 +8,8 @@ import {
 	useUserFollowing,
 } from '../hooks/useProfile';
 import { useFollowUser } from '../hooks/useCommunity';
-import LoadingSpinner from './LoadingSpinner';
+import FullScreenSpinner from './FullScreenSpinner';
+import GradientPage from './GradientPage';
 import SkeletonGrid from './ui/SkeletonGrid';
 import CocktailCard from './CocktailCard';
 import ArtDecoSection from './ui/ArtDecoSection';
@@ -182,40 +183,32 @@ const UserProfile = ({ userId }) => {
 	};
 
 	// Early returns (after all hooks & derived state)
-	if (!userId) {
+	if (!userId)
 		return (
-			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+			<GradientPage center full>
 				<div className='text-center text-white'>
 					<h2 className='text-2xl mb-4'>No User ID</h2>
 					<p className='text-gray-400 mb-4'>
 						Unable to load profile - missing user ID
 					</p>
-					<LoadingSpinner />
+					<FullScreenSpinner text='Loading...' />
 				</div>
-			</section>
+			</GradientPage>
 		);
-	}
 
-	if (profileLoading) {
-		return (
-			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
-				<LoadingSpinner />
-			</section>
-		);
-	}
+	if (profileLoading) return <FullScreenSpinner text='Loading profile...' />;
 
-	if (profileError) {
+	if (profileError)
 		return (
-			<section className='relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'>
+			<GradientPage center full>
 				<div className='text-center text-white'>
 					<h2 className='text-2xl mb-4'>User not found</h2>
 					<p className='text-gray-400'>
 						The user you're looking for doesn't exist
 					</p>
 				</div>
-			</section>
+			</GradientPage>
 		);
-	}
 
 	const tabs = [
 		{
