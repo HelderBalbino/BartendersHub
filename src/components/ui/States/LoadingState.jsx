@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import ArtDecoLoader from '../ArtDeco/ArtDecoLoader';
+import GradientPage from '../../../components/GradientPage';
 
 const LoadingState = ({
 	size = 'medium',
@@ -8,12 +9,14 @@ const LoadingState = ({
 	fullScreen = false,
 	className = '',
 }) => {
-	const containerClasses = fullScreen
-		? 'relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center'
-		: 'flex justify-center py-20';
-
+	if (fullScreen)
+		return (
+			<GradientPage center full className={className}>
+				<ArtDecoLoader size={size} text={text} emoji={emoji} />
+			</GradientPage>
+		);
 	return (
-		<div className={`${containerClasses} ${className}`}>
+		<div className={`flex justify-center py-20 ${className}`}>
 			<ArtDecoLoader size={size} text={text} emoji={emoji} />
 		</div>
 	);
