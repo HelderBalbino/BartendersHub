@@ -29,6 +29,7 @@ backend/.env
 backend/uploads/
 backend/node_modules/
 backend/logs/
+coverage-frontend/
 
 # Environment variables
 .env
