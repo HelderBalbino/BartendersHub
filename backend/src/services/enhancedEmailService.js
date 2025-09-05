@@ -8,8 +8,18 @@ dotenv.config();
 
 class EmailService {
 	constructor() {
-		this.service = process.env.EMAIL_SERVICE || 'smtp';
-		this.initializeService();
+		// Allow disabling emails in tests or via flag
+		if (
+			process.env.NODE_ENV === 'test' ||
+			process.env.EMAIL_DISABLE === 'true' ||
+			process.env.EMAIL_SERVICE === 'none'
+		) {
+			this.service = 'disabled';
+			console.warn('Email disabled in test or by configuration');
+		} else {
+			this.service = process.env.EMAIL_SERVICE || 'smtp';
+			this.initializeService();
+		}
 	}
 
 	initializeService() {
@@ -34,7 +44,8 @@ class EmailService {
 	fallbackToSMTP() {
 		this.service = 'smtp';
 		if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-			this.transporter = nodemailer.createTransporter({
+			// Correct nodemailer API
+			this.transporter = nodemailer.createTransport({
 				host: process.env.EMAIL_HOST || 'smtp.gmail.com',
 				port: parseInt(process.env.EMAIL_PORT) || 587,
 				secure: false,
@@ -56,6 +67,15 @@ class EmailService {
 		const fromName = process.env.EMAIL_FROM_NAME || 'BartendersHub';
 
 		try {
+			if (this.service === 'disabled') {
+				// No-op in test or when disabled by config
+				if (process.env.EMAIL_DEBUG === 'true') {
+					console.warn(
+						`[email:disabled] to=${to} subject=${subject?.slice(0, 60)}`,
+					);
+				}
+				return;
+			}
 			switch (this.service) {
 				case 'sendgrid':
 					await sgMail.send({
