@@ -1,6 +1,11 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/images/logo.png';
+import logoAvif256 from '../assets/images/optimized/logo-256.avif';
+import logoWebp256 from '../assets/images/optimized/logo-256.webp';
+import logoPng256 from '../assets/images/optimized/logo-256.png';
+import logoAvif512 from '../assets/images/optimized/logo-512.avif';
+import logoWebp512 from '../assets/images/optimized/logo-512.webp';
+import logoPng512 from '../assets/images/optimized/logo-512.png';
 
 // Content data (kept lean & scannable)
 const VALUES = [
@@ -60,11 +65,25 @@ const AboutSection = () => {
 			<div className='relative mx-auto max-w-6xl px-6 pt-28 pb-32'>
 				{/* Hero */}
 				<header className='text-center mb-24'>
-					<img
-						src={logo}
-						alt='BartendersHub logo'
-						className='h-16 mx-auto mb-8 opacity-90 drop-shadow'
-					/>
+					<picture>
+						<source
+							type='image/avif'
+							srcSet={`${logoAvif256} 256w, ${logoAvif512} 512w`}
+							sizes='64px'
+						/>
+						<source
+							type='image/webp'
+							srcSet={`${logoWebp256} 256w, ${logoWebp512} 512w`}
+							sizes='64px'
+						/>
+						<img
+							src={logoPng256}
+							srcSet={`${logoPng256} 256w, ${logoPng512} 512w`}
+							sizes='64px'
+							alt='BartendersHub logo'
+							className='h-16 mx-auto mb-8 opacity-90 drop-shadow'
+						/>
+					</picture>
 					<h1 className='text-3xl md:text-5xl font-light tracking-wide text-white mb-6'>
 						Cocktail Knowledge, Distilled
 					</h1>

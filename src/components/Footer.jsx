@@ -1,4 +1,6 @@
-import logo from '../assets/images/logo.png';
+import logoAvif256 from '../assets/images/optimized/logo-256.avif';
+import logoWebp256 from '../assets/images/optimized/logo-256.webp';
+import logoPng256 from '../assets/images/optimized/logo-256.png';
 import { FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
@@ -30,11 +32,16 @@ const Footer = () => {
 					<div className='flex items-center justify-between'>
 						{/* Left: Minimal Brand */}
 						<div className='flex items-center'>
-							<img
-								className='h-4 w-auto mr-1.5'
-								src={logo}
-								alt='BartendersHub'
-							/>
+							<picture>
+								<source type='image/avif' srcSet={`${logoAvif256} 256w`} sizes='16px' />
+								<source type='image/webp' srcSet={`${logoWebp256} 256w`} sizes='16px' />
+								<img
+									className='h-4 w-auto mr-1.5'
+									src={logoPng256}
+									srcSet={`${logoPng256} 256w`}
+									alt='BartendersHub'
+								/>
+							</picture>
 							<span className='text-white text-sm font-light tracking-[0.2em]'>
 								BARTENDERS'
 							</span>

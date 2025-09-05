@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import logo from '../assets/images/logo.png';
+import logoAvif256 from '../assets/images/optimized/logo-256.avif';
+import logoWebp256 from '../assets/images/optimized/logo-256.webp';
+import logoPng256 from '../assets/images/optimized/logo-256.png';
+import logoAvif512 from '../assets/images/optimized/logo-512.avif';
+import logoWebp512 from '../assets/images/optimized/logo-512.webp';
+import logoPng512 from '../assets/images/optimized/logo-512.png';
 
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -57,11 +62,25 @@ const Navbar = () => {
 							className='flex flex-shrink-0 items-center group'
 							to='/'
 						>
-							<img
-								className='h-10 md:h-12 w-auto transition-all duration-300 group-hover:scale-105 filter drop-shadow-md'
-								src={logo}
-								alt='BartendersHub Logo'
-							/>
+							<picture>
+								<source
+									type='image/avif'
+									srcSet={`${logoAvif256} 256w, ${logoAvif512} 512w`}
+									sizes='(min-width: 768px) 48px, 40px'
+								/>
+								<source
+									type='image/webp'
+									srcSet={`${logoWebp256} 256w, ${logoWebp512} 512w`}
+									sizes='(min-width: 768px) 48px, 40px'
+								/>
+								<img
+									className='h-10 md:h-12 w-auto transition-all duration-300 group-hover:scale-105 filter drop-shadow-md'
+									src={logoPng256}
+									srcSet={`${logoPng256} 256w, ${logoPng512} 512w`}
+									sizes='(min-width: 768px) 48px, 40px'
+									alt='BartendersHub Logo'
+								/>
+							</picture>
 							<div className='ml-3 md:ml-4 hidden xs:block'>
 								<span className='text-white font-light text-base md:text-lg lg:text-xl tracking-[0.1em] sm:tracking-[0.15em] uppercase'>
 									Bartenders'
