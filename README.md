@@ -1,7 +1,7 @@
 # 🥃 BartendersHub
 
 <div align="center">
-  <img src="src/assets/images/logo.png" alt="BartendersHub Logo" width="100" height="100">
+  <img src="src/assets/images/optimized/logo-256.png" alt="BartendersHub Logo" width="100" height="100">
 
 **Where sophistication and mastery meets artistry**
 
