@@ -2,14 +2,25 @@
 export const responseHelpers = (req, res, next) => {
 	res.success = (data, meta = {}, status = 200) => {
 		if (!res.headersSent) {
-			return res.status(status).json({ success: true, data, meta });
+			const isPlainObject =
+				data && typeof data === 'object' && !Array.isArray(data);
+			// Hoist data fields (like token, user) for backward compatibility
+			const hoistedData = isPlainObject ? { ...data } : {};
+			// Hoist meta fields (message, count, cursor, etc.) for convenience
+			const hoistedMeta = meta && typeof meta === 'object' ? { ...meta } : {};
+			return res
+				.status(status)
+				.json({ success: true, ...hoistedData, ...hoistedMeta, data, meta });
 		}
 	};
 	res.fail = (status, message, code = 'ERROR', extra = {}) => {
 		if (!res.headersSent) {
-			return res
-				.status(status)
-				.json({ success: false, error: { message, code, ...extra } });
+			return res.status(status).json({
+				success: false,
+				message,
+				code,
+				error: { message, code, ...extra },
+			});
 		}
 	};
 	next();
