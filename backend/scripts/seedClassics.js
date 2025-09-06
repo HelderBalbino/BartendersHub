@@ -24,18 +24,21 @@ const __dirname = path.dirname(__filename);
 const rootEnvPath = path.resolve(__dirname, '../../.env');
 const backendEnvPath = path.resolve(__dirname, '../.env');
 dotenv.config({ path: rootEnvPath });
-if (!process.env.MONGO_URI) {
+if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
 	dotenv.config({ path: backendEnvPath });
 }
 
-if (!process.env.MONGO_URI) {
+// Support either MONGO_URI or MONGODB_URI
+const RESOLVED_MONGO_URI = (process.env.MONGO_URI || process.env.MONGODB_URI || '').trim();
+
+if (!RESOLVED_MONGO_URI) {
 	console.error(
-		'MONGO_URI not set. Provide it in project root .env, backend/.env, or inline: MONGO_URI="mongodb+srv://<user>:<pass>@host/db" npm run seed:classics',
+		'MONGO_URI (or MONGODB_URI) not set. Provide it in project root .env, backend/.env, or inline: MONGO_URI="mongodb+srv://<user>:<pass>@host/db" npm run seed:classics',
 	);
 	process.exit(1);
 }
 
-const normalizedUri = process.env.MONGO_URI.trim();
+const normalizedUri = RESOLVED_MONGO_URI;
 if (
 	normalizedUri === 'your-mongodb-connection-string' ||
 	!/^mongodb(\+srv)?:\/\//.test(normalizedUri)
@@ -73,7 +76,7 @@ async function ensureSystemUser() {
 }
 
 async function seed() {
-	await mongoose.connect(process.env.MONGO_URI, {
+	await mongoose.connect(normalizedUri, {
 		autoIndex: true,
 	});
 	console.log('Connected to MongoDB');
