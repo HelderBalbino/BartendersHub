@@ -100,6 +100,28 @@ export default [
 		defaultTechnique: 'Stirred',
 	},
 	{
+		name: 'Boulevardier',
+		description: 'Bourbon take on a Negroni.',
+		ingredients: [
+			{ name: 'Bourbon', amount: '1.5', unit: 'oz' },
+			{ name: 'Campari', amount: '1', unit: 'oz' },
+			{ name: 'Sweet Vermouth', amount: '1', unit: 'oz' },
+		],
+		instructions: [
+			{ step: 1, description: 'Add all ingredients to mixing glass with ice.' },
+			{ step: 2, description: 'Stir until chilled.' },
+			{ step: 3, description: 'Strain into a coupe or over a large cube.' },
+		],
+		prepTime: 2,
+		servings: 1,
+		glassType: 'coupe',
+		tags: ['stirred', 'whiskey'],
+		alcoholContent: 'high',
+		flavor: 'bitter',
+		category: 'classics',
+		defaultTechnique: 'Stirred',
+	},
+	{
 		name: 'Daiquiri',
 		description:
 			'Rum, lime, sugar. A study in balance; shaken citrus template.',
