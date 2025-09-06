@@ -65,10 +65,16 @@ export const register = async (req, res) => {
 				user.emailVerificationToken = hashed;
 				user.emailVerificationExpire = new Date(expire);
 				await user.save();
-				await emailService.sendVerificationEmail(
-					{ name: user.name, email: user.email },
-					raw,
-				);
+				// Try to send verification email, but don't block registration on failure
+				try {
+					await emailService.sendVerificationEmail(
+						{ name: user.name, email: user.email },
+						raw,
+					);
+				} catch (emailErr) {
+					console.error('Verification email failed to send:', emailErr.message);
+					// Continue without throwing to avoid 500 on register
+				}
 			}
 		}
 
