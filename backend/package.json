@@ -18,6 +18,7 @@
     "seed": "node src/utils/seedDatabase.js",
     "seed:classics": "node scripts/seedClassics.js",
     "admin:create": "node scripts/createAdmin.js",
+    "admin:enforce": "node scripts/enforcePrimaryAdmin.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
 	},
 	"keywords": [

@@ -23,6 +23,15 @@ export const register = async (req, res) => {
 	try {
 		const { name, email, password, username, country } = req.body; // country expected as ISO code
 
+		// Determine if this email should be an admin (from env allowlist)
+		const adminAllowRaw =
+			process.env.ADMIN_EMAILS || process.env.PRIMARY_ADMIN_EMAIL || '';
+		const adminAllow = adminAllowRaw
+			.split(',')
+			.map((s) => s.trim().toLowerCase())
+			.filter(Boolean);
+		const makeAdmin = adminAllow.includes(String(email).toLowerCase());
+
 		// Check if user exists
 		const userExists = await User.findOne({
 			$or: [{ email }, { username }],
@@ -45,6 +54,7 @@ export const register = async (req, res) => {
 			username,
 			country: country?.toUpperCase(),
 			isVerified: autoVerify,
+			isAdmin: makeAdmin,
 		});
 
 		// Generate email verification token if not auto verified.
