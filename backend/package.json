@@ -15,8 +15,9 @@
 		"email:debug": "EMAIL_DEBUG=true node scripts/debugEmail.js",
 		"email:sendgrid": "node scripts/testSendGrid.js",
 		"user:verify": "node scripts/verifyUser.js",
-		"seed": "node src/utils/seedDatabase.js",
-		"seed:classics": "node scripts/seedClassics.js",
+    "seed": "node src/utils/seedDatabase.js",
+    "seed:classics": "node scripts/seedClassics.js",
+    "admin:create": "node scripts/createAdmin.js",
 		"maint:cleanup-difficulty": "node src/utils/removeDifficultyField.js"
 	},
 	"keywords": [

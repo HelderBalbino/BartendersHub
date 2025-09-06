@@ -11,12 +11,20 @@ dotenv.config();
 // NOTE: Assumes a test database via MONGODB_URI pointing to an isolated DB.
 
 describe('Cocktail sorting API', () => {
-	let userId;
+    let userId;
+    let mem;
 
-	beforeAll(async () => {
-		if (mongoose.connection.readyState === 0) {
-			await mongoose.connect(process.env.MONGODB_URI, {});
-		}
+    beforeAll(async () => {
+        if (mongoose.connection.readyState === 0) {
+            const uri = process.env.MONGODB_URI;
+            if (uri) {
+                await mongoose.connect(uri, {});
+            } else {
+                const { MongoMemoryServer } = await import('mongodb-memory-server');
+                mem = await MongoMemoryServer.create();
+                await mongoose.connect(mem.getUri('bartendershub_test'), {});
+            }
+        }
 
 		// Clear collections
 		await Promise.all([Cocktail.deleteMany({}), User.deleteMany({})]);
@@ -73,9 +81,10 @@ describe('Cocktail sorting API', () => {
 		]);
 	});
 
-	afterAll(async () => {
-		await mongoose.connection.close();
-	});
+    afterAll(async () => {
+        await mongoose.connection.close();
+        if (mem) await mem.stop();
+    });
 
 	test('sort by rating returns cocktails ordered by averageRating desc', async () => {
 		const res = await request(app).get(

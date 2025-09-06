@@ -122,6 +122,29 @@ export default [
 		defaultTechnique: 'Stirred',
 	},
 	{
+		name: 'Manhattan',
+		description:
+			'Rye (or bourbon), sweet vermouth, bitters. Iconic stirred whiskey classic.',
+		ingredients: [
+			{ name: 'Rye Whiskey', amount: '2', unit: 'oz' },
+			{ name: 'Sweet Vermouth', amount: '1', unit: 'oz' },
+			{ name: 'Angostura Bitters', amount: '2', unit: 'dashes' },
+		],
+		instructions: [
+			{ step: 1, description: 'Add all ingredients to a mixing glass with ice.' },
+			{ step: 2, description: 'Stir until very cold and properly diluted.' },
+			{ step: 3, description: 'Strain into a chilled coupe; garnish with cherry or twist.' },
+		],
+		prepTime: 3,
+		servings: 1,
+		glassType: 'coupe',
+		tags: ['stirred', 'whiskey', 'iba'],
+		alcoholContent: 'high',
+		flavor: 'bitter',
+		category: 'classics',
+		defaultTechnique: 'Stirred',
+	},
+	{
 		name: 'Daiquiri',
 		description:
 			'Rum, lime, sugar. A study in balance; shaken citrus template.',

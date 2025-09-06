@@ -28,6 +28,7 @@ import {
 import authRoutes from './routes/auth.js';
 import cocktailRoutes from './routes/cocktails.js';
 import userRoutes from './routes/users.js';
+import adminRoutes from './routes/admin.js';
 import { responseHelpers } from './middleware/response.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -164,6 +165,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/cocktails', cocktailRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', async (req, res) => {
 	const cacheMetrics = getCacheMetrics();
