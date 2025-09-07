@@ -12,6 +12,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import lazyWithRetry from './utils/lazyWithRetry';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
+import RequireAdmin from './components/RequireAdmin';
 import MainLayout from './layouts/MainLayout';
 import LoadingSpinner from './components/LoadingSpinner';
 import config from './config/environment.js';
@@ -31,6 +32,12 @@ const VerifyEmailPage = lazyWithRetry(() => import('./pages/VerifyEmailPage'));
 const VerifyPendingPage = lazyWithRetry(() =>
 	import('./pages/VerifyPendingPage'),
 );
+const AdminLayout = lazyWithRetry(() => import('./pages/admin/AdminLayout'));
+const AdminDashboard = lazyWithRetry(() => import('./pages/admin/AdminDashboard'));
+const AdminUsers = lazyWithRetry(() => import('./pages/admin/AdminUsers'));
+const AdminCocktails = lazyWithRetry(() => import('./pages/admin/AdminCocktails'));
+const AdminModeration = lazyWithRetry(() => import('./pages/admin/AdminModeration'));
+const AdminSystem = lazyWithRetry(() => import('./pages/admin/AdminSystem'));
 
 // Enhanced loading component
 const PageLoader = () => (
@@ -63,6 +70,57 @@ const App = () => {
 			createBrowserRouter(
 				createRoutesFromElements(
 					<Route path='/' element={<MainLayout />}>
+						<Route
+							path='admin'
+							element={
+								<RequireAdmin>
+									<Suspense fallback={<PageLoader />}>
+										<AdminLayout />
+									</Suspense>
+								</RequireAdmin>
+							}
+						>
+							<Route
+								index
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<AdminDashboard />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='users'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<AdminUsers />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='cocktails'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<AdminCocktails />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='moderation'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<AdminModeration />
+									</Suspense>
+								}
+							/>
+							<Route
+								path='system'
+								element={
+									<Suspense fallback={<PageLoader />}>
+										<AdminSystem />
+									</Suspense>
+								}
+							/>
+						</Route>
 						<Route
 							index
 							element={

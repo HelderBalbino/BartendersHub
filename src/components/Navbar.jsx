@@ -105,6 +105,16 @@ const Navbar = () => {
 							</Link>
 						))}
 
+						{isAuthenticated && user?.isAdmin && (
+							<Link
+								to='/admin'
+								className='text-yellow-400 font-semibold text-sm tracking-[0.1em] uppercase transition-all duration-300 hover:scale-105 relative group'
+							>
+								Admin
+								<div className='absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-400 group-hover:w-full transition-all duration-300'></div>
+							</Link>
+						)}
+
 						{/* Navigation Buttons */}
 						<div className='flex items-center gap-3'>
 							{isAuthenticated ? (

@@ -300,6 +300,17 @@ class ApiService {
 	async deleteAccount(password) {
 		return this.delete('/auth/delete-account', { password });
 	}
+
+	// Admin helpers
+	async adminSeedStatus() { return this.get('/admin/seed-status'); }
+	async adminSeedClassics() { return this.post('/admin/seed-classics'); }
+	async adminCacheInvalidate(pattern) { return this.post('/admin/cache/invalidate', { pattern }); }
+	async adminPromoteUser(id) { return this.post(`/admin/users/${id}/promote`); }
+	async adminDemoteUser(id) { return this.post(`/admin/users/${id}/demote`); }
+	async adminVerifyUser(id) { return this.post(`/admin/users/${id}/verify`); }
+	async adminApproveCocktail(id) { return this.post(`/admin/cocktails/${id}/approve`); }
+	async adminFeatureCocktail(id) { return this.post(`/admin/cocktails/${id}/feature`); }
+	async adminUnfeatureCocktail(id) { return this.post(`/admin/cocktails/${id}/unfeature`); }
 }
 
 // Create singleton instance
