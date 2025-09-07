@@ -433,9 +433,27 @@ const UserProfile = ({ userId }) => {
 									<h1 className='text-3xl font-bold text-white mb-2'>
 										{userProfile.name}
 									</h1>
-									<p className='text-yellow-500 text-lg'>
-										@{userProfile.username}
-									</p>
+                            <div className='flex flex-col md:flex-row md:items-center gap-2'>
+                                <p className='text-yellow-500 text-lg'>
+                                    @{userProfile.username}
+                                </p>
+                                {isOwnProfile && (currentUser?.isAdmin || userProfile?.isAdmin) && (
+                                    <span
+                                        title='You have admin privileges'
+                                        className='inline-flex items-center gap-1 px-2 py-0.5 border border-yellow-400 text-yellow-300 uppercase text-[10px] tracking-widest'
+                                    >
+                                        <svg
+                                            xmlns='http://www.w3.org/2000/svg'
+                                            className='h-3 w-3'
+                                            viewBox='0 0 24 24'
+                                            fill='currentColor'
+                                        >
+                                            <path d='M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.77 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z' />
+                                        </svg>
+                                        Admin
+                                    </span>
+                                )}
+                            </div>
 									{userProfile.bio && (
 										<p className='text-gray-300 mt-2 max-w-2xl'>
 											{userProfile.bio}
