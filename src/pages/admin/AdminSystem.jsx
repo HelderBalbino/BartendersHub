@@ -5,9 +5,11 @@ export default function AdminSystem() {
   const [health, setHealth] = useState(null);
   const [pattern, setPattern] = useState('/api/cocktails*');
   const [busy, setBusy] = useState(false);
+  const [audit, setAudit] = useState([]);
 
   useEffect(() => {
     api.get('/health').then(setHealth).catch(() => setHealth(null));
+    api.get('/admin/audit?limit=100').then((r)=> setAudit(r?.items || r?.data?.items || [])).catch(()=> setAudit([]));
   }, []);
 
   const invalidate = async () => {
@@ -33,7 +35,27 @@ export default function AdminSystem() {
           <button disabled={busy} onClick={invalidate} className="text-black bg-yellow-400 px-3 py-1 text-xs uppercase tracking-widest">Invalidate</button>
         </div>
       </div>
+      <div className="md:col-span-2 border border-yellow-400/20 p-4">
+        <h2 className="uppercase text-sm tracking-widest mb-2">Recent Admin Actions</h2>
+        <table className="w-full text-xs">
+          <thead className="text-yellow-400/80">
+            <tr>
+              <th className="text-left p-2">When</th>
+              <th className="text-left p-2">Action</th>
+              <th className="text-left p-2">Target</th>
+            </tr>
+          </thead>
+          <tbody>
+            {audit.map((a)=>(
+              <tr key={a._id} className="border-t border-yellow-400/10">
+                <td className="p-2">{new Date(a.createdAt).toLocaleString()}</td>
+                <td className="p-2">{a.action}</td>
+                <td className="p-2">{a.targetType}:{a.targetId}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
-
