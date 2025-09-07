@@ -127,8 +127,8 @@ export const register = async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 export const login = async (req, res) => {
-	try {
-		const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
 		// Check for user
 		const user = await User.findOne({ email }).select('+password');
@@ -142,28 +142,48 @@ export const login = async (req, res) => {
 		if (!isMatch)
 			return res.fail(401, 'Invalid credentials', 'INVALID_CREDENTIALS');
 
-		// Previously unverified users were blocked with 403. Now we allow login
-		// and simply include a flag so the frontend can show a gentle reminder.
-		const needsVerification = !user.isVerified;
+    // Auto-elevate admin by allowlist if configured (idempotent)
+    try {
+      const adminAllowRaw =
+        process.env.ADMIN_EMAILS || process.env.PRIMARY_ADMIN_EMAIL || '';
+      const adminAllow = adminAllowRaw
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      if (adminAllow.length && adminAllow.includes(String(email).toLowerCase())) {
+        if (!user.isAdmin) {
+          user.isAdmin = true;
+          // Optionally also verify admin to avoid UX friction
+          if (!user.isVerified) user.isVerified = true;
+          await user.save();
+        }
+      }
+    } catch {
+      // ignore allowlist errors
+    }
+
+    // Previously unverified users were blocked with 403. Now we allow login
+    // and simply include a flag so the frontend can show a gentle reminder.
+    const needsVerification = !user.isVerified;
 
 		// Generate token
 		const token = generateToken(user._id);
 		setAuthCookie(res, token);
 
-		res.success(
-			{
-				token,
-				needsVerification,
-				user: {
-					id: user._id,
-					name: user.name,
-					email: user.email,
-					username: user.username,
-					avatar: user.avatar,
-					isVerified: user.isVerified,
-					isAdmin: user.isAdmin,
-				},
-			},
+      res.success(
+        {
+          token,
+          needsVerification,
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            username: user.username,
+            avatar: user.avatar,
+            isVerified: user.isVerified,
+            isAdmin: user.isAdmin,
+          },
+        },
 			{
 				message: needsVerification
 					? 'Login successful (email verification pending)'
