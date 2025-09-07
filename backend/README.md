@@ -58,6 +58,33 @@ platform. Built with Node.js, Express, and MongoDB.
     CLOUDINARY_API_SECRET=your-cloudinary-secret
     ```
 
+### Admin configuration
+
+-   To designate a primary admin who is auto-promoted on register and enforced by
+    the `admin:enforce` script, set the following environment variable:
+
+    ```
+    PRIMARY_ADMIN_EMAIL=helderbalbino@googlemail.com
+    ```
+
+-   Alternatively, you can allow multiple emails to auto-admin on register via:
+
+    ```
+    ADMIN_EMAILS=email1@example.com,email2@example.com
+    ```
+
+-   Create or promote the admin user:
+
+    ```bash
+    npm run admin:create -- --email=helderbalbino@googlemail.com --username=helderbalbino
+    ```
+
+-   Enforce single primary admin (demote others):
+
+    ```bash
+    npm run admin:enforce -- --email=helderbalbino@googlemail.com
+    ```
+
 4. **Start MongoDB**
 
     ```bash

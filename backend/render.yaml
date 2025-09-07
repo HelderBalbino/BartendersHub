@@ -10,5 +10,7 @@ services:
             value: production
           - key: PORT
             value: 10000
+          - key: PRIMARY_ADMIN_EMAIL
+            value: helderbalbino@googlemail.com
       autoDeploy: true
       healthCheckPath: /api/health
