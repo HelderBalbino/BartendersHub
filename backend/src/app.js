@@ -177,13 +177,20 @@ app.get('/api/health', async (req, res) => {
 		/* ignore */
 	}
 	let redisStatus = 'disabled';
-	if (redisClient) {
+	if (
+		process.env.DISABLE_REDIS === 'true' ||
+		process.env.NODE_ENV === 'test'
+	) {
+		redisStatus = 'disabled (by config)';
+	} else if (redisClient) {
 		try {
 			await redisClient.ping();
 			redisStatus = 'connected';
 		} catch {
 			redisStatus = 'error';
 		}
+	} else {
+		redisStatus = 'not configured (fallback active)';
 	}
 	res.status(200).json({
 		success: true,
